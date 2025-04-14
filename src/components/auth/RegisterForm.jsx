@@ -65,9 +65,9 @@ export default function RegisterForm() {
             setConfirmPassword("");
 
             // Redirect to login page after a short delay
-            setTimeout(() => {
+            /*setTimeout(() => {
                 router.push("/login");
-            }, 2000);
+            }, 2000); */
         } catch (error) {
             console.error("Registration error:", error);
             if (error.response?.data?.message) {
@@ -163,7 +163,7 @@ export default function RegisterForm() {
                   type="submit"
                   disabled={isLoading}
                 >
-                  {isLoading ? "Registering..." : "Register"}
+                  {isLoading ? "Registering..." : "Registrera"}
                 </button>
               </div>
             </form>
@@ -175,7 +175,7 @@ export default function RegisterForm() {
                   href="/login"
                   className="text-blue-500 hover:text-blue-700 font-medium"
                 >
-                  Log In
+                  Logga in
                 </Link>
               </p>
             </div>

@@ -32,7 +32,7 @@ export class ForbiddenError extends AppError {
 }
 
 export class NotFoundError extends AppError {
-    construcotr(message = 'Resursen hittades inte') {
+    constructor(message = 'Resursen hittades inte') {
     super(message, 404);
     }
 }
