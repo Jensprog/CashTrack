@@ -1,0 +1,185 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import axios from "axios";
+
+export default function RegisterForm() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [error, setError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
+
+    const router = useRouter();
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        setError("");
+        setSuccessMessage("");
+
+        // Client-side validation
+        if (!email || !password || !confirmPassword) {
+            setError("Alla fält måste fyllas i.");
+            return;
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setError("Fyll i en giltig e-postadress.");
+            return;
+        }
+
+        // Validate password strength
+        if (password.length < 8) {
+            setError("Lösenordet måste vara minst 8 tecken långt.");
+            return;
+        }
+
+        // Validate password match
+        if (password !== confirmPassword) {
+            setError("Lösenorden matchar inte.");
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            const response = await axios.post("/api/auth/register", {
+                email,
+                password,
+            });
+
+            setSuccessMessage("Registreringen lyckades! Du kan nu logga in.");
+
+            // Clear form
+            setEmail("");
+            setPassword("");
+            setConfirmPassword("");
+
+            // Redirect to login page after a short delay
+            setTimeout(() => {
+                router.push("/login");
+            }, 2000);
+        } catch (error) {
+            console.error("Registration error:", error);
+            if (error.response?.data?.message) {
+                setError(error.response.data.message);
+            } else {
+                setError("Ett fel inträffade vid registreringen. Försök igen senare.");
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="w-full max-w-md mx-auto">
+          <div className="bg-white dark:bg-gray-900 shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <h2 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-white">
+              Skapa ditt CashTrack konto
+            </h2>
+            
+            {error && (
+              <div className="mb-4 p-3 bg-red-100 text-red-700 border border-red-200 rounded">
+                {error}
+              </div>
+            )}
+            
+            {successMessage && (
+              <div className="mb-4 p-3 bg-green-100 text-green-700 border border-green-200 rounded">
+                {successMessage}
+              </div>
+            )}
+            
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <label 
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" 
+                  htmlFor="email"
+                >
+                  E-post adress
+                </label>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-800 leading-tight focus:outline-none focus:shadow-outline"
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              
+              <div className="mb-4">
+                <label 
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" 
+                  htmlFor="password"
+                >
+                  Lösenord
+                </label>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-800 leading-tight focus:outline-none focus:shadow-outline"
+                  id="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Måste vara minst 8 tecken långt
+                </p>
+              </div>
+              
+              <div className="mb-6">
+                <label 
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" 
+                  htmlFor="confirmPassword"
+                >
+                  Bekräfta lösenord
+                </label>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-800 leading-tight focus:outline-none focus:shadow-outline"
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <button
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+                  type="submit"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Registering..." : "Register"}
+                </button>
+              </div>
+            </form>
+            
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Har du redan ett konto?{" "}
+                <Link
+                  href="/login"
+                  className="text-blue-500 hover:text-blue-700 font-medium"
+                >
+                  Log In
+                </Link>
+              </p>
+            </div>
+    
+            <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs rounded">
+              <p>Genom att registrera dig godkänner du att vi lagrar dina uppgifter enligt vår integritetspolicy. Vi samlar bara in nödvändig data för att denna applikationen ska fungera.</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
