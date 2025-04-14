@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Simple navigation */}
+      {/* navigation */}
       <nav className="bg-white dark:bg-gray-900 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
@@ -14,13 +14,13 @@ export default function Home() {
             </div>
             <div className="flex items-center space-x-4">
               <Link 
-                href="#" 
+                href="/login" 
                 className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium"
               >
                 Logga in
               </Link>
               <Link 
-                href="#" 
+                href="/register" 
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
               >
                 Skapa konto
@@ -41,13 +41,13 @@ export default function Home() {
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4">
             <Link
-              href="#"
+              href="/register"
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md text-base font-medium transition-colors flex justify-center items-center"
             >
               Kom igång gratis
             </Link>
             <Link
-              href="#"
+              href="/login"
               className="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 px-6 py-3 rounded-md text-base font-medium transition-colors flex justify-center items-center"
             >
               Läs mer
@@ -135,7 +135,7 @@ export default function Home() {
             Med CashTrack får du de verktyg du behöver för att få bättre koll på dina pengar, göra smartare ekonomiska val och uppnå dina finansiella mål.
           </p>
           <Link
-            href="#"
+            href="/register"
             className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-md text-lg font-medium transition-colors"
           >
             Skapa ditt konto nu
@@ -143,7 +143,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Simple footer */}
+      {/* Footer */}
       <footer className="bg-gray-100 dark:bg-gray-900 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="md:flex md:items-center md:justify-between">
