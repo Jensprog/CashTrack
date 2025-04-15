@@ -1,4 +1,11 @@
-
+/**
+ * Backend API route for user registration.
+ * 
+ * This route handles user registration by accepting an email and password,
+ * validating the input, creating a new user in the database,
+ * and returning a JWT token for authentication.
+ * 
+ */
 import { createUser } from "@/lib/auth";
 import { generateToken } from "@/lib/auth";
 import { ValidationError } from "@/errors/classes";

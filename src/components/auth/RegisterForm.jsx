@@ -33,7 +33,7 @@ export default function RegisterForm() {
         // Validate email format
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            setError("Fyll i en giltig e-postadress.");
+            setError("Ange en giltig e-postadress.");
             return;
         }
 
@@ -99,13 +99,13 @@ export default function RegisterForm() {
               </div>
             )}
             
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} noValidate>
               <div className="mb-4">
                 <label 
                   className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" 
                   htmlFor="email"
                 >
-                  E-post adress
+                  E-postadress
                 </label>
                 <input
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-800 leading-tight focus:outline-none focus:shadow-outline"
@@ -114,7 +114,6 @@ export default function RegisterForm() {
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required
                 />
               </div>
               
