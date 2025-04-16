@@ -162,7 +162,7 @@ export default function RegisterForm() {
                   type="submit"
                   disabled={isLoading}
                 >
-                  {isLoading ? "Registering..." : "Registrera"}
+                  {isLoading ? "Registrering..." : "Registrera"}
                 </button>
               </div>
             </form>

@@ -6,7 +6,7 @@
  * and returning a JWT token for authentication.
  * 
  */
-import { createUser } from "@/lib/auth";
+import { createUser } from "@/services/userService";
 import { generateToken } from "@/lib/auth";
 import { ValidationError } from "@/errors/classes";
 import { successResponse, errorResponse } from "@/helpers/api";
