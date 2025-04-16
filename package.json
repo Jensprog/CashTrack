@@ -6,8 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "lint:fix": "next lint --fix"
   },
+  "contributors": [
+    "Jens Karlsson <jk224vx@student.lnu.se>"
+  ],
   "dependencies": {
     "@prisma/client": "^6.6.0",
     "axios": "^1.8.4",

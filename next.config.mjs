@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+    basePath: process.env.NODE_ENV === 'production' ? '/cashtrack' : '',
+};
 
 export default nextConfig;

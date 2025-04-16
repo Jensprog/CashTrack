@@ -11,13 +11,13 @@ export async function GET(request) {
     const email = searchParams.get('email');
 
     if (!email) {
-        return NextResponse.json({ error: 'Email parameter required' }, { status: 400});
+        return NextResponse.json({ error: 'Email parameter required' }, { status: 400});
     }
 
     try {
         const user = await getUserByEmail(email);
         return NextResponse.json({
-            user: user ? { ...user, password: 'HIDDEN' } : null,
+            user: user ? { ...user, password: 'HIDDEN' } : null,
             found: !!user
         });
     } catch (error) {
