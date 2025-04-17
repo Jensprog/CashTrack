@@ -1,7 +1,8 @@
 /** 
- * Validation functions to help with user input validation.
- * Collection of functions to validate user input for registration.
- * More coming soon!
+ * Validation helper functions for user input.
+ * Collection of functions to validate user input for registration and login.
+ * 
+ * 
  */
 
 
@@ -76,5 +77,23 @@ export const validateRegistrationForm = ({ email, password, confirmPassword }) =
         return passwordMatchValidation;
     }
 
+    return { isValid: true };
+};
+
+/**
+ * Validate a login form.
+ * @param {object} formData - Form data to validate.
+ * @returns {object} - An object containing isValid and perhaps error message.
+ */
+export const validateLoginForm = ({ email, password }) => {
+    const emailValidation = validateEmail(email);
+    if (!emailValidation.isValid) {
+        return emailValidation;
+    }
+
+    if (!password) {
+        return { isValid: false, message: "Lösenord krävs" };
+    }
+    
     return { isValid: true };
 };
