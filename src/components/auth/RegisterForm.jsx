@@ -6,6 +6,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { validateRegistrationForm } from "@/utils/validators";
 import Link from "next/link";
 import axios from "axios";
 
@@ -24,30 +25,16 @@ export default function RegisterForm() {
         setError("");
         setSuccessMessage("");
 
-        // Client-side validation
-        if (!email || !password || !confirmPassword) {
-            setError("Alla fält måste fyllas i.");
-            return;
-        }
+       const validation = validateRegistrationForm({
+        email,
+        password,
+        confirmPassword
+       });
 
-        // Validate email format
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            setError("Ange en giltig e-postadress.");
-            return;
-        }
-
-        // Validate password strength
-        if (password.length < 8) {
-            setError("Lösenordet måste vara minst 8 tecken långt.");
-            return;
-        }
-
-        // Validate password match
-        if (password !== confirmPassword) {
-            setError("Lösenorden matchar inte.");
-            return;
-        }
+       if (!validation.isValid) {
+        setError(validation.message);
+        return;
+       }
 
         setIsLoading(true);
 
