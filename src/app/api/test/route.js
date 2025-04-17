@@ -1,10 +1,10 @@
 /**
  * This is a test API route to verify the database connection and
- * to unit test different functions seperately.
+ * to unit test different functions separately.
  * 
  */
 import { NextResponse } from 'next/server';
-import { getUserByEmail } from '@/lib/auth';
+import { getUserByEmail } from '@/services/userService';
 
 export async function GET(request) {
     const { searchParams } = new URL(request.url);

@@ -7,7 +7,7 @@
  * - User operations (update, delete)
  */
 
-import { hashPassword } from '@/lib/auth';
+import { hashPassword } from '@/lib/auth';
 import { prisma } from '@/lib/db';
 import { ValidationError, ConflictError, AppError } from '@/errors/classes';
 
