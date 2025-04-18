@@ -37,7 +37,10 @@ export default function LoginForm() {
                 password,
         });
         
-        localStorage.setItem("token", response.data.data.token);
+        // Store the CSRF token for future requests
+        if (response.data.data.csrfToken) {
+            sessionStorage.setItem("csrfToken", response.data.data.csrfToken);
+        }
 
         router.push("/");
     } catch (error) {
