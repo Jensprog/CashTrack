@@ -7,8 +7,9 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { Csrf } from 'csrf';
 import { ForbiddenError } from '@/errors/classes';
+import csrf from 'csrf';
 
-const csrf = new Csrf();
+const tokens = new csrf();
 
 /**
  * Middleware to validate CSRF tokens
@@ -36,7 +37,7 @@ export async function csrfMiddleware(request) {
             }
             
             // Verify the CSRF token
-            const isValid = csrf.verify(csrfSecret, csrfToken);
+            const isValid = tokens.verify(csrfSecret, csrfToken);
 
             if (!isValid) {
                throw new ForbiddenError('Ogiltig CSRF-token');

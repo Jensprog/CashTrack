@@ -10,9 +10,9 @@ import { comparePassword, generateToken } from "@/lib/auth";
 import { AuthenticationError } from "@/errors/classes";
 import { successResponse, errorResponse } from "@/helpers/api";
 import { cookies } from "next/headers";
-import { Csrf } from 'csrf';
+import csrf from 'csrf';
 
-const csrf = new Csrf();
+const tokens = new csrf();
 
 
 export async function POST(request) {
@@ -34,13 +34,13 @@ export async function POST(request) {
         // Generate JWT token
         const token = generateToken(user.id);
 
-        const csrfSecret = csrf.secretSync();
-        const csrfToken = csrf.create(csrfSecret);
+        const csrfSecret = tokens.secretSync();
+        const csrfToken = tokens.create(csrfSecret);
 
         const cookieStore = cookies();
 
         // Set Httponly cookie with the JWT token
-        cookieStore.Store.set('token', token, {
+        cookieStore.set('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
