@@ -42,7 +42,7 @@ export default function LoginForm() {
             sessionStorage.setItem("csrfToken", response.data.data.csrfToken);
         }
 
-        router.push("/");
+        router.push("/dashboard");
     } catch (error) {
         console.error("Login error:", error);
         if (error.response?.data?.message) {

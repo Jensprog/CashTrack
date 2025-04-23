@@ -30,7 +30,7 @@ export default function TransactionForm({
     const [categories, setCategories] = useState([]);
 
     // Loading state
-    const [loading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     // Error state
     const [error, setError] = useState('');
