@@ -37,7 +37,7 @@ export async function POST(request) {
         const csrfSecret = tokens.secretSync();
         const csrfToken = tokens.create(csrfSecret);
 
-        const cookieStore = cookies();
+        const cookieStore = await cookies();
 
         // Set Httponly cookie with the JWT token
         cookieStore.set('token', token, {

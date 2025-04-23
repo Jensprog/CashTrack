@@ -8,7 +8,6 @@
  * - Deleting transactions
  */
 
-import { NextResponse } from 'next/server';
 import {
     createTransaction,
     getUserTransactions,
@@ -23,15 +22,12 @@ import { authMiddleware } from '@/middlewares/authMiddleware';
 // GET - Fetch all transactions for the logged-in user
 export async function GET(request) {
     try {
-        const middlewareResponse = await authMiddleware(request);
-        if (middlewareResponse) {
-            return middlewareResponse;
-        }
-
-        // Get user ID from headers (set by authMiddleware)
-        const userId = request.headers.get('X-User-ID');
-        if (!userId) {
-            throw new ValidationError('Användare kunde inte identifieras');
+        // Authenticate user
+        const userId = await authMiddleware(request);
+        
+        // Check if user is authenticated
+        if (userId instanceof Response) {
+            return userId;
         }
 
         // Get query parameters for filtering
@@ -40,7 +36,7 @@ export async function GET(request) {
         const endDate = searchParams.get('endDate');
         const categoryId = searchParams.get('categoryId');
 
-        // Get transactions for user with optinal filters
+        // Get transactions for user with optional filters
         const transactions = await getUserTransactions(userId, {
             startDate,
             endDate,
@@ -60,15 +56,10 @@ export async function GET(request) {
 // POST - Create a new transaction
 export async function POST(request) {
     try {
-        const middlewareResponse = await authMiddleware(request);
-        if (middlewareResponse) {
-            return middlewareResponse;
-        }
+        const userId = await authMiddleware(request);
 
-        // Get user ID from headers (set by authMiddleware)
-        const userId = request.headers.get('X-User-ID');
-        if (!userId) {
-            throw new ValidationError('Användare kunde inte identifieras');
+        if (userId instanceof Response) {
+            return userId;
         }
 
         // Parse request body
@@ -106,15 +97,10 @@ export async function POST(request) {
 // PUT - Update an existing transaction
 export async function PUT(request) {
     try {
-        const middlewareResponse = await authMiddleware(request);
-        if (middlewareResponse) {
-            return middlewareResponse;
-        }
+        const userId = await authMiddleware(request);
 
-        // Get user ID from headers (set by authMiddleware)
-        const userId = request.headers.get('X-User-ID');
-        if (!userId) {
-            throw new ValidationError('Användare kunde inte identifieras');
+        if (userId instanceof Response) {
+            return userId;
         }
 
         // Parse request body
@@ -156,14 +142,10 @@ export async function PUT(request) {
 // DELETE - Delete a transaction
 export async function DELETE(request) {
     try {
-        const middlewareResponse = await authMiddleware(request);
-        if (middlewareResponse) {
-            return middlewareResponse;
-        }
+        const userId = await authMiddleware(request);
 
-        // Get user ID from headers (set by authMiddleware)
-        if (!userId) {
-            throw new ValidationError('Användare kunde inte identifieras');
+        if (userId instanceof Response) {
+            return userId;
         }
 
         // Get transaction ID from URL

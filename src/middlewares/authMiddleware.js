@@ -5,7 +5,6 @@
  * attaches the user ID to the request context for protected routes.
  */
 
-import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/auth';
 import { AuthenticationError } from '@/errors/classes';
@@ -26,7 +25,7 @@ export async function authMiddleware(request) {
         }
         
         // Get token from cookies
-        const cookieStore = cookies();
+        const cookieStore = await cookies();
         const token = cookieStore.get('token')?.value;
 
         if (!token) {
@@ -39,33 +38,9 @@ export async function authMiddleware(request) {
         if (!decoded) {
             throw new AuthenticationError('Ogiltig eller utgången token');
         }
-        
-        // Create new headers object
-        const requestHeaders = new Headers(request.headers);
-        
-        // Attach the user ID to the request headers
-        requestHeaders.set('X-User-ID', decoded.userId);
-        
-        // Clone the request with the new headers
-        const newRequest = new Request(request.url, {
-            method: request.method,
-            headers: requestHeaders,
-            body: request.body,
-            cache: request.cache,
-            credentials: request.credentials,
-            integrity: request.integrity,
-            keepalive: request.keepalive,
-            mode: request.mode,
-            redirect: request.redirect,
-            referrer: request.referrer,
-            referrerPolicy: request.referrerPolicy,
-            signal: request.signal,
-        });
-        
-        // Continue to the API route with the modified request
-        return NextResponse.next({
-            request: newRequest,
-        });
+
+        // Return the user ID
+        return decoded.userId;
     } catch (error) {
         console.error('Authentication error:', error);
         return errorResponse(error);

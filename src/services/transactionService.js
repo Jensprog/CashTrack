@@ -19,7 +19,7 @@ import { ValidationError, NotFoundError, AppError } from '@/errors/classes';
  */
 export const createTransaction = async (transactionData) => {
     try {
-        const { amount, description, date, userId, cateogoryId } = transactionData;
+        const { amount, description, date, userId, categoryId } = transactionData;
 
         // Validate required fields
         if (!userId || amount === undefined || !date) {
@@ -27,13 +27,13 @@ export const createTransaction = async (transactionData) => {
         }
 
         // Create transaction in database
-        const transaction = prisma.transaction.create({
+        const transaction = await prisma.transaction.create({
             data: {
                 amount,
                 description: description || null,
                 date,
                 userId,
-                categoryId: cateogoryId || null 
+                categoryId: categoryId || null 
             },
             include: {
                 category: true
@@ -66,7 +66,7 @@ export const getUserTransactions = async (userId, filters = {}) => {
 
         const { startDate, endDate, categoryId } = filters;
 
-        // Build where clause for filtering
+        // Build where-clause for filtering
         const where = { userId };
 
         // Add date range filter if provided
@@ -111,6 +111,37 @@ export const getUserTransactions = async (userId, filters = {}) => {
 };
 
 /**
+ * Get a transaction by ID
+ *
+ * @param {string} transactionId - The ID of the transaction to retrieve
+ * @returns {Promise<object|null>} - The transaction or null if not found
+ */
+export const getTransactionById = async (transactionId) => {
+    try {
+        if (!transactionId) {
+            throw new ValidationError('Transaktions-ID krävs');
+        }
+
+        const transaction = await prisma.transaction.findUnique({
+            where: { id: transactionId },
+            include: {
+                category: true
+            }
+        });
+
+        return transaction;
+    } catch (error) {
+        console.error('Error getting transaction by ID:', error);
+
+        if (error instanceof AppError) {
+            throw error;
+        }
+
+        throw error;
+    }
+};
+
+/**
  * Update an existing transaction
  *
  * @param {string} transactionId - The ID of the transaction to update
@@ -133,7 +164,7 @@ export const updateTransaction = async (transactionId, transactionData) => {
 
         // Update transaction in database
         const updatedTransaction = await prisma.transaction.update({
-            where: { transactionId },
+            where: { id: transactionId },
             data: {
                 amount: amount !== undefined ? amount : existingTransaction.amount,
                 description: description !== undefined ? description : existingTransaction.description,
@@ -180,7 +211,7 @@ export const deleteTransaction = async (transactionId) => {
         }
 
         await prisma.transaction.delete({
-            where: { transactionId }
+            where: { id: transactionId }
         });
     } catch (error) {
         console.error('Error deleting transaction:', error);
