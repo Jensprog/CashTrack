@@ -26,7 +26,7 @@ export default function TransactionForm({
     // Form state
     const [formData, setFormData] = useState(initialFormState);
 
-    // Categories state
+    // Categories
     const [categories, setCategories] = useState([]);
 
     // Loading state
