@@ -1,8 +1,6 @@
 /** 
  * Validation helper functions for user input.
  * Collection of functions to validate user input for registration and login.
- * 
- * 
  */
 
 

@@ -1,10 +1,10 @@
 /**
- * This is a test API route to verify the database connection and
- * to unit test different functions separately.
+ * Manual test file for user service functions
+ * Testing through Postman to see if the user is stored in the db or not.
  * 
  */
-import { NextResponse } from 'next/server';
 import { getUserByEmail } from '@/services/userService';
+import { NextResponse } from 'next/server';
 
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
