@@ -4,50 +4,22 @@
  */
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import axios from "axios";
 
 export default function Header() {
-    const [user, setUser] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-    const router = useRouter();
-
-    // Check if the user is logged in on component mount
-    useEffect(() => {
-        checkAuthStatus();
-    }, []);
-
-    // Check the authentication status
-    const checkAuthStatus = async () => {
-        try {
-            const response = await axios.get('/api/auth/status');
-            setUser(response.data.data.user);
-        } catch (error) {
-            console.error('Auth check error:', error);
-            setUser(null);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    // Handle logout
-    const handleLogout = async () => {
-        try {
-            await axios.post('/api/auth/logout');
-            setUser(null);
-            router.push('/');
-        } catch (error) {
-            console.error('Logout error:', error);
-        }
-    };
+    const { user, loading, logout } = useAuth();
 
     // Toggle mobile menu
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
+    };
+
+    // Handle logout
+    const handleLogout = async () => {
+        await logout();
     };
 
     return (
@@ -68,7 +40,7 @@ export default function Header() {
               
               {/* Desktop navigation */}
               <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
-                {!isLoading && (
+                {!loading && (
                   user ? (
                     <>
                       <Link 
@@ -154,7 +126,7 @@ export default function Header() {
             {/* Mobile menu, show/hide based on menu state */}
             <div className={`${isMenuOpen ? 'block' : 'hidden'} sm:hidden`}>
               <div className="pt-2 pb-3 space-y-1">
-                {!isLoading && (
+                {!loading && (
                   user ? (
                     <>
                       <Link 

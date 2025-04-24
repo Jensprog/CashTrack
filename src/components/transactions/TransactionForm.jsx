@@ -5,7 +5,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "@/lib/axiosConfig.js";
 
 export default function TransactionForm({
     transaction = null,
@@ -46,7 +46,7 @@ export default function TransactionForm({
     // Fetch categories from API
     const fetchCategories = async () => {
         try {
-            const response = await axios.get('/api/categories');
+            const response = await api.get('/categories');
             setCategories(response.data.categories);
         } catch (error) {
             console.error('Error fetching categories:', error);
@@ -94,14 +94,14 @@ export default function TransactionForm({
 
             if (transaction) {
                 // Update existing transaction
-                response = await axios.put('/api/transactions', {
+                response = await api.put('/transactions', {
                     id: transaction.id,
                     ...data
                 });
                 setSuccessMessage('Transaktionen har uppdaterats!');
             } else {
                 // Create new transaction
-                response = await axios.post('/api/transactions', data);
+                response = await api.post('/transactions', data);
                 setSuccessMessage('Transaktionen har skapats!');
 
                 // Reset form

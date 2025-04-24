@@ -5,7 +5,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "@/lib/axiosConfig";
 
 export default function FinancialOverview() {
     // State for financial data
@@ -62,7 +62,7 @@ export default function FinancialOverview() {
             const nowISO = now.toISOString().split('T')[0];
 
             // Fetch transactions based on selected period
-            let queryParams = newURLSearchParams();
+            let queryParams = new URLSearchParams();
 
             if (selectedPeriod === 'week') {
                 queryParams.append('startDate', weekStartISO);
@@ -72,7 +72,7 @@ export default function FinancialOverview() {
                 queryParams.append('endDate', nowISO);
             }
 
-            const response = await axios.get(`/api/transactions?${queryParams.toString()}`);
+            const response = await api.get(`/transactions?${queryParams.toString()}`);
             const transactions = response.data.data.transactions;
 
             // Calculate financial metrics

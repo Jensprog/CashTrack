@@ -5,7 +5,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "@/lib/axiosConfig";
 import TransactionForm from "./TransactionForm";
 
 export default function TransactionList({ initialFilters = {} }) {
@@ -57,7 +57,7 @@ export default function TransactionList({ initialFilters = {} }) {
             }
 
             // Fetch transactions from API
-            const response = await axios.get(`/api/transactions?${queryParams.toString()}`);
+            const response = await api.get(`/transactions?${queryParams.toString()}`);
             setTransactions(response.data.data.transactions);
         } catch (error) {
             console.error('Error fetching transactions:', error);
@@ -74,7 +74,7 @@ export default function TransactionList({ initialFilters = {} }) {
     // Fetch categories from API
     const fetchCategories = async () => {
         try {
-            const response = await axios.get('/api/categories');
+            const response = await api.get('/categories');
             setCategories(response.data.data.categories);
         } catch (error) {
             console.error('Error fetching categories:', error);
@@ -114,7 +114,7 @@ export default function TransactionList({ initialFilters = {} }) {
         if (!deletingTransaction) return;
 
         try {
-            await axios.delete(`/api/transactions?id=${deletingTransaction.id}`);
+            await api.delete(`/transactions?id=${deletingTransaction.id}`);
             setDeletingTransaction(null);
             fetchTransactions();
         } catch (error) {
