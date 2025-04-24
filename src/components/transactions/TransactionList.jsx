@@ -127,7 +127,7 @@ export default function TransactionList({ initialFilters = {} }) {
     const formatAmount = (amount) => {
         return new Intl.NumberFormat('sv-SE', {
             style: 'currency',
-            current: 'SEK'
+            currency: 'SEK'
         }).format(amount);
     };
 

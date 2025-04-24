@@ -100,6 +100,7 @@ export default function FinancialOverview() {
         let totalIncome = 0;
         let totalExpenses = 0;
         let weeklyIncome = 0;
+        let weeklyExpenses = 0;
         let monthlyIncome = 0;
         let monthlyExpenses = 0;
 
