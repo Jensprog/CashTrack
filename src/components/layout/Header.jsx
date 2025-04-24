@@ -24,7 +24,7 @@ export default function Header() {
     // Check the authentication status
     const checkAuthStatus = async () => {
         try {
-            const response = await axios.get('/api/auth/me');
+            const response = await axios.get('/api/auth/status');
             setUser(response.data.data.user);
         } catch (error) {
             console.error('Auth check error:', error);

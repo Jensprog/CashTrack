@@ -5,8 +5,8 @@
 
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { Csrf } from 'csrf';
 import { ForbiddenError } from '@/errors/classes';
+import { errorResponse } from '@/helpers/api';
 import csrf from 'csrf';
 
 const tokens = new csrf();
@@ -22,7 +22,7 @@ export async function csrfMiddleware(request) {
     if (!['GET', 'HEAD', 'OPTIONS'].includes(request.method)) {
         try {
             // Get CSRF secret from cookies
-            const cookieStore = cookies();
+            const cookieStore = await cookies();
             const csrfSecret = cookieStore.get('csrf_secret')?.value;
 
             if (!csrfSecret) {
