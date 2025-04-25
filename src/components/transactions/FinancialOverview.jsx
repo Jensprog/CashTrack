@@ -4,154 +4,15 @@
  */
 "use client";
 
-import { useState, useEffect } from "react";
-import api from "@/lib/axiosConfig";
+import { useState } from "react";
+import { useTransactions } from "@/context/TransactionContext";
 
 export default function FinancialOverview() {
-    // State for financial data
-    const [data, setData] = useState({
-        balance: 0,
-        income: 0,
-        expenses: 0,
-        weekly: {
-            balance: 0,
-            income: 0,
-            expenses: 0
-        },
-        monthly: {
-            balance: 0,
-            income: 0,
-            expenses: 0
-        }
-    });
-
-    // Loading state
-    const [isLoading, setIsLoading] = useState(true);
-
-    // Error state
-    const [error, setError] = useState('');
+    // Get financial data from TransactionContext
+    const { financialData, loading, error } = useTransactions();
 
     // Period selection
     const [selectedPeriod, setSelectedPeriod] = useState('all');
-
-    // Fetch financial data on component mount and when period changes
-    useEffect(() => {
-        fetchFinancialData();
-    }, [selectedPeriod]);
-
-    // Fetch financial data from transactions
-    const fetchFinancialData = async () => {
-        setIsLoading(true);
-        setError('');
-
-        try {
-            // Calculate date ranges
-            const now = new Date();
-
-            // Weekly range (last 7 days)
-            const weekStart = new Date(now);
-            weekStart.setDate(now.getDate() - 7);
-            const weekStartISO = weekStart.toISOString().split('T')[0];
-
-            // Monthly range (last 30 days)
-            const monthStart = new Date(now);
-            monthStart.setDate(now.getDate() - 30);
-            const monthStartISO = monthStart.toISOString().split('T')[0];
-
-            // Current date as ISO string
-            const nowISO = now.toISOString().split('T')[0];
-
-            // Fetch transactions based on selected period
-            let queryParams = new URLSearchParams();
-
-            if (selectedPeriod === 'week') {
-                queryParams.append('startDate', weekStartISO);
-                queryParams.append('endDate', nowISO);
-            } else if (selectedPeriod === 'month') {
-                queryParams.append('startDate', monthStartISO);
-                queryParams.append('endDate', nowISO);
-            }
-
-            const response = await api.get(`/transactions?${queryParams.toString()}`);
-            const transactions = response.data.data.transactions;
-
-            // Calculate financial metrics
-            calculateFinancialData(transactions);
-        } catch (error) {
-            console.error('Error fetching financial data:', error);
-            setError('Kunde inte hämta ekonomisk data. Försök igen senare.');
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    // Calculate financial metrics from transactions
-    const calculateFinancialData = (transactions) => {
-        const now = new Date();
-
-        // Calculate week and month start dates
-        const weekStart = new Date(now);
-        weekStart.setDate(now.getDate() - 7);
-
-        const monthStart = new Date(now);
-        monthStart.setDate(now.getDate() - 30);
-
-        // Initialize counters
-        let totalIncome = 0;
-        let totalExpenses = 0;
-        let weeklyIncome = 0;
-        let weeklyExpenses = 0;
-        let monthlyIncome = 0;
-        let monthlyExpenses = 0;
-
-        // Process transactions
-        transactions.forEach(transaction => {
-            const transactionDate = new Date(transaction.date);
-            const amount = transaction.amount;
-
-            // Total calculations
-            if (amount > 0) {
-                totalIncome += amount;
-            } else {
-                totalExpenses += Math.abs(amount);
-            }
-
-            // Weekly calculations
-            if (transactionDate >= weekStart) {
-                if (amount > 0) {
-                    weeklyIncome += amount;
-                } else {
-                    weeklyExpenses += Math.abs(amount);
-                }
-            }
-
-            // Monthly calculations
-            if (transactionDate >= monthStart) {
-                if (amount > 0) {
-                    monthlyIncome += amount;
-                } else {
-                    monthlyExpenses += Math.abs(amount);
-                }
-            }
-        });
-
-        // Update state with calculated values
-        setData({
-            balance: totalIncome - totalExpenses,
-            income: totalIncome,
-            expenses: totalExpenses,
-            weekly: {
-                balance: weeklyIncome - weeklyExpenses,
-                income: weeklyIncome,
-                expenses: weeklyExpenses
-            },
-            monthly: {
-                balance: monthlyIncome - monthlyExpenses,
-                income: monthlyIncome,
-                expenses: monthlyExpenses
-            }
-        });
-    };
 
     // Format amount with separator and currency
     const formatAmount = (amount) => {
@@ -160,30 +21,30 @@ export default function FinancialOverview() {
             currency: 'SEK',
             maximumFractionDigits: 0
         }).format(amount);
-    };
+    }
 
     // Get display data based on selected period
     const getDisplayData = () => {
         switch (selectedPeriod) {
             case 'week':
                 return {
-                    balance: data.weekly.balance,
-                    income: data.weekly.income,
-                    expenses: data.weekly.expenses,
+                    balance: financialData.weekly.balance,
+                    income: financialData.weekly.income,
+                    expenses: financialData.weekly.expenses,
                     label: 'Senaste veckan'
                 };
             case 'month':
                 return {
-                    balance: data.monthly.balance,
-                    income: data.monthly.income,
-                    expenses: data.monthly.expenses,
-                    label: 'Sensate månaden'
+                    balance: financialData.monthly.balance,
+                    income: financialData.monthly.income,
+                    expenses: financialData.monthly.expenses,
+                    label: 'Senaste månaden'
                 };
             default:
                 return {
-                    balance: data.balance,
-                    income: data.income,
-                    expenses: data.expenses,
+                    balance: financialData.balance,
+                    income: financialData.income,
+                    expenses: financialData.expenses,
                     label: 'Alla transaktioner'
                 };
         }
@@ -235,7 +96,7 @@ export default function FinancialOverview() {
             )}
 
             {/* Financial overview */}
-            {isLoading ? (
+            {loading ? (
                 <div className="text-center py-4">
                     <p className="text-gray-600 dark:text-gray-400 text-sm">Laddar ekonomisk data...</p>
                 </div>

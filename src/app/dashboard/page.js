@@ -1,55 +1,45 @@
 /**
  * Dashboard page component.
  *
- * This page displays the user's financial overview and transaction management.
+ * This server component handles authentication checks and renders the dashboard
+ * content for authenticated users only.
  */
 
-import FinancialOverview from '@/components/dashboard/FinancialOverview';
-import TransactionList from '@/components/transactions/TransactionList';
-import TransactionForm from '@/components/transactions/TransactionForm';
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { verifyToken } from "@/lib/auth";
+import Dashboard from '@/components/dashboard/Dashboard';
 
 export const metadata = {
-    title: "Dashboard - CashTrach",
+    title: "Dashboard - CashTrack",
     description: "Hantera din ekonomi med CashTrack",
 };
 
-export default function DashboardPage() {
-    return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-              Min Ekonomi
-            </h1>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Financial Overview (Left Column) */}
-              <div className="lg:col-span-1 space-y-6">
-                <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-4">
-                  <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
-                    Lägg till transaktion
-                  </h2>
-                  <TransactionForm />
-                </div>
-                
-                <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-4">
-                  <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
-                    Ekonomisk översikt
-                  </h2>
-                  <FinancialOverview />
-                </div>
-              </div>
-              
-              {/* Transactions (Right Column) */}
-              <div className="lg:col-span-2">
-                <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-4">
-                  <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
-                    Mina transaktioner
-                  </h2>
-                  <TransactionList />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      );
+/**
+ * This page is marked as dynamic to ensure that cookies are read correctly.
+ * The `dynamic` export is set to 'force-dynamic' to ensure that the page
+ * is always rendered on the server.
+ */
+export const dynamic = 'force-dynamic';
+
+export default async function DashboardPage() {
+    try {
+        const cookieStore = await cookies();
+        const tokenCookie = cookieStore.get('token');
+
+        if (!tokenCookie) {
+            redirect("/login");
+        }
+
+        const decoded = verifyToken(tokenCookie.value);
+        if (!decoded) {
+            redirect("/login");
+        }
+
+        // User is authenticated, render the dashboard content
+        return <Dashboard />;
+    } catch (error) {
+        console.error('Authentication error:', error);
+        redirect("/login");
     }
+}

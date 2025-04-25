@@ -5,21 +5,22 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import api from "@/lib/axiosConfig";
+import { useTransactions } from "@/context/TransactionContext";
 import TransactionForm from "./TransactionForm";
+import api from "@/lib/axiosConfig";
+
 
 export default function TransactionList({ initialFilters = {} }) {
-    // State for transactions
-    const [transactions, setTransactions] = useState([]);
-
-    // Loading state
-    const [isLoading, setIsLoading] = useState(true);
-
-    // Error state
-    const [error, setError] = useState('');
-
-    // Filter state
-    const [filters, setFilters] = useState(initialFilters);
+    // Use the TransactionContext
+    const {
+        transactions,
+        loading,
+        error,
+        filters,
+        setFilters,
+        fetchTransactions,
+        deleteTransaction
+    } = useTransactions();
 
     // Categories
     const [categories, setCategories] = useState([]);
@@ -31,45 +32,13 @@ export default function TransactionList({ initialFilters = {} }) {
     const [deletingTransaction, setDeletingTransaction] = useState(null);
 
     // Fetch transactions and categories on component mount
-    useEffect(() => {
-        fetchTransactions();
+    useEffect(() => {;
         fetchCategories();
-    }, []);
-
-    // Fetch transactions with filters
-    const fetchTransactions = async () => {
-        setIsLoading(true);
-        setError('');
-
-        try {
-            const queryParams = new URLSearchParams();
-
-            if (filters.startDate) {
-                queryParams.append('startDate', filters.startDate);
-            }
-
-            if (filters.endDate) {
-                queryParams.append('endDate', filters.endDate);
-            }
-
-            if (filters.categoryId) {
-                queryParams.append('categoryId', filters.categoryId);
-            }
-
-            // Fetch transactions from API
-            const response = await api.get(`/transactions?${queryParams.toString()}`);
-            setTransactions(response.data.data.transactions);
-        } catch (error) {
-            console.error('Error fetching transactions:', error);
-            if (error.response?.data?.message) {
-                setError(error.response.data.message);
-            } else {
-                setError('Kunde inte hämta transaktioner. Försök igen senare.');
-            }
-        } finally {
-            setIsLoading(false);
+        if (Object.keys(initialFilters).length > 0) {
+            setFilters(initialFilters);
+            fetchTransactions(initialFilters);
         }
-    };
+    }, []);
 
     // Fetch categories from API
     const fetchCategories = async () => {
@@ -106,7 +75,6 @@ export default function TransactionList({ initialFilters = {} }) {
     // Handle transaction update
     const handleTransactionUpdated = (updatedTransaction) => {
         setEditingTransaction(null);
-        fetchTransactions();
     };
 
     // Handle transaction deletion
@@ -114,9 +82,8 @@ export default function TransactionList({ initialFilters = {} }) {
         if (!deletingTransaction) return;
 
         try {
-            await api.delete(`/transactions?id=${deletingTransaction.id}`);
+            await deleteTransaction(deletingTransaction.id);
             setDeletingTransaction(null);
-            fetchTransactions();
         } catch (error) {
             console.error('Error deleting transaction:', error);
             alert('Kunde inte ta bort transaktionen. Försök igen senare.');
@@ -239,7 +206,7 @@ export default function TransactionList({ initialFilters = {} }) {
           )}
           
           {/* Loading state */}
-          {isLoading ? (
+          {loading ? (
             <div className="text-center py-8">
               <p className="text-gray-600 dark:text-gray-400">Laddar transaktioner...</p>
             </div>

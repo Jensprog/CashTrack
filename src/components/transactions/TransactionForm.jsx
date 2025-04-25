@@ -5,6 +5,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTransactions } from "@/context/TransactionContext";
 import api from "@/lib/axiosConfig.js";
 
 export default function TransactionForm({
@@ -12,6 +13,10 @@ export default function TransactionForm({
     onSuccess = () => {},
     onCancel = () => {}
 }) {
+    
+    // Get functions from TransactionContext
+    const { createTransaction, updateTransaction } = useTransactions();
+
     // Initial form state
     const initialFormState = {
         amount: transaction ? Math.abs(transaction.amount).toString() : "",
@@ -84,24 +89,21 @@ export default function TransactionForm({
         : -Math.abs(parseFloat(formData.amount));
 
         try {
-            let response;
             const data = {
                 amount,
                 description: formData.description,
                 date: formData.date,
                 categoryId: formData.categoryId || null
             };
-
+            
+            let response;
             if (transaction) {
                 // Update existing transaction
-                response = await api.put('/transactions', {
-                    id: transaction.id,
-                    ...data
-                });
+                response = await updateTransaction(transaction.id, data);
                 setSuccessMessage('Transaktionen har uppdaterats!');
             } else {
                 // Create new transaction
-                response = await api.post('/transactions', data);
+                response = await createTransaction(data);
                 setSuccessMessage('Transaktionen har skapats!');
 
                 // Reset form
@@ -115,7 +117,7 @@ export default function TransactionForm({
             }
 
             // Call success callback
-            onSuccess(response.data.transaction);
+            onSuccess(response?.transaction);
         } catch (error) {
             console.error('Transaction error:', error);
             if (error.response?.data?.message) {
