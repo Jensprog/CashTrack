@@ -4,7 +4,7 @@
  */
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTransactions } from '@/context/TransactionContext';
 import api from '@/lib/axiosConfig.js';
 
@@ -42,10 +42,31 @@ export default function TransactionForm({
   // Success message
   const [successMessage, setSuccessMessage] = useState('');
 
+  const messageTimerRef = useRef(null);
+
   // Fetch categories on component mount
   useEffect(() => {
     fetchCategories();
+
+    return () => {
+      if (messageTimerRef.current) {
+        clearTimeout(messageTimerRef.current);
+      }
+    };
   }, []);
+  
+  // Effect to clear success message after 3 seconds
+  useEffect(() => {
+    if (successMessage) {
+      if (messageTimerRef.current) {
+        clearTimeout(messageTimerRef.current);
+      }
+
+      messageTimerRef.current = setTimeout(() => {
+        setSuccessMessage('');
+      }, 3000);
+    }
+  }, [successMessage]);
 
   // Fetch categories from API
   const fetchCategories = async () => {
@@ -124,6 +145,11 @@ export default function TransactionForm({
       } else {
         setError('Ett fel inträffade. Försök igen senare');
       }
+      
+      // Clear error message after 5 seconds
+      messageTimerRef.current = setTimeout(() => {
+        setError('');
+      }, 5000);
     } finally {
       setIsLoading(false);
     }
