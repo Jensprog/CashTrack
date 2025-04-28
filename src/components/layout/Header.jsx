@@ -42,7 +42,13 @@ export default function Header() {
                     href="/dashboard"
                     className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium"
                   >
-                    Dashboard
+                    Översikt
+                  </Link>
+                  <Link
+                    href="/transactions"
+                    className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Transaktioner
                   </Link>
                   <div className="ml-3 relative">
                     <div>
@@ -127,7 +133,13 @@ export default function Header() {
                     href="/dashboard"
                     className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium"
                   >
-                    Dashboard
+                    Översikt
+                  </Link>
+                  <Link
+                    href="/transactions"
+                    className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium"
+                  >
+                    Transaktioner
                   </Link>
                   <button
                     onClick={handleLogout}
