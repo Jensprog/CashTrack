@@ -7,7 +7,7 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 // Create context
 const AuthContext = createContext(null);
@@ -26,6 +26,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const pathname = usePathname();
 
   // Check if the user is logged in at initial render
   useEffect(() => {
@@ -41,7 +42,7 @@ export const AuthProvider = ({ children }) => {
       }
     };
     checkAuthStatus();
-  }, []);
+  }, [pathname]);
 
   // Login function
   const login = async (email, password) => {
