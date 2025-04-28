@@ -30,6 +30,12 @@ export default function TransactionList({ initialFilters = {} }) {
   // Delete confirmation state
   const [deletingTransaction, setDeletingTransaction] = useState(null);
 
+  // Sorting state, newly added transaction first
+  const [sortConfig, setSortConfig] = useState({
+    key: 'date',
+    direction: 'descending',
+  });
+
   // Fetch transactions and categories on component mount
   useEffect(() => {
     fetchCategories();
@@ -87,6 +93,70 @@ export default function TransactionList({ initialFilters = {} }) {
       console.error('Error deleting transaction:', error);
       alert('Kunde inte ta bort transaktionen. Försök igen senare.');
     }
+  };
+
+  const requestSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+  // Sort transcations based on current sort config.
+  const sortedTransactions = [...transactions].sort((a, b) => {
+    if (sortConfig.key === 'date') {
+      // Sort by date first
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      const dateComparison = dateA.getTime() - dateB.getTime();
+
+      // If the dates are the same, sort by createdAt
+      if (dateComparison === 0) {
+        const createdAtA = new Date(a.createdAt);
+        const createdAtB = new Date(b.createdAt);
+        return sortConfig.direction === 'ascending'
+        ? createdAtA.getTime() - createdAtB.getTime()
+        : createdAtB.getTime() - createdAtA.getTime();
+      }
+
+      return sortConfig.direction === 'ascending' ? dateComparison : -dateComparison;
+    }
+
+    // Handle special cases for amount (numerical order)
+    if (sortConfig.key === 'amount') {
+      return sortConfig.direction === 'ascending'
+      ? a.amount - b.amount
+      : b.amount - a.amount;
+    }
+
+    // Handle strings and other fields
+    if (typeof a[sortConfig.key] === 'string') {
+      const stringComparison = a[sortConfig.key].localeCompare(b[sortConfig.key]);
+      return sortConfig.direction === 'ascending' ? stringComparison : -stringComparison;
+    }
+
+    // Fallback for other types
+    if (a[sortConfig.key] < b[sortConfig.key]) {
+      return sortConfig.direction === 'ascending' ? -1 : 1;
+    }
+    if (a[sortConfig.key] > b[sortConfig.key]) {
+      return sortConfig.direction === 'ascending' ? 1 : -1;
+    }
+
+    // Secondary sort by createdAt if the primary key is equal
+    const dateComparison = new Date(b.date).getTime() - new Date(a.date).getTime();
+    if (dateComparison === 0) {
+      return sortConfig.direction === 'ascending'
+      ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    }
+    return dateComparison;
+  });
+ 
+
+  const getSortIndicator = (key) => {
+    if (sortConfig.key !== key) return null;
+    return sortConfig.direction === 'ascending' ? '↑' : '↓';
   };
 
   // Format amount with separator and currency
@@ -214,7 +284,7 @@ export default function TransactionList({ initialFilters = {} }) {
       ) : (
         <>
           {/* Transaction list */}
-          {transactions.length === 0 ? (
+          {sortedTransactions.length === 0 ? (
             <div className="text-center py-8 bg-white dark:bg-gray-900 shadow-md rounded">
               <p className="text-gray-600 dark:text-gray-400">Inga transaktioner hittades.</p>
             </div>
@@ -225,27 +295,31 @@ export default function TransactionList({ initialFilters = {} }) {
                   <tr>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
+                      onClick={() => requestSort('date')}
                     >
-                      Datum
+                      Datum {getSortIndicator('date')}
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
+                      onClick={() => requestSort('description')}
                     >
-                      Beskrivning
+                      Beskrivning {getSortIndicator('description')}
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
+                      onClick={() => requestSort('categoryId')}
                     >
-                      Kategori
+                      Kategori {getSortIndicator('categoryId')}
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                      className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
+                      onClick={() => requestSort('amount')}
                     >
-                      Belopp
+                      Belopp {getSortIndicator('amount')}
                     </th>
                     <th
                       scope="col"
@@ -256,7 +330,7 @@ export default function TransactionList({ initialFilters = {} }) {
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                  {transactions.map((transaction) => (
+                  {sortedTransactions.map((transaction) => (
                     <tr key={transaction.id}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
                         {formatDate(transaction.date)}

@@ -54,7 +54,7 @@ export default function TransactionForm({
       }
     };
   }, []);
-  
+
   // Effect to clear success message after 3 seconds
   useEffect(() => {
     if (successMessage) {
@@ -145,7 +145,7 @@ export default function TransactionForm({
       } else {
         setError('Ett fel inträffade. Försök igen senare');
       }
-      
+
       // Clear error message after 5 seconds
       messageTimerRef.current = setTimeout(() => {
         setError('');
