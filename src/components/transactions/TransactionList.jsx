@@ -1,6 +1,9 @@
 /**
  * The TransactionList component is a React functional component that
- * displays a list of transactions and provides functionality to edit/delete them.
+ * - Lists and displays transactions with sorting capabilities.
+ * - Filtering transactions by date rang and category.
+ * - Editing existing transactions.
+ * - Deleting transactions with confirmation.
  */
 'use client';
 
@@ -30,7 +33,7 @@ export default function TransactionList({ initialFilters = {} }) {
   // Delete confirmation state
   const [deletingTransaction, setDeletingTransaction] = useState(null);
 
-  // Sorting state, newly added transaction first
+  // Sorting state, default to "sort by date"
   const [sortConfig, setSortConfig] = useState({
     key: 'date',
     direction: 'descending',
@@ -102,7 +105,7 @@ export default function TransactionList({ initialFilters = {} }) {
     }
     setSortConfig({ key, direction });
   };
-  // Sort transcations based on current sort config.
+  // Sort transcations, default transaction date otherwise columns for amount, text fields.
   const sortedTransactions = [...transactions].sort((a, b) => {
     if (sortConfig.key === 'date') {
       // Sort by date first
@@ -115,8 +118,8 @@ export default function TransactionList({ initialFilters = {} }) {
         const createdAtA = new Date(a.createdAt);
         const createdAtB = new Date(b.createdAt);
         return sortConfig.direction === 'ascending'
-        ? createdAtA.getTime() - createdAtB.getTime()
-        : createdAtB.getTime() - createdAtA.getTime();
+          ? createdAtA.getTime() - createdAtB.getTime()
+          : createdAtB.getTime() - createdAtA.getTime();
       }
 
       return sortConfig.direction === 'ascending' ? dateComparison : -dateComparison;
@@ -124,9 +127,7 @@ export default function TransactionList({ initialFilters = {} }) {
 
     // Handle special cases for amount (numerical order)
     if (sortConfig.key === 'amount') {
-      return sortConfig.direction === 'ascending'
-      ? a.amount - b.amount
-      : b.amount - a.amount;
+      return sortConfig.direction === 'ascending' ? a.amount - b.amount : b.amount - a.amount;
     }
 
     // Handle strings and other fields
@@ -147,12 +148,11 @@ export default function TransactionList({ initialFilters = {} }) {
     const dateComparison = new Date(b.date).getTime() - new Date(a.date).getTime();
     if (dateComparison === 0) {
       return sortConfig.direction === 'ascending'
-      ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-      : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     }
     return dateComparison;
   });
- 
 
   const getSortIndicator = (key) => {
     if (sortConfig.key !== key) return null;
