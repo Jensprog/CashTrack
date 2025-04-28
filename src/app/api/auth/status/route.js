@@ -11,28 +11,24 @@ import { successResponse, errorResponse } from '@/helpers/api';
 import { authMiddleware } from '@/middlewares/authMiddleware';
 
 export async function GET(request) {
-    try {
-        const userId = await authMiddleware(request);
+  try {
+    const userId = await authMiddleware(request);
 
-        if (userId instanceof Response) {
-            return userId; // Return the error response from authMiddleware
-        }
-
-        // Fetch user information
-        const user = await getUserById(userId);
-
-        if (!user) {
-            throw new ValidationError('Användaren hittades inte');
-        }
-
-        const { password, ...userWithoutPassword } = user;
-
-        return successResponse(
-            { user: userWithoutPassword },
-            'Användarinformation hämtad',
-            200
-        );
-    } catch (error) {
-        return errorResponse(error);
+    if (userId instanceof Response) {
+      return userId; // Return the error response from authMiddleware
     }
+
+    // Fetch user information
+    const user = await getUserById(userId);
+
+    if (!user) {
+      throw new ValidationError('Användaren hittades inte');
+    }
+
+    const { password, ...userWithoutPassword } = user;
+
+    return successResponse({ user: userWithoutPassword }, 'Användarinformation hämtad', 200);
+  } catch (error) {
+    return errorResponse(error);
+  }
 }

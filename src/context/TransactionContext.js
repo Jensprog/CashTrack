@@ -4,199 +4,207 @@
  * This context provides transaction state and functions across the application
  * for communication between transaction-related components.
  */
-"use client";
+'use client';
 
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
-import api from "@/lib/axiosConfig";
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import api from '@/lib/axiosConfig';
 
 // Create context
 const TransactionContext = createContext(null);
 
 // Custom hook for using the TransactionContext
 export const useTransactions = () => {
-    const context = useContext(TransactionContext);
-    if (!context) {
-        throw new Error('useTransactions must be used within a TransactionProvider');
-    }
-    return context;
+  const context = useContext(TransactionContext);
+  if (!context) {
+    throw new Error('useTransactions must be used within a TransactionProvider');
+  }
+  return context;
 };
 
 // Provider component
 export const TransactionProvider = ({ children }) => {
-    const [transactions, setTransactions] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [filters, setFilters] = useState({});
-    const [financialData, setFinancialData] = useState({
-        balance: 0,
-        income: 0,
-        expenses: 0,
-        weekly: { balance: 0, income: 0, expenses: 0 },
-        monthly: { balance: 0, income: 0, expenses: 0 }
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [filters, setFilters] = useState({});
+  const [financialData, setFinancialData] = useState({
+    balance: 0,
+    income: 0,
+    expenses: 0,
+    weekly: { balance: 0, income: 0, expenses: 0 },
+    monthly: { balance: 0, income: 0, expenses: 0 },
+  });
+
+  // Calculate financial data from transactions
+  const calculateFinancialData = useCallback((transactions) => {
+    // Actual date for time period calculations
+    const now = new Date();
+
+    const weekStart = new Date(now);
+    weekStart.setDate(now.getDate() - 7);
+
+    const monthStart = new Date(now);
+    monthStart.setDate(now.getDate() - 30);
+
+    let totalIncome = 0;
+    let totalExpenses = 0;
+    let weeklyIncome = 0;
+    let weeklyExpenses = 0;
+    let monthlyIncome = 0;
+    let monthlyExpenses = 0;
+
+    // Calculate transactions
+    transactions.forEach((transaction) => {
+      const transactionDate = new Date(transaction.date);
+      const amount = transaction.amount;
+
+      // Total income and expenses
+      if (amount > 0) {
+        totalIncome += amount;
+      } else {
+        totalExpenses += Math.abs(amount);
+      }
+
+      // Weekly income and expenses
+      if (transactionDate >= weekStart) {
+        if (amount > 0) {
+          weeklyIncome += amount;
+        } else {
+          weeklyExpenses += Math.abs(amount);
+        }
+      }
+
+      // Monthly income and expenses
+      if (transactionDate >= monthStart) {
+        if (amount > 0) {
+          monthlyIncome += amount;
+        } else {
+          monthlyExpenses += Math.abs(amount);
+        }
+      }
     });
 
-    // Calculate financial data from transactions
-    const calculateFinancialData = useCallback((transactions) => {
-        // Actual date for time period calculations
-        const now = new Date();
+    // Update state with calculated data
+    setFinancialData({
+      balance: totalIncome - totalExpenses,
+      income: totalIncome,
+      expenses: totalExpenses,
+      weekly: {
+        balance: weeklyIncome - weeklyExpenses,
+        income: weeklyIncome,
+        expenses: weeklyExpenses,
+      },
+      monthly: {
+        balance: monthlyIncome - monthlyExpenses,
+        income: monthlyIncome,
+        expenses: monthlyExpenses,
+      },
+    });
+  }, []);
 
-        const weekStart = new Date(now);
-        weekStart.setDate(now.getDate() - 7);
+  // Fetch transactions
+  const fetchTransactions = useCallback(
+    async (newFilters = null) => {
+      setLoading(true);
+      setError(null);
 
-        const monthStart = new Date(now);
-        monthStart.setDate(now.getDate() - 30);
+      try {
+        // Use new filters if provided otherwise use existing filters
+        const currentFilters = newFilters || filters;
 
-        let totalIncome = 0;
-        let totalExpenses = 0;
-        let weeklyIncome = 0;
-        let weeklyExpenses = 0;
-        let monthlyIncome = 0;
-        let monthlyExpenses = 0;
+        const queryParams = new URLSearchParams();
+        if (currentFilters.startDate) queryParams.append('startDate', currentFilters.startDate);
+        if (currentFilters.endDate) queryParams.append('endDate', currentFilters.endDate);
+        if (currentFilters.categoryId) queryParams.append('categoryId', currentFilters.categoryId);
 
-        // Calculate transactions
-        transactions.forEach(transaction => {
-            const transactionDate = new Date(transaction.date);
-            const amount = transaction.amount;
+        const response = await api.get(`/transactions?${queryParams.toString()}`);
+        setTransactions(response.data.data.transactions);
 
-            // Total income and expenses
-            if (amount > 0) {
-                totalIncome += amount;
-            } else {
-                totalExpenses += Math.abs(amount);
-            }
+        // If filters are provided, update the filters state
+        if (newFilters) {
+          setFilters(newFilters);
+        }
 
-            // Weekly income and expenses
-            if (transactionDate >= weekStart) {
-                if (amount > 0) {
-                    weeklyIncome += amount;
-                } else {
-                    weeklyExpenses += Math.abs(amount);
-                }
-            }
+        // Calculate financial data
+        calculateFinancialData(response.data.data.transactions);
+      } catch (error) {
+        console.error('Error fetching transactions:', error);
+        setError('Kunde inte hämta transaktioner. Försök igen senare.');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [filters, calculateFinancialData],
+  );
 
-            // Monthly income and expenses
-            if (transactionDate >= monthStart) {
-                if (amount > 0) {
-                    monthlyIncome += amount;
-                } else {
-                    monthlyExpenses += Math.abs(amount);
-                }
-            }
+  // Create transaction
+  const createTransaction = useCallback(
+    async (transactionData) => {
+      try {
+        const response = await api.post('/transactions', transactionData);
+        // Update trancation list and financial data
+        await fetchTransactions();
+        return response.data;
+      } catch (error) {
+        console.error('Error creating transaction:', error);
+        throw error;
+      }
+    },
+    [fetchTransactions],
+  );
+
+  // Update transaction
+  const updateTransaction = useCallback(
+    async (id, transactionData) => {
+      try {
+        const response = await api.put('/transactions', {
+          id,
+          ...transactionData,
         });
+        // Update transaction list and financial data
+        await fetchTransactions();
+        return response.data;
+      } catch (error) {
+        console.error('Error updating transaction:', error);
+        throw error;
+      }
+    },
+    [fetchTransactions],
+  );
 
-        // Update state with calculated data
-        setFinancialData({
-            balance: totalIncome - totalExpenses,
-            income: totalIncome,
-            expenses: totalExpenses,
-            weekly: {
-                balance: weeklyIncome - weeklyExpenses,
-                income: weeklyIncome,
-                expenses: weeklyExpenses
-            },
-            monthly: {
-                balance: monthlyIncome - monthlyExpenses,
-                income: monthlyIncome,
-                expenses: monthlyExpenses
-            }
-        });
-    }, []);
+  // Delete transaction
+  const deleteTransaction = useCallback(
+    async (id) => {
+      try {
+        await api.delete(`/transactions?id=${id}`);
+        // Update transaction list and financial data
+        await fetchTransactions();
+      } catch (error) {
+        console.error('Error deleting transaction:', error);
+        throw error;
+      }
+    },
+    [fetchTransactions],
+  );
 
-    // Fetch transactions
-    const fetchTransactions = useCallback(async (newFilters = null) => {
-        setLoading(true);
-        setError(null);
+  // Fetch transactions on initial render
+  useEffect(() => {
+    fetchTransactions();
+  }, [fetchTransactions]);
 
-        try {
-            // Use new filters if provided otherwise use existing filters
-            const currentFilters = newFilters || filters;
+  // Context value to provide for components
+  const value = {
+    transactions,
+    loading,
+    error,
+    filters,
+    financialData,
+    fetchTransactions,
+    createTransaction,
+    updateTransaction,
+    deleteTransaction,
+    setFilters,
+  };
 
-            const queryParams = new URLSearchParams();
-            if (currentFilters.startDate) queryParams.append('startDate', currentFilters.startDate);
-            if (currentFilters.endDate) queryParams.append('endDate', currentFilters.endDate);
-            if (currentFilters.categoryId) queryParams.append('categoryId', currentFilters.categoryId);
-
-            const response = await api.get(`/transactions?${queryParams.toString()}`);
-            setTransactions(response.data.data.transactions);
-
-            // If filters are provided, update the filters state
-            if (newFilters) {
-                setFilters(newFilters);
-            }
-
-            // Calculate financial data
-            calculateFinancialData(response.data.data.transactions);
-        } catch (error) {
-            console.error('Error fetching transactions:', error);
-            setError('Kunde inte hämta transaktioner. Försök igen senare.');
-        } finally {
-            setLoading(false);
-        }
-    }, [filters, calculateFinancialData]);
-
-    // Create transaction
-    const createTransaction = useCallback(async (transactionData) => {
-        try {
-            const response = await api.post('/transactions', transactionData);
-            // Update trancation list and financial data
-            await fetchTransactions();
-            return response.data;
-        } catch (error) {
-            console.error('Error creating transaction:', error);
-            throw error;
-        }
-    }, [fetchTransactions]);
-
-    // Update transaction
-    const updateTransaction = useCallback(async (id, transactionData) => {
-        try {
-            const response = await api.put('/transactions', {
-                id,
-                ...transactionData
-            });
-            // Update transaction list and financial data
-            await fetchTransactions();
-            return response.data;
-        } catch (error) {
-            console.error('Error updating transaction:', error);
-            throw error;
-        }
-    }, [fetchTransactions]);
-
-    // Delete transaction
-    const deleteTransaction = useCallback(async (id) => {
-        try {
-            await api.delete(`/transactions?id=${id}`);
-            // Update transaction list and financial data
-            await fetchTransactions();
-        } catch (error) {
-            console.error('Error deleting transaction:', error);
-            throw error;
-        }
-    }, [fetchTransactions]);
-    
-    // Fetch transactions on initial render
-    useEffect(() => {
-        fetchTransactions();
-    }, [fetchTransactions]);
-
-    // Context value to provide for components
-    const value = {
-        transactions,
-        loading,
-        error,
-        filters,
-        financialData,
-        fetchTransactions,
-        createTransaction,
-        updateTransaction,
-        deleteTransaction,
-        setFilters
-    };
-
-    return (
-        <TransactionContext.Provider value={value}>
-            {children}
-        </TransactionContext.Provider>
-    );
+  return <TransactionContext.Provider value={value}>{children}</TransactionContext.Provider>;
 };

@@ -5,14 +5,14 @@
  * content for authenticated users only.
  */
 
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { verifyToken } from "@/lib/auth";
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { verifyToken } from '@/lib/auth';
 import Dashboard from '@/components/dashboard/Dashboard';
 
 export const metadata = {
-    title: "Dashboard - CashTrack",
-    description: "Hantera din ekonomi med CashTrack",
+  title: 'Dashboard - CashTrack',
+  description: 'Hantera din ekonomi med CashTrack',
 };
 
 /**
@@ -23,23 +23,23 @@ export const metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function DashboardPage() {
-    try {
-        const cookieStore = await cookies();
-        const tokenCookie = cookieStore.get('token');
+  try {
+    const cookieStore = await cookies();
+    const tokenCookie = cookieStore.get('token');
 
-        if (!tokenCookie) {
-            redirect("/login");
-        }
-
-        const decoded = verifyToken(tokenCookie.value);
-        if (!decoded) {
-            redirect("/login");
-        }
-
-        // User is authenticated, render the dashboard content
-        return <Dashboard />;
-    } catch (error) {
-        console.error('Authentication error:', error);
-        redirect("/login");
+    if (!tokenCookie) {
+      redirect('/login');
     }
+
+    const decoded = verifyToken(tokenCookie.value);
+    if (!decoded) {
+      redirect('/login');
+    }
+
+    // User is authenticated, render the dashboard content
+    return <Dashboard />;
+  } catch (error) {
+    console.error('Authentication error:', error);
+    redirect('/login');
+  }
 }
