@@ -35,8 +35,12 @@ export const AuthProvider = ({ children }) => {
         const response = await axios.get('/api/auth/status');
         setUser(response.data.data.user);
       } catch (error) {
-        console.error('Auth check error:', error);
+        if (error.response && error.response.status === 401) {
         setUser(null);
+        } else {
+            console.error('Auth check error:', error);
+            setUser(null);
+        }
       } finally {
         setLoading(false);
       }
