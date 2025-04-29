@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  nextjs:
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=mysql://root:${MYSQL_ROOT_PASSWORD:-password}@cashtrack-mysql:3306/${MYSQL_DATABASE:-cashtrack}
+      - JWT_SECRET=${JWT_SECRET:-secure_production_secret}
+
+  mysql:
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-password}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-cashtrack}
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  nginx:
+    container_name: cashtrack-nginx
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl
+      - ./nginx/certbot/conf:/etc/letsencrypt
+      - ./nginx/certbot/www:/var/www/certbot
+    restart: always
+    depends_on:
+      - nextjs
+    networks:
+      - cashtrack-network
+
+  certbot:
+    container_name: cashtrack-certbot
+    image: certbot/certbot
+    volumes:
+      - ./nginx/certbot/conf:/etc/letsencrypt
+      - ./nginx/certbot/www:/var/www/certbot
+    command: certonly --webroot --webroot-path=/var/www/certbot --email student@example.com --agree-tos --no-eff-email --force-renewal -d cscloud8-35.lnu.se
+    depends_on:
+      - nginx
