@@ -9,6 +9,7 @@ import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/auth';
 import { AuthenticationError } from '@/errors/classes';
 import { csrfMiddleware } from './csrfMiddleware';
+import { errorResponse } from '@/helpers/api';
 
 /**
  * Authentication middleware for Next.js API routes
