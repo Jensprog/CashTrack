@@ -8,19 +8,10 @@
 import { TransactionProvider } from '@/context/TransactionContext';
 import TransactionList from '@/components/transactions/TransactionList';
 import TransactionForm from '@/components/transactions/TransactionForm';
-import { useSearchParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export default function TransactionPage() {
-  const searchParams = useSearchParams();
   const [showAddForm, setShowAddForm] = useState(false);
-
-  // Check if action is to add a transaction
-  useEffect(() => {
-    if (searchParams.get('action') === 'add') {
-      setShowAddForm(true);
-    }
-  }, [searchParams]);
 
   return (
     <TransactionProvider>
