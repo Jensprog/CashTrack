@@ -54,7 +54,7 @@ export const getUserCategories = async (userId) => {
       throw new ValidationError('Användar-ID krävs');
     }
 
-    const userCategories = await prisma.categories.findMany({
+    const userCategories = await prisma.category.findMany({
       where: { userId },
     });
 

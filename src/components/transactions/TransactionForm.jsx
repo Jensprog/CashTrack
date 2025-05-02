@@ -72,7 +72,7 @@ export default function TransactionForm({
   const fetchCategories = async () => {
     try {
       const response = await api.get('/categories');
-      setCategories(response.data.categories);
+      setCategories(response.data.data.categories || []);
     } catch (error) {
       console.error('Error fetching categories:', error);
       setError('Kunde inte hämta kategorier. Försök igen senare.');

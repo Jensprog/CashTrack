@@ -35,7 +35,7 @@ export default function Header() {
                 </span>
               </Link>
             ) : (
-              <Link href="/" classname="flex-shrink-0 flex items-center">
+              <Link href="/" className="flex-shrink-0 flex items-center">
                 <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
                   CashTrack
                 </span>
@@ -58,6 +58,12 @@ export default function Header() {
                     className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium"
                   >
                     Transaktioner
+                  </Link>
+                  <Link
+                    href="/categories"
+                    className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Kategorier
                   </Link>
                   <div className="ml-3 relative">
                     <div>
