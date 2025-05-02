@@ -28,11 +28,20 @@ export default function Header() {
         <div className="flex justify-between h-16">
           {/* Logo and brand name */}
           <div className="flex items-center">
-            <Link href="/" className="flex-shrink-0 flex items-center">
-              <span className="text-xl font-bold text-blue-600 dark:text-blue-400">CashTrack</span>
-            </Link>
+            {!loading && user ? (
+              <Link href="/dashboard" className="flex-shrink-0 flex items-center">
+                <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
+                  CashTrack
+                </span>
+              </Link>
+            ) : (
+              <Link href="/" classname="flex-shrink-0 flex items-center">
+                <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
+                  CashTrack
+                </span>
+              </Link>
+            )}
           </div>
-
           {/* Desktop navigation */}
           <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
             {!loading &&
