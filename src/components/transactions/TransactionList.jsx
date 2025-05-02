@@ -48,13 +48,9 @@ export default function TransactionList({ initialFilters = {} }) {
       fetchTransactions(initialFilters);
     }
   }, []);
-  
+
   // Sort transactions based on the current sort configuration
-  const sortedTransactions = sortTransactions(
-    transactions,
-    sortConfig.key,
-    sortConfig.direction
-  );
+  const sortedTransactions = sortTransactions(transactions, sortConfig.key, sortConfig.direction);
 
   // Fetch categories from API
   const fetchCategories = async () => {

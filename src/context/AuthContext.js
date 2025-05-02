@@ -36,10 +36,10 @@ export const AuthProvider = ({ children }) => {
         setUser(response.data.data.user);
       } catch (error) {
         if (error.response && error.response.status === 401) {
-        setUser(null);
+          setUser(null);
         } else {
-            console.error('Auth check error:', error);
-            setUser(null);
+          console.error('Auth check error:', error);
+          setUser(null);
         }
       } finally {
         setLoading(false);
