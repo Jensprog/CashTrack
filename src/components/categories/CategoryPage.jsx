@@ -15,10 +15,38 @@ export default function CategoryPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [hasDefaultCategories, setHasDefaultCategories] = useState(false);
 
+  // Fetch categories when page is rendered
   useEffect(() => {
     fetchCategories();
   }, []);
+
+  // Check if the standard categories already exists
+  useEffect(() => {
+    const defaultCategoryNames = [
+      'Lön',
+      'Bidrag',
+      'Gåvor',
+      'Återbetalning',
+      'Övrigt',
+      'Hyra/Boende',
+      'Mat och hushåll',
+      'Transport',
+      'Nöje',
+      'Räkningar',
+      'Hälsa',
+      'Kläder',
+      'Övrigt',
+    ];
+
+    // Check if the user have the standard categories
+    const hasDefaults = defaultCategoryNames.some((defaultName) =>
+      categories.some((category) => category.name === defaultName && category.userId !== null),
+    );
+
+    setHasDefaultCategories(hasDefaults);
+  }, [categories]);
 
   // Fetch categories from API
   const fetchCategories = async () => {
@@ -115,21 +143,23 @@ export default function CategoryPage() {
             </div>
 
             {/* Default categories */}
-            <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-4">
-              <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
-                Standardkategorier
-              </h2>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
-                Skapa ett set med standardkategorier för att snabbt komma igång.
-              </p>
-              <button
-                onClick={createDefaultCategories}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition-colors w-full"
-                disabled={loading}
-              >
-                {loading ? 'Skapar...' : 'Skapa standardkategorier'}
-              </button>
-            </div>
+            {!hasDefaultCategories && (
+              <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-4">
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                  Standardkategorier
+                </h2>
+                <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
+                  Skapa ett set med standardkategorier för att snabbt komma igång.
+                </p>
+                <button
+                  onClick={createDefaultCategories}
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition-colors w-full"
+                  disabled={loading}
+                >
+                  {loading ? 'Skapar...' : 'Skapa standardkategorier'}
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Category list (right column) */}
