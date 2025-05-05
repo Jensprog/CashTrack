@@ -5,6 +5,7 @@
 import { createDefaultCategories } from '@/services/categoryService';
 import { successResponse, errorResponse } from '@/helpers/api';
 import { authMiddleware } from '@/middlewares/authMiddleware';
+import { prisma } from '@/lib/db';
 
 export async function POST(request) {
   if (request.url.includes('/api/categories/defaults')) {
