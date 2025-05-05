@@ -7,8 +7,10 @@
 
 import axios from 'axios';
 
+const baseURL = process.env.NODE_ENV === 'production' ? '/cashtrack/api' : '/api';
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: baseURL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -36,7 +38,8 @@ api.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       if (typeof window !== 'undefined') {
-        window.location.href = '/login';
+        const loginPath = process.env.NODE_ENV === 'production' ? '/cashtrack/login' : '/login';
+        window.location.href = loginPath;
       }
     }
     return Promise.reject(error);
