@@ -1,7 +1,27 @@
 image: alpine:latest
 
 stages:
+  - test
   - deploy
+
+test_ssh:
+  stage: test
+  script:
+    - apk add --no-cache openssh-client
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ls -la ~/.ssh/id_rsa
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - chmod 600 ~/.ssh/config
+    - echo "--------------- NYCKELINNEHÅLL ---------------"
+    - head -n 2 ~/.ssh/id_rsa
+    - echo "[...resten av nyckeln...]"
+    - echo "--------------- ANSLUTNINGSTEST ---------------"
+    - ssh -vvv ubuntu@194.47.178.35 "echo 'Om du ser detta så fungerar anslutningen!'"
+  only:
+    - main
 
 deploy_staging:
   stage: deploy
@@ -9,7 +29,7 @@ deploy_staging:
     name: staging
     url: https://cscloud8-35.lnu.se/cashtrack
   script:
-    - apk add --no-cache openssh-client bash git
+    - apk add --no-cache openssh-client git
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
@@ -19,21 +39,5 @@ deploy_staging:
     - ssh ubuntu@194.47.178.35 "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
   only:
     - main
-
-deploy_production:
-  stage: deploy
-  environment:
-    name: production
-    url: https://cscloud8-35.lnu.se/cashtrack
-  script:
-    - apk add --no-cache openssh-client bash git
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-    - chmod 600 ~/.ssh/config
-    - ssh ubuntu@194.47.178.35 "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
-  when: manual
-  only:
-    - main
+  needs:
+    - test_ssh
