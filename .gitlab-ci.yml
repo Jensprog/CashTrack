@@ -28,17 +28,21 @@ deploy_staging_job:
   before_script:
     - command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )
     - eval $(ssh-agent -s)
-    # Skapa .ssh-katalogen FÖRST
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    # SEDAN lägg till nycklarna
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
+    # Felsökningskommandon
+    - echo "STAGING_HOST-värde: '$STAGING_HOST'"
+    - echo "REMOTE_HOST-värde: '$REMOTE_HOST'"
+    - env | grep HOST
   script:
     - echo "Deploying till staging..."
-    - ssh -i ~/.ssh/id_rsa ubuntu@$REMOTE_HOST "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
+    # Använd IP direkt istället för variabel för att testa
+    - ssh -i ~/.ssh/id_rsa ubuntu@194.47.178.35 "echo Test anslutning"
+    - ssh -i ~/.ssh/id_rsa ubuntu@194.47.178.35 "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
   only:
     - main
 
@@ -61,17 +65,20 @@ deploy_production_job:
   before_script:
     - command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )
     - eval $(ssh-agent -s)
-    # Skapa .ssh-katalogen FÖRST
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    # SEDAN lägg till nycklarna
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
+    # Felsökningskommandon
+    - echo "PRODUCTION_HOST-värde: '$PRODUCTION_HOST'"
+    - echo "REMOTE_HOST-värde: '$REMOTE_HOST'"
+    - env | grep HOST
   script:
     - echo "Deploying till produktion..."
-    - ssh -i ~/.ssh/id_rsa ubuntu@$REMOTE_HOST "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
+    # Använd IP direkt istället för variabel för att testa
+    - ssh -i ~/.ssh/id_rsa ubuntu@194.47.178.35 "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
   only:
     - main
   needs:
