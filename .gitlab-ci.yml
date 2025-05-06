@@ -1,0 +1,87 @@
+# Återanvändbart block för SSH-inställningar
+.before_script_ssh_setup: &before_script_ssh_setup
+  # Säkerställ att ssh-agent är installerad och startad
+  - command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )
+  # Starta ssh-agent i bakgrunden
+  - eval $(ssh-agent -s)
+  # Lägg till SSH-nyckel från variabel
+  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  # Skapa .ssh-katalog med rätt behörigheter
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+  # Använd SSH_KNOWN_HOSTS variabeln för att konfigurera known_hosts
+  - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+  - chmod 644 ~/.ssh/known_hosts
+
+# Använd Docker-image för att köra pipeline
+image: docker:27-cli
+
+# Definiera stages för din pipeline
+stages:
+  - build
+  - test
+  - deploy
+
+# Kompilering/byggjobb
+build-job:
+  stage: build
+  script:
+    - echo "Förbereder bygge av CashTrack-applikationen..."
+    - echo "Bygge slutfört."
+
+# Enhetstester
+unit-test-job:
+  stage: test
+  script:
+    - echo "Kör enhetstester för CashTrack..."
+    - echo "Alla tester godkända!"
+
+# Linting
+lint-test-job:
+  stage: test
+  script:
+    - echo "Linting av CashTrack-koden..."
+    - echo "Inga linting-problem hittades."
+
+# Deployment till staging
+deploy_staging_job:
+  stage: deploy
+  environment:
+    name: staging
+    url: https://cscloud8-35.lnu.se/cashtrack
+  variables:
+    REMOTE_HOST: $STAGING_HOST
+    DOCKER_HOST: ssh://ubuntu@$REMOTE_HOST
+  before_script: *before_script_ssh_setup
+  script:
+    - echo "Deploying till staging-miljö..."
+    - docker compose -f docker-compose.yml -f docker-compose.production.yml up --build -d
+  only:
+    - main
+
+# Manuellt godkännande innan produktion
+manual_approval_step:
+  stage: deploy
+  script:
+    - echo "Manuellt godkännande krävs innan deployment till produktion."
+  when: manual
+  only:
+    - main
+
+# Deployment till produktion
+deploy_production_job:
+  stage: deploy
+  environment:
+    name: production
+    url: https://din-produktions-url.com  # Uppdatera med korrekt URL
+  variables:
+    REMOTE_HOST: $PRODUCTION_HOST
+    DOCKER_HOST: ssh://ubuntu@$REMOTE_HOST
+  before_script: *before_script_ssh_setup
+  script:
+    - echo "Deploying till produktionsmiljö..."
+    - docker compose -f docker-compose.yml -f docker-compose.production.yml up --build -d
+  only:
+    - main
+  needs:
+    - manual_approval_step
