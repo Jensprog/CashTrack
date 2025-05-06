@@ -1,24 +1,22 @@
-# Definiera stages för din pipeline
+image: docker:27-cli
+
 stages:
   - build
   - test
   - deploy
 
-# Byggjobb
 build-job:
   stage: build
   script:
     - echo "Kompilerar koden..."
     - echo "Kompilering klar."
 
-# Testjobb
 test-job:
   stage: test
   script:
     - echo "Kör tester..."
     - echo "Tester godkända!"
 
-# Deploy till staging
 deploy_staging_job:
   stage: deploy
   environment:
@@ -26,24 +24,22 @@ deploy_staging_job:
     url: https://cscloud8-35.lnu.se/cashtrack
   variables:
     REMOTE_HOST: $STAGING_HOST
+    DOCKER_HOST: ssh://ubuntu@$REMOTE_HOST
   before_script:
     - command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    - echo "REMOTE_HOST är: $REMOTE_HOST"
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
     - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
-    - echo "Försöker ansluta till $REMOTE_HOST..."
-    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@$REMOTE_HOST "echo Anslutningen fungerar"
-    - echo "Deploying till staging-miljö..."
-    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@$REMOTE_HOST "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
+    - echo "Deploying till staging..."
+    - ssh -i ~/.ssh/id_rsa ubuntu@$REMOTE_HOST "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
   only:
     - main
 
-# Manuellt godkännande före produktion
 manual_approval_step:
   stage: deploy
   script:
@@ -52,7 +48,6 @@ manual_approval_step:
   only:
     - main
 
-# Deploy till produktion
 deploy_production_job:
   stage: deploy
   environment:
@@ -60,18 +55,19 @@ deploy_production_job:
     url: https://cscloud8-35.lnu.se/cashtrack
   variables:
     REMOTE_HOST: $PRODUCTION_HOST
+    DOCKER_HOST: ssh://ubuntu@$REMOTE_HOST
   before_script:
     - command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    - echo "REMOTE_HOST är: $REMOTE_HOST"
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
     - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
-    - echo "Deploying till produktionsmiljö..."
-    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@$REMOTE_HOST "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
+    - echo "Deploying till produktion..."
+    - ssh -i ~/.ssh/id_rsa ubuntu@$REMOTE_HOST "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
   only:
     - main
   needs:
