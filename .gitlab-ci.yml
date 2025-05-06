@@ -1,77 +1,39 @@
-image: docker:27-cli
+image: alpine:latest
 
 stages:
-  - build
-  - test
   - deploy
 
-build-job:
-  stage: build
-  script:
-    - echo "Kompilerar koden..."
-    - echo "Kompilering klar."
-
-test-job:
-  stage: test
-  script:
-    - echo "Kör tester..."
-    - echo "Tester godkända!"
-
-deploy_staging_job:
+deploy_staging:
   stage: deploy
   environment:
     name: staging
     url: https://cscloud8-35.lnu.se/cashtrack
-  before_script:
-    # Installera SSH-klient och andra verktyg
+  script:
     - apk add --no-cache openssh-client bash git
-    # Skapa .ssh-katalog
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    # Skapa en enklare SSH-nyckel direkt (enklare format)
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    # Deaktivera värdverifiering
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - chmod 600 ~/.ssh/config
-  script:
-    - echo "Deploying till staging..."
-    # Testa en enkel SSH-anslutning med verbose läge för att se fler detaljer
-    - ssh -v ubuntu@194.47.178.35 "echo Test anslutning"
-    # Om testet lyckas, utför deployment
     - ssh ubuntu@194.47.178.35 "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
   only:
     - main
 
-manual_approval_step:
-  stage: deploy
-  script:
-    - echo "Manuellt godkännande krävs innan deployment till produktion."
-  when: manual
-  only:
-    - main
-
-deploy_production_job:
+deploy_production:
   stage: deploy
   environment:
     name: production
     url: https://cscloud8-35.lnu.se/cashtrack
-  before_script:
-    # Installera SSH-klient och andra verktyg
+  script:
     - apk add --no-cache openssh-client bash git
-    # Skapa .ssh-katalog
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    # Skapa en enklare SSH-nyckel direkt (enklare format)
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    # Deaktivera värdverifiering
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - chmod 600 ~/.ssh/config
-  script:
-    - echo "Deploying till produktion..."
     - ssh ubuntu@194.47.178.35 "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
+  when: manual
   only:
     - main
-  needs:
-    - manual_approval_step
