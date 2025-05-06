@@ -1,39 +1,19 @@
-# Återanvändbart block för SSH-inställningar
-.before_script_ssh_setup: &before_script_ssh_setup
-  # Säkerställ att ssh-agent är installerad och startad
-  # Installera SSH-klient om den inte finns
-  - command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )
-  # Starta ssh-agent i bakgrunden
-  - eval $(ssh-agent -s)
-  # Lägg till SSH-nyckel från variabel
-  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-  # Skapa .ssh-katalog med rätt behörigheter
-  # Skapa .ssh-katalog
-  - mkdir -p ~/.ssh
-  - chmod 700 ~/.ssh
-  # Använd SSH_KNOWN_HOSTS variabeln för att konfigurera known_hosts
-  # Spara nyckeln direkt till en fil
-  - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-  - chmod 600 ~/.ssh/id_rsa
-  # Lägg till known hosts
-  - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-  - chmod 644 ~/.ssh/known_hosts
-  # Debug-information (kan tas bort senare)
-  - ls -la ~/.ssh/
-  - echo "SSH key saved to file, attempting connection..."
-
-# Använd Docker-image för att köra pipeline
-image: docker:27-cli
+image: alpine:latest
 
 stages:
   - deploy
 
 deploy_staging:
   stage: deploy
-  before_script: *before_script_ssh_setup
   script:
-    - echo "Deploying till staging-miljö..."
+    - apk add --no-cache openssh-client
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - chmod 600 ~/.ssh/config
     - echo "Connecting to $STAGING_HOST..."
-    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@$STAGING_HOST "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
+    - ssh -i ~/.ssh/id_rsa ubuntu@$STAGING_HOST "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
   only:
     - main
