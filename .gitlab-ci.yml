@@ -1,18 +1,3 @@
-.before_script_ssh_setup: &before_script_ssh_setup
-  # Installera SSH-klient om den inte finns
-  - command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )
-  # Skapa .ssh-katalog
-  - mkdir -p ~/.ssh
-  - chmod 700 ~/.ssh
-  # Debug-info
-  - echo "REMOTE_HOST är: $REMOTE_HOST"
-  # Spara nyckeln direkt till en fil
-  - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-  - chmod 600 ~/.ssh/id_rsa
-  # Lägg till known hosts
-  - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-  - chmod 644 ~/.ssh/known_hosts
-
 # Definiera stages för din pipeline
 stages:
   - build
@@ -40,8 +25,16 @@ deploy_staging_job:
     name: staging
     url: https://cscloud8-35.lnu.se/cashtrack
   variables:
-    REMOTE_HOST: $STAGING_HOST  # Sätt REMOTE_HOST baserat på STAGING_HOST
-  before_script: *before_script_ssh_setup
+    REMOTE_HOST: $STAGING_HOST
+  before_script:
+    - command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "REMOTE_HOST är: $REMOTE_HOST"
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
   script:
     - echo "Försöker ansluta till $REMOTE_HOST..."
     - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@$REMOTE_HOST "echo Anslutningen fungerar"
@@ -67,7 +60,15 @@ deploy_production_job:
     url: https://cscloud8-35.lnu.se/cashtrack
   variables:
     REMOTE_HOST: $PRODUCTION_HOST
-  before_script: *before_script_ssh_setup
+  before_script:
+    - command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "REMOTE_HOST är: $REMOTE_HOST"
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
   script:
     - echo "Deploying till produktionsmiljö..."
     - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@$REMOTE_HOST "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
