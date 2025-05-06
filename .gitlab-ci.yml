@@ -1,22 +1,17 @@
-# Återanvändbart block för SSH-inställningar
 .before_script_ssh_setup: &before_script_ssh_setup
   # Installera SSH-klient om den inte finns
   - command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )
   # Skapa .ssh-katalog
   - mkdir -p ~/.ssh
   - chmod 700 ~/.ssh
+  # Debug-info
+  - echo "REMOTE_HOST är: $REMOTE_HOST"
   # Spara nyckeln direkt till en fil
   - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
   - chmod 600 ~/.ssh/id_rsa
   # Lägg till known hosts
   - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
   - chmod 644 ~/.ssh/known_hosts
-  # Debug-information (kan tas bort senare)
-  - ls -la ~/.ssh/
-  - echo "SSH key saved to file, attempting connection..."
-
-# Använd Docker-image för att köra pipeline
-image: docker:27-cli
 
 # Definiera stages för din pipeline
 stages:
@@ -24,44 +19,38 @@ stages:
   - test
   - deploy
 
-# Kompilering/byggjobb
+# Byggjobb
 build-job:
   stage: build
   script:
-    - echo "Förbereder bygge av CashTrack-applikationen..."
-    - echo "Bygge slutfört."
+    - echo "Kompilerar koden..."
+    - echo "Kompilering klar."
 
-# Enhetstester
-unit-test-job:
+# Testjobb
+test-job:
   stage: test
   script:
-    - echo "Kör enhetstester för CashTrack..."
-    - echo "Alla tester godkända!"
+    - echo "Kör tester..."
+    - echo "Tester godkända!"
 
-# Linting
-lint-test-job:
-  stage: test
-  script:
-    - echo "Linting av CashTrack-koden..."
-    - echo "Inga linting-problem hittades."
-
-# Deployment till staging
+# Deploy till staging
 deploy_staging_job:
   stage: deploy
   environment:
     name: staging
     url: https://cscloud8-35.lnu.se/cashtrack
   variables:
-    REMOTE_HOST: $STAGING_HOST
-    DOCKER_HOST: ssh://ubuntu@$REMOTE_HOST
+    REMOTE_HOST: $STAGING_HOST  # Sätt REMOTE_HOST baserat på STAGING_HOST
   before_script: *before_script_ssh_setup
   script:
+    - echo "Försöker ansluta till $REMOTE_HOST..."
+    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@$REMOTE_HOST "echo Anslutningen fungerar"
     - echo "Deploying till staging-miljö..."
-    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@$STAGING_HOST "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
+    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@$REMOTE_HOST "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
   only:
     - main
 
-# Manuellt godkännande innan produktion
+# Manuellt godkännande före produktion
 manual_approval_step:
   stage: deploy
   script:
@@ -70,19 +59,18 @@ manual_approval_step:
   only:
     - main
 
-# Deployment till produktion
+# Deploy till produktion
 deploy_production_job:
   stage: deploy
   environment:
     name: production
-    url: https://din-produktions-url.com  # Uppdatera med korrekt URL
+    url: https://cscloud8-35.lnu.se/cashtrack
   variables:
     REMOTE_HOST: $PRODUCTION_HOST
-    DOCKER_HOST: ssh://ubuntu@$REMOTE_HOST
   before_script: *before_script_ssh_setup
   script:
     - echo "Deploying till produktionsmiljö..."
-    - docker compose -f docker-compose.yml -f docker-compose.production.yml up --build -d
+    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@$REMOTE_HOST "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
   only:
     - main
   needs:
