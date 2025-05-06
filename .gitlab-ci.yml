@@ -32,16 +32,11 @@ deploy_staging_job:
     - chmod 700 ~/.ssh
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-    - chmod 644 ~/.ssh/known_hosts
-    # Felsökningskommandon med dubbelcitationstecken
-    - echo "Debug - STAGING_HOST innehåll:"
-    - echo "$STAGING_HOST"
-    - echo "Debug - REMOTE_HOST innehåll:"
-    - echo "$REMOTE_HOST"
+    # Deaktivera värdverifieringen under deployment
+    - echo "StrictHostKeyChecking no" >> ~/.ssh/config
+    - chmod 600 ~/.ssh/config
   script:
     - echo "Deploying till staging..."
-    # Använd IP direkt för att testa
     - ssh -i ~/.ssh/id_rsa ubuntu@194.47.178.35 "echo Test anslutning"
     - ssh -i ~/.ssh/id_rsa ubuntu@194.47.178.35 "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
   only:
@@ -70,16 +65,11 @@ deploy_production_job:
     - chmod 700 ~/.ssh
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-    - chmod 644 ~/.ssh/known_hosts
-    # Felsökningskommandon med dubbelcitationstecken
-    - echo "Debug - PRODUCTION_HOST innehåll:"
-    - echo "$PRODUCTION_HOST"
-    - echo "Debug - REMOTE_HOST innehåll:"
-    - echo "$REMOTE_HOST"
+    # Deaktivera värdverifieringen under deployment
+    - echo "StrictHostKeyChecking no" >> ~/.ssh/config
+    - chmod 600 ~/.ssh/config
   script:
     - echo "Deploying till produktion..."
-    # Använd IP direkt
     - ssh -i ~/.ssh/id_rsa ubuntu@194.47.178.35 "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
   only:
     - main
