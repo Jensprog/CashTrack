@@ -9,11 +9,21 @@ deploy_staging:
     - apk add --no-cache openssh-client
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    # Skriv nyckeln till fil, se till att nya rader bevaras
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
+    # Kontrollera att nyckeln ser korrekt ut
+    - wc -l ~/.ssh/id_rsa
+    - head -n 1 ~/.ssh/id_rsa
+    - tail -n 1 ~/.ssh/id_rsa
+    # Konfigurera SSH
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - chmod 600 ~/.ssh/config
+    # Debug-information
     - echo "Connecting to $STAGING_HOST..."
+    # SSH-anslutning 
+    - ssh -i ~/.ssh/id_rsa ubuntu@$STAGING_HOST "echo 'SSH connection successful'"
+    # Om SSH-testet lyckas, utför deployment
     - ssh -i ~/.ssh/id_rsa ubuntu@$STAGING_HOST "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
   only:
     - main
