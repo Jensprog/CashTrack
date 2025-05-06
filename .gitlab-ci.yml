@@ -22,23 +22,24 @@ deploy_staging_job:
   environment:
     name: staging
     url: https://cscloud8-35.lnu.se/cashtrack
-  variables:
-    REMOTE_HOST: $STAGING_HOST
-    DOCKER_HOST: ssh://ubuntu@$REMOTE_HOST
   before_script:
-    - command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )
-    - eval $(ssh-agent -s)
+    # Installera SSH-klient och andra verktyg
+    - apk add --no-cache openssh-client bash git
+    # Skapa .ssh-katalog
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    # Skapa en enklare SSH-nyckel direkt (enklare format)
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    # Deaktivera värdverifieringen under deployment
-    - echo "StrictHostKeyChecking no" >> ~/.ssh/config
+    # Deaktivera värdverifiering
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - chmod 600 ~/.ssh/config
   script:
     - echo "Deploying till staging..."
-    - ssh -i ~/.ssh/id_rsa ubuntu@194.47.178.35 "echo Test anslutning"
-    - ssh -i ~/.ssh/id_rsa ubuntu@194.47.178.35 "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
+    # Testa en enkel SSH-anslutning med verbose läge för att se fler detaljer
+    - ssh -v ubuntu@194.47.178.35 "echo Test anslutning"
+    # Om testet lyckas, utför deployment
+    - ssh ubuntu@194.47.178.35 "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
   only:
     - main
 
@@ -55,22 +56,21 @@ deploy_production_job:
   environment:
     name: production
     url: https://cscloud8-35.lnu.se/cashtrack
-  variables:
-    REMOTE_HOST: $PRODUCTION_HOST
-    DOCKER_HOST: ssh://ubuntu@$REMOTE_HOST
   before_script:
-    - command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )
-    - eval $(ssh-agent -s)
+    # Installera SSH-klient och andra verktyg
+    - apk add --no-cache openssh-client bash git
+    # Skapa .ssh-katalog
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    # Skapa en enklare SSH-nyckel direkt (enklare format)
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    # Deaktivera värdverifieringen under deployment
-    - echo "StrictHostKeyChecking no" >> ~/.ssh/config
+    # Deaktivera värdverifiering
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - chmod 600 ~/.ssh/config
   script:
     - echo "Deploying till produktion..."
-    - ssh -i ~/.ssh/id_rsa ubuntu@194.47.178.35 "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
+    - ssh ubuntu@194.47.178.35 "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
   only:
     - main
   needs:
