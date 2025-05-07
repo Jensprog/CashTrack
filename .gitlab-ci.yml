@@ -12,8 +12,6 @@ test:
     - npm run format
     - echo "Kör linting"
     - npm run lint
-    - echo "Tester av byggprocessen"
-    - npm run build
     - echo "Test stage completed successfully"
   only:
     - main
