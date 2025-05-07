@@ -23,8 +23,8 @@ deploy_staging:
     - chmod 700 ~/.ssh
     - ls -la ~/
     - pwd
-    - echo "SSH_PRIVATE_KEY längd: ${#SSH_PRIVATE_KEY}"
-    - echo "STAGING_HOST: $STAGING_HOST"
+    - echo "SSH_PRIVATE_KEY längd ${#SSH_PRIVATE_KEY}"
+    - echo "STAGING_HOST $STAGING_HOST"
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - ls -la ~/.ssh/id_rsa
