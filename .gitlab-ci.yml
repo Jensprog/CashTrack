@@ -11,13 +11,10 @@ test:
     - echo "Kör formatering med Prettier"
     - npm run format
     - echo "Kör linting"
-    - npm run lint || echo "Linting skipped"
-    - echo "Startar servern i bakgrunden för testning"
-    - npm run dev & sleep 10
-    - echo "Anropar testendpoint"
-    - wget -O test_results.json http://localhost:3000/api/tests || curl -o test_results.json http://localhost:3000/api/tests
-    - cat test_results.json
-    - echo "Test stage completed"
+    - npm run lint
+    - echo "Tester av byggprocessen"
+    - npm run build
+    - echo "Test stage completed successfully"
   only:
     - main
 
