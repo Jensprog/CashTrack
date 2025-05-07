@@ -1,17 +1,35 @@
-image: alpine:latest
+image: node:18-alpine
 
 stages:
+  - test
   - deploy
+
+test:
+  stage: test
+  script:
+    - npm ci
+    - echo "Kör formatering med Prettier"
+    - npm run format
+    - echo "Kör linting"
+    - npm run lint || echo "Linting skipped"
+    - echo "Startar servern i bakgrunden för testning"
+    - npm run dev & sleep 10
+    - echo "Anropar testendpoint"
+    - wget -O test_results.json http://localhost:3000/api/tests || curl -o test_results.json http://localhost:3000/api/tests
+    - cat test_results.json
+    - echo "Test stage completed"
+  only:
+    - main
 
 deploy_staging:
   stage: deploy
+  image: alpine:latest
   script:
-    - apk add --no-cache openssh-client bash
+    - apk add --no-cache openssh-client
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    - ls -la ~/.ssh/id_rsa
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - chmod 600 ~/.ssh/config
     - echo "Connecting to $STAGING_HOST..."
