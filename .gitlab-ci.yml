@@ -15,7 +15,7 @@ test:
   only:
     - main
 
-deploy_staging:
+deploy_production:
   stage: deploy
   script:
     - apk add --no-cache openssh-client
@@ -31,6 +31,7 @@ deploy_staging:
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - chmod 600 ~/.ssh/config
     - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@194.47.178.35 "echo 'SSH connection test'" || echo "SSH connection failed"
+    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@194.47.178.35 "cd ~/cashtrack && docker system prune -af || true"
     - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@194.47.178.35 "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
   only:
     - main
