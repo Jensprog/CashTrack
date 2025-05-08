@@ -145,7 +145,7 @@ export const TransactionProvider = ({ children }) => {
 
         const response = await api.get(`/transactions?${queryParams.toString()}`);
         setTransactions(response.data.data.transactions);
-        
+
         // If custom filters are provided, update their state
         if (newFilters && newFilters !== filters) {
           setCustomFilters(newFilters);
