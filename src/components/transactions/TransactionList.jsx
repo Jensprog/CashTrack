@@ -1,7 +1,7 @@
 /**
  * The TransactionList component is a React functional component that
  * - Lists and displays transactions with sorting capabilities.
- * - Filtering transactions by date rang and category.
+ * - Filtering transactions by date range and category.
  * - Editing existing transactions.
  * - Deleting transactions with confirmation.
  */
@@ -11,6 +11,7 @@ import { useState, useEffect } from 'react';
 import { useTransactions } from '@/context/TransactionContext';
 import { sortTransactions } from '@/utils/transactionSorter';
 import TransactionForm from './TransactionForm';
+import DateRangeFilter from '@/components/ui/DateRangeFilter';
 import api from '@/lib/axiosConfig';
 
 export default function TransactionList({ initialFilters = {} }) {
@@ -62,26 +63,20 @@ export default function TransactionList({ initialFilters = {} }) {
     }
   };
 
-  // Handle filter change
-  const handleFilterChange = (event) => {
-    const { name, value } = event.target;
-
-    setFilters({
-      ...filters,
-      [name]: value,
-    });
-  };
-
   // Apply filters
-  const handleApplyFilters = (event) => {
-    event.preventDefault();
-    fetchTransactions();
+  const handleApplyFilters = (newFilters) => {
+    fetchTransactions(newFilters);
   };
 
   // Reset filters
   const handleResetFilters = () => {
-    setFilters({});
-    fetchTransactions();
+    const resetFilters = {
+      startDate: '',
+      endDate: '',
+      categoryId: '',
+    };
+    setFilters(resetFilters);
+    fetchTransactions(resetFilters);
   };
 
   // Handle transaction update
@@ -139,90 +134,14 @@ export default function TransactionList({ initialFilters = {} }) {
   return (
     <div>
       {/* Filters */}
-      <div className="mb-6 bg-white dark:bg-gray-900 shadow-md rounded p-4">
-        <h3 className="text-lg font-semibold mb-3 text-gray-800 dark:text-white">
-          Filtrera transaktioner
-        </h3>
-
-        <form onSubmit={handleApplyFilters} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Start Date */}
-            <div>
-              <label
-                className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
-                htmlFor="startDate"
-              >
-                Från datum
-              </label>
-              <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-800 leading-tight focus:outline-none focus:shadow-outline"
-                id="startDate"
-                name="startDate"
-                type="date"
-                value={filters.startDate || ''}
-                onChange={handleFilterChange}
-              />
-            </div>
-
-            {/* End Date */}
-            <div>
-              <label
-                className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
-                htmlFor="endDate"
-              >
-                Till datum
-              </label>
-              <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-800 leading-tight focus:outline-none focus:shadow-outline"
-                id="endDate"
-                name="endDate"
-                type="date"
-                value={filters.endDate || ''}
-                onChange={handleFilterChange}
-              />
-            </div>
-
-            {/* Category */}
-            <div>
-              <label
-                className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
-                htmlFor="categoryId"
-              >
-                Kategori
-              </label>
-              <select
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-800 leading-tight focus:outline-none focus:shadow-outline"
-                id="categoryId"
-                name="categoryId"
-                value={filters.categoryId || ''}
-                onChange={handleFilterChange}
-              >
-                <option value="">Alla kategorier</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="flex justify-between">
-            <button
-              type="button"
-              onClick={handleResetFilters}
-              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors"
-            >
-              Återställ filter
-            </button>
-            <button
-              type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors"
-            >
-              Använd filter
-            </button>
-          </div>
-        </form>
+      <div className="mb-6">
+        <DateRangeFilter
+          initialFilters={filters}
+          onFilterApply={handleApplyFilters}
+          onFilterReset={handleResetFilters}
+          includeCategory={true}
+          categories={categories}
+        />
       </div>
 
       {/* Error message */}
@@ -329,7 +248,7 @@ export default function TransactionList({ initialFilters = {} }) {
         </>
       )}
 
-      {/* Edit transaction modal */}
+      {/* Edit transaction module */}
       {editingTransaction && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl max-w-md w-full max-h-screen overflow-y-auto">
@@ -355,7 +274,7 @@ export default function TransactionList({ initialFilters = {} }) {
         </div>
       )}
 
-      {/* Delete confirmation modal */}
+      {/* Delete confirmation module */}
       {deletingTransaction && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl max-w-md w-full">
