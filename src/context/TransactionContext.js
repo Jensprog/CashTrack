@@ -27,6 +27,11 @@ export const TransactionProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState({});
+  const [customFilters, setCustomFilters] = useState({
+    startDate: '',
+    endDate: '',
+    categoryId: '',
+  });
   const [financialData, setFinancialData] = useState({
     balance: 0,
     income: 0,
@@ -128,6 +133,11 @@ export const TransactionProvider = ({ children }) => {
         // Use new filters if provided otherwise use existing filters
         const currentFilters = newFilters || filters;
 
+        // Update the filter state
+        if (newFilters) {
+          setFilters(newFilters);
+        }
+
         const queryParams = new URLSearchParams();
         if (currentFilters.startDate) queryParams.append('startDate', currentFilters.startDate);
         if (currentFilters.endDate) queryParams.append('endDate', currentFilters.endDate);
@@ -135,10 +145,10 @@ export const TransactionProvider = ({ children }) => {
 
         const response = await api.get(`/transactions?${queryParams.toString()}`);
         setTransactions(response.data.data.transactions);
-
-        // If filters are provided, update the filters state
-        if (newFilters) {
-          setFilters(newFilters);
+        
+        // If custom filters are provided, update their state
+        if (newFilters && newFilters !== filters) {
+          setCustomFilters(newFilters);
         }
 
         // Calculate financial data
@@ -213,8 +223,10 @@ export const TransactionProvider = ({ children }) => {
     transactions,
     loading,
     error,
-    filters,
     financialData,
+    filters,
+    customFilters,
+    setCustomFilters,
     fetchTransactions,
     createTransaction,
     updateTransaction,
