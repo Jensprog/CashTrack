@@ -141,13 +141,6 @@ export default function FinancialOverview() {
         </div>
       )}
 
-      {/* Custom filter information */}
-      {hasCustomFilters && (
-        <div className="mb-4 p-2 bg-blue-50 dark:bg-blue-900/5 rounded text-sm text-blue-800 dark:text-blue-300">
-          Visar data för {getCustomPeriodLabel()}
-        </div>
-      )}
-
       {/* Error message */}
       {error && (
         <div className="mb-4 p-3 bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800 rounded text-sm">
