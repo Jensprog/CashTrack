@@ -18,19 +18,19 @@ export async function POST(request) {
 
       const existingCategories = await prisma.category.findMany({
         where: {
-            userId,
-            name: {
-                in: ['Lön', 'Hyra/Boende'] // Check a few standard categories
-            }
+          userId,
+          name: {
+            in: ['Lön', 'Hyra/Boende'], // Check a few standard categories
+          },
         },
-        take: 1 // Only need to check if 1 exists already
+        take: 1, // Only need to check if 1 exists already
       });
 
       if (existingCategories.length > 0) {
         return successResponse(
-            { message: 'Standardkategorier finns redan' },
-            'Inga nya kategorier skapades',
-            200
+          { message: 'Standardkategorier finns redan' },
+          'Inga nya kategorier skapades',
+          200,
         );
       }
 

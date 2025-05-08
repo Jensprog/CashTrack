@@ -47,14 +47,14 @@ export const TransactionProvider = ({ children }) => {
     monthStart.setDate(now.getDate() - 30);
 
     const sortedTransactions = [...transactions].sort(
-      (a, b) => new Date(a.date) - new Date(b.date)
+      (a, b) => new Date(a.date) - new Date(b.date),
     );
-    
+
     // Total balance from all transactions
     let totalBalance = 0;
     let totalIncome = 0;
     let totalExpenses = 0;
-    
+
     // Weekly and monthly data
     let weeklyIncome = 0;
     let weeklyExpenses = 0;
@@ -65,7 +65,7 @@ export const TransactionProvider = ({ children }) => {
     sortedTransactions.forEach((transaction) => {
       const transactionDate = new Date(transaction.date);
       const amount = transaction.amount;
-      
+
       // Update total balance for all transactions
       totalBalance += amount;
 
