@@ -38,7 +38,7 @@ export async function POST(request) {
 
     const cookieStore = await cookies();
 
-    const cookiePath = '/';
+    const cookiePath = process.env.NODE_ENV === 'production' ? '/cashtrack' : '/';
 
     // Set Httponly cookie with the JWT token
     cookieStore.set('token', token, {
