@@ -38,15 +38,13 @@ export async function POST(request) {
 
     const cookieStore = await cookies();
 
-    const cookiePath = process.env.NODE_ENV === 'production' ? '/cashtrack' : '/';
-
     // Set Httponly cookie with the JWT token
     cookieStore.set('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60, // 7 days
-      path: cookiePath,
+      mageAge: 7 * 24 * 60 * 60, // 7 days
+      path: '/',
     });
 
     cookieStore.set('csrf_secret', csrfSecret, {
@@ -54,7 +52,7 @@ export async function POST(request) {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       maxAge: 7 * 24 * 60 * 60, // 7 days
-      path: cookiePath,
+      path: '/',
     });
 
     // Return success response with token and user (excluding password)

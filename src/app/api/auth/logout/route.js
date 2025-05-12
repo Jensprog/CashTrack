@@ -12,12 +12,9 @@ export async function POST() {
   try {
     const cookieStore = await cookies();
 
-    const cookiePath = process.env.NODE_ENV === 'production' ? '/cashtrack' : '/';
-    console.log('Deleting cookies with path:', cookiePath);
-
     // Clear the authentication cookies
-    cookieStore.delete('token', { path: cookiePath });
-    cookieStore.delete('csrf_secret', { path: cookiePath });
+    cookieStore.delete('token');
+    cookieStore.delete('csrf_secret');
 
     return successResponse(null, 'Utloggning lyckades', 200);
   } catch (error) {
