@@ -6,6 +6,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
+import { setCookie, removeCookie } from '@/utils/cookieUtils';
 import axios from 'axios';
 import { useRouter, usePathname } from 'next/navigation';
 
@@ -56,7 +57,7 @@ export const AuthProvider = ({ children }) => {
 
       // Save CSRF-token
       if (response.data.data.csrfToken) {
-        sessionStorage.setItem('csrfToken', response.data.data.csrfToken);
+        setCookie('csrfToken', response.data.data.csrfToken);
       }
 
       setUser(response.data.data.user);
@@ -101,7 +102,7 @@ export const AuthProvider = ({ children }) => {
     try {
       await axios.post('/api/auth/logout');
       setUser(null);
-      sessionStorage.removeItem('csrfToken');
+      removeCookie('csrfToken');
       router.push('/');
       return { success: true };
     } catch (error) {

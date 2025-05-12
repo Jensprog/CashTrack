@@ -5,6 +5,7 @@
  * includes CSRF tokens in request headers for protected API calls.
  */
 
+import { getCookie } from '@/utils/cookieUtils';
 import axios from 'axios';
 
 const baseURL = process.env.NODE_ENV === 'production' ? '/cashtrack/api' : '/api';
@@ -20,7 +21,7 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     if (config.method !== 'get') {
-      const csrfToken = typeof window !== 'undefined' ? sessionStorage.getItem('csrfToken') : null;
+      const csrfToken = getCookie('csrfToken');
       if (csrfToken) {
         config.headers['X-CSRF-Token'] = csrfToken;
       }
