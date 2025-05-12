@@ -8,6 +8,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter, usePathname } from 'next/navigation';
+import { removeCookie } from '@/utils/cookieUtils';
 
 // Create context
 const AuthContext = createContext(null);
@@ -101,7 +102,7 @@ export const AuthProvider = ({ children }) => {
     try {
       await axios.post('/api/auth/logout');
       setUser(null);
-      sessionStorage.removeItem('csrfToken');
+      removeCookie('csrfToken');
       router.push('/');
       return { success: true };
     } catch (error) {

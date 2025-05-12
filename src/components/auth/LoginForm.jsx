@@ -7,6 +7,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { validateLoginForm } from '@/utils/validators';
+import { setCookie } from '@/utils/cookieUtils';
 import Link from 'next/link';
 import axios from 'axios';
 
@@ -39,7 +40,7 @@ export default function LoginForm() {
 
       // Store the CSRF token for future requests
       if (response.data.data.csrfToken) {
-        sessionStorage.setItem('csrfToken', response.data.data.csrfToken);
+        setCookie('csrfToken', response.data.data.csrfToken);
       }
 
       router.push('/dashboard');
