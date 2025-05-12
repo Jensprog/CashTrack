@@ -26,6 +26,7 @@ export async function csrfMiddleware(request) {
       const csrfSecret = cookieStore.get('csrf_secret')?.value;
 
       if (!csrfSecret) {
+        console.warn('CSRF secret missing in cookies');
         throw new ForbiddenError('CSRF verifiering misslyckades');
       }
 
@@ -33,15 +34,24 @@ export async function csrfMiddleware(request) {
       const csrfToken = request.headers.get('X-CSRF-Token');
 
       if (!csrfToken) {
+        console.warn('X-CSRF-Token header missing');
         throw new ForbiddenError('CSRF-token saknas');
       }
+
+      console.log('CSRF validation:', {
+        secret: csrfSecret ? 'present' : 'missing',
+        token: csrfToken ? 'present' : 'missing',
+      });
 
       // Verify the CSRF token
       const isValid = tokens.verify(csrfSecret, csrfToken);
 
       if (!isValid) {
+        console.warn('CSRF token verification failed');
         throw new ForbiddenError('Ogiltig CSRF-token');
       }
+
+      console.log('CSRF validation successful');
     } catch (error) {
       console.error('CSRF validation error:', error);
       return errorResponse(error);

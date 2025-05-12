@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }) => {
 
       // Save CSRF-token
       if (response.data.data.csrfToken) {
-        sessionStorage.setItem('csrfToken', response.data.data.csrfToken);
+        setCookie('csrfToken', response.data.data.csrfToken);
       }
 
       setUser(response.data.data.user);

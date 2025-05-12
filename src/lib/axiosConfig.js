@@ -8,7 +8,8 @@
 import { getCookie } from '@/utils/cookieUtils';
 import axios from 'axios';
 
-const baseURL = process.env.NODE_ENV === 'production' ? '/cashtrack/api' : '/api';
+const basePath = process.env.NODE_ENV === 'production' ? '/cashtrack' : '';
+const baseURL = `${basePath}/api`;
 
 const api = axios.create({
   baseURL: baseURL,
@@ -39,8 +40,7 @@ api.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       if (typeof window !== 'undefined') {
-        const loginPath = process.env.NODE_ENV === 'production' ? '/cashtrack/login' : '/login';
-        window.location.href = loginPath;
+        window.location.href = `${basePath}/login`;
       }
     }
     return Promise.reject(error);
