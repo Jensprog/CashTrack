@@ -1,8 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    basePath: process.env.NODE_ENV === 'production' ? '/cashtrack' : '',
-    trailingSlash: process.env.NODE_ENV === 'production',
-    
+    basePath: '',
+
     webpack: (config, { dev, isServer }) => {
         // During production, ignore test files
         if (!dev) {

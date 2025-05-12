@@ -8,8 +8,7 @@
 import { getCookie } from '@/utils/cookieUtils';
 import axios from 'axios';
 
-const basePath = process.env.NODE_ENV === 'production' ? '/cashtrack' : '';
-const baseURL = `${basePath}/api`;
+const baseURL = '/api';
 
 const api = axios.create({
   baseURL: baseURL,
