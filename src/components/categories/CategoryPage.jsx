@@ -15,38 +15,11 @@ export default function CategoryPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [hasDefaultCategories, setHasDefaultCategories] = useState(false);
 
   // Fetch categories when page is rendered
   useEffect(() => {
     fetchCategories();
   }, []);
-
-  // Check if the standard categories already exists
-  useEffect(() => {
-    const defaultCategoryNames = [
-      'Lön',
-      'Bidrag',
-      'Gåvor',
-      'Återbetalning',
-      'Övrigt',
-      'Hyra/Boende',
-      'Mat och hushåll',
-      'Transport',
-      'Nöje',
-      'Räkningar',
-      'Hälsa',
-      'Kläder',
-      'Övrigt',
-    ];
-
-    // Check if the user have the standard categories
-    const hasDefaults = defaultCategoryNames.some((defaultName) =>
-      categories.some((category) => category.name === defaultName && category.userId !== null),
-    );
-
-    setHasDefaultCategories(hasDefaults);
-  }, [categories]);
 
   // Fetch categories from API
   const fetchCategories = async () => {
@@ -102,20 +75,6 @@ export default function CategoryPage() {
     }
   };
 
-  const createDefaultCategories = async () => {
-    try {
-      setLoading(true);
-      const response = await api.post('/categories/defaults');
-      await fetchCategories();
-      return response.data;
-    } catch (error) {
-      console.error('Error creating default categories:', error);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -142,24 +101,21 @@ export default function CategoryPage() {
               </div>
             </div>
 
-            {/* Default categories */}
-            {!hasDefaultCategories && (
-              <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-4">
-                <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
-                  Standardkategorier
-                </h2>
-                <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
-                  Skapa ett set med standardkategorier för att snabbt komma igång.
-                </p>
-                <button
-                  onClick={createDefaultCategories}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition-colors w-full"
-                  disabled={loading}
-                >
-                  {loading ? 'Skapar...' : 'Skapa standardkategorier'}
-                </button>
-              </div>
-            )}
+            {/* Information om kategorier */}
+            <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-4">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                Om kategorier
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
+                Kategorier hjälper dig att organisera dina inkomster och utgifter. 
+                Du kan skapa egna kategorier för att anpassa efter dina behov.
+              </p>
+              <ul className="text-sm text-gray-600 dark:text-gray-400 list-disc pl-5 space-y-2">
+                <li>Inkomstkategorier används för pengar du får in (gröna)</li>
+                <li>Utgiftskategorier används för pengar du spenderar (röda)</li>
+                <li>Du kan lägga till, redigera och ta bort kategorier när som helst</li>
+              </ul>
+            </div>
           </div>
 
           {/* Category list (right column) */}
