@@ -4,15 +4,15 @@ const nextConfig = {
     webpack: (config, { dev, isServer }) => {
         // During production, ignore test files
         if (!dev) {
-            // Ignore route.js files in api/tests catalog
+            // Ignore all Jest-test files
             config.module.rules.push({
-                test: /api\/tests\/.*\.js$/,
+                test: /\.(test|spec)\.(js|jsx)$/,
                 loader: 'ignore-loader',
             });
             
-            // Ignore all files in /tests catalog
+            // Ignore __tests__ and __mocks__ folders
             config.module.rules.push({
-                test: /\/tests\/.*\.js$/,
+                test: /(\_\_tests\_\_|\_\_mocks\_\_)\/.*\.(js|jsx)$/,
                 loader: 'ignore-loader',
             });
         }

@@ -6,20 +6,23 @@ RUN apk add --no-cache libc6-compat openssl
 # Sätt arbetskatalogen i containern
 WORKDIR /app
 
-# Kopiering av pakethanteraren för installation av beroenden
+# VIKTIGT: Kopiera BARA package.json och package-lock.json först
+# Detta gör att denna layer endast byggs om när dessa filer ändras
 COPY package.json package-lock.json* ./
-
-# Produktionsbyggen
-FROM base AS builder
-WORKDIR /app
-COPY --from=base /app/package.json /app/package-lock.json* ./
 RUN npm ci
+
+# SEDAN kopierar du resten av koden
+# Detta gör att föregående layer (npm ci) kan återanvändas om package*.json inte ändrats
 COPY . .
+
+# Generera Prisma-klient
 RUN npx prisma generate
+
+# Bygg applikationen
 RUN npm run build
 
 # Produktionskörning
-FROM base AS runner
+FROM node:18-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -29,12 +32,12 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 USER nextjs
 
-# Kopiera byggda filer från byggsteget
-COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/prisma ./prisma
+# Kopiera ENDAST de nödvändiga filerna från byggsteget
+COPY --from=base --chown=nextjs:nodejs /app/.next ./.next
+COPY --from=base --chown=nextjs:nodejs /app/node_modules ./node_modules
+COPY --from=base --chown=nextjs:nodejs /app/package.json ./package.json
+COPY --from=base --chown=nextjs:nodejs /app/public ./public
+COPY --from=base --chown=nextjs:nodejs /app/prisma ./prisma
 
 # Exponera porten som applikationen lyssnar på
 EXPOSE 3000
