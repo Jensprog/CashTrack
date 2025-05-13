@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import CategoryForm from './CategoryForm';
+import CategoryForm from '../../../src/components/categories/CategoryForm';
 
 const mockOnSubmit = jest.fn();
 
