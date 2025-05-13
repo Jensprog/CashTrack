@@ -24,7 +24,13 @@ export default function TransactionForm({
       ? new Date(transaction.date).toISOString().split('T')[0]
       : new Date().toISOString().split('T')[0],
     categoryId: transaction?.categoryId || '',
-    isIncome: transaction ? transaction.amount > 0 : false,
+    transactionType: transaction
+      ? transaction.amount > 0
+        ? 'income'
+        : transaction.category?.isSaving
+          ? 'saving'
+          : 'expense'
+      : 'expense',
   };
 
   // Form state
@@ -79,21 +85,21 @@ export default function TransactionForm({
     }
   };
 
+  const handleTransactionTypeChange = (type) => {
+    setFormData({
+      ...formData,
+      transactionType: type,
+      categoryId: '',
+    });
+  };
+
   // Handle input changes
   const handleChange = (event) => {
-    const { name, value, type, checked } = event.target;
-
-    if (type === 'checkbox') {
-      setFormData({
-        ...formData,
-        [name]: checked,
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    }
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
   // Handle form submission
@@ -103,12 +109,13 @@ export default function TransactionForm({
     setSuccessMessage('');
     setIsLoading(true);
 
-    // Convert amount to positive or negative based on isIncome
-    const amount = formData.isIncome
-      ? Math.abs(parseFloat(formData.amount))
-      : -Math.abs(parseFloat(formData.amount));
-
     try {
+      let amount = Math.abs(parseFloat(formData.amount));
+
+      if (formData.transactionType !== 'income') {
+        amount = -amount;
+      }
+
       const data = {
         amount,
         description: formData.description,
@@ -118,15 +125,12 @@ export default function TransactionForm({
 
       let response;
       if (transaction) {
-        // Update existing transaction
         response = await updateTransaction(transaction.id, data);
         setSuccessMessage('Transaktionen har uppdaterats!');
       } else {
-        // Create new transaction
         response = await createTransaction(data);
         setSuccessMessage('Transaktionen har skapats!');
 
-        // Reset form
         setFormData({
           ...initialFormState,
           amount: '',
@@ -136,16 +140,14 @@ export default function TransactionForm({
         });
       }
 
-      // Call success callback
       onSuccess(response?.transaction);
     } catch (error) {
-      console.error('Transaction error:', error);
-      if (error.response?.data?.message) {
+      console.error('Transaction error', error);
+      if (error.reponse?.data?.message) {
         setError(error.response.data.message);
       } else {
-        setError('Ett fel inträffade. Försök igen senare');
+        setError(error.message || 'Ett fel inträffade. Försök igen senare');
       }
-
       // Clear error message after 5 seconds
       messageTimerRef.current = setTimeout(() => {
         setError('');
@@ -154,6 +156,18 @@ export default function TransactionForm({
       setIsLoading(false);
     }
   };
+
+  const filteredCategories = categories
+    .filter((category) => {
+      if (formData.transactionType === 'income') {
+        return category.isIncome;
+      } else if (formData.transactionType === 'saving') {
+        return !category.isIncome && category.isSaving;
+      } else {
+        return !category.isIncome && !category.isSaving;
+      }
+    })
+    .sort((a, b) => a.name.localeCompare(b.name, 'sv'));
 
   return (
     <div className="bg-white dark:bg-gray-900 shadow-md rounded px-8 pt-6 pb-8 mb-4">
@@ -174,23 +188,50 @@ export default function TransactionForm({
       )}
 
       <form onSubmit={handleSubmit} noValidate>
-        {/* Transaction Type */}
+        {/* Transaction Type - Nya knappar */}
         <div className="mb-4">
-          <div className="flex items-center">
-            <input
-              id="isIncome"
-              name="isIncome"
-              type="checkbox"
-              checked={formData.isIncome}
-              onChange={handleChange}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label
-              htmlFor="isIncome"
-              className="ml-2 block text-sm text-gray-700 dark:text-gray-300"
+          <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+            Transaktionstyp
+          </label>
+          <div className="grid grid-cols-3 gap-2">
+            <button
+              type="button"
+              onClick={() => handleTransactionTypeChange('income')}
+              className={`py-2 px-3 rounded-md flex items-center justify-center ${
+                formData.transactionType === 'income'
+                  ? 'bg-green-100 border border-green-500 dark:bg-green-900/20 dark:border-green-700'
+                  : 'bg-gray-100 border border-gray-300 dark:bg-gray-800 dark:border-gray-700'
+              }`}
             >
-              Är detta en inkomst?
-            </label>
+              <span className="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
+              Inkomst
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleTransactionTypeChange('saving')}
+              className={`py-2 px-3 rounded-md flex items-center justify-center ${
+                formData.transactionType === 'saving'
+                  ? 'bg-blue-100 border border-blue-500 dark:bg-blue-900/20 dark:border-blue-700'
+                  : 'bg-gray-100 border border-gray-300 dark:bg-gray-800 dark:border-gray-700'
+              }`}
+            >
+              <span className="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
+              Sparande
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleTransactionTypeChange('expense')}
+              className={`py-2 px-3 rounded-md flex items-center justify-center ${
+                formData.transactionType === 'expense'
+                  ? 'bg-red-100 border border-red-500 dark:bg-red-900/20 dark:border-red-700'
+                  : 'bg-gray-100 border border-gray-300 dark:bg-gray-800 dark:border-gray-700'
+              }`}
+            >
+              <span className="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
+              Utgift
+            </button>
           </div>
         </div>
 
@@ -202,18 +243,31 @@ export default function TransactionForm({
           >
             Belopp (kr) *
           </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-800 leading-tight focus:outline-none focus:shadow-outline"
-            id="amount"
-            name="amount"
-            type="number"
-            step="0.01"
-            min="0"
-            placeholder="0.00"
-            value={formData.amount}
-            onChange={handleChange}
-            required
-          />
+          <div className="relative">
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-800 leading-tight focus:outline-none focus:shadow-outline"
+              id="amount"
+              name="amount"
+              type="number"
+              step="0.01"
+              min="0"
+              placeholder="0.00"
+              value={formData.amount}
+              onChange={handleChange}
+              required
+            />
+            <div
+              className={`absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none ${
+                formData.transactionType === 'income'
+                  ? 'text-green-500'
+                  : formData.transactionType === 'saving'
+                    ? 'text-blue-500'
+                    : 'text-red-500'
+              }`}
+            >
+              {formData.transactionType === 'income' ? '+' : '-'}
+            </div>
+          </div>
         </div>
 
         {/* Description */}
@@ -270,52 +324,11 @@ export default function TransactionForm({
             onChange={handleChange}
           >
             <option value="">Välj kategori (valfritt)</option>
-            {formData.isIncome && (
-              <>
-                <optgroup label="Inkomster">
-                  {categories
-                    .filter((cat) => cat.isIncome)
-                    .sort((a, b) => a.name.localeCompare(b.name, 'sv'))
-                    .map((category) => (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    ))}
-                </optgroup>
-              </>
-            )}
-
-            {/* Sparkategorier - endast när isIncome är false */}
-            {!formData.isIncome && (
-              <>
-                <optgroup label="Sparande">
-                  {categories
-                    .filter((cat) => !cat.isIncome && cat.isSaving)
-                    .sort((a, b) => a.name.localeCompare(b.name, 'sv'))
-                    .map((category) => (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    ))}
-                </optgroup>
-              </>
-            )}
-
-            {/* Utgiftskategorier - endast när isIncome är false */}
-            {!formData.isIncome && (
-              <>
-                <optgroup label="Utgifter">
-                  {categories
-                    .filter((cat) => !cat.isIncome && !cat.isSaving)
-                    .sort((a, b) => a.name.localeCompare(b.name, 'sv'))
-                    .map((category) => (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    ))}
-                </optgroup>
-              </>
-            )}
+            {filteredCategories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
           </select>
         </div>
 

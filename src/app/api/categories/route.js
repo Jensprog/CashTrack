@@ -50,7 +50,7 @@ export async function POST(request) {
     }
 
     if (isIncome && isSaving) {
-        throw new ValidationError('En kategori kan inte vara både inkomst och sparande');
+      throw new ValidationError('En kategori kan inte vara både inkomst och sparande');
     }
 
     const newCategory = await createCategory({
@@ -90,7 +90,7 @@ export async function PUT(request) {
     }
 
     if (isIncome && isSaving) {
-        throw new ValidationError('En kategori kan inte vara både inkomst och sparande');
+      throw new ValidationError('En kategori kan inte vara både inkomst och sparande');
     }
 
     const updatedCategory = await updateCategory(id, {
