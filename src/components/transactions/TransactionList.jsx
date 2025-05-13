@@ -131,6 +131,18 @@ export default function TransactionList({ initialFilters = {} }) {
     return category ? category.name : 'Okänd kategori';
   };
 
+  const getAmountColorClass = (transaction) => {
+    if (transaction.amount > 0) {
+      return 'text-green-600 dark:text-green-400';
+    }
+
+    if (transaction.category && transaction.category.isSaving) {
+      return 'text-blue-600 dark:text-blue-400';
+    }
+
+    return 'text-red-600 dark:text-red-400';
+  };
+
   return (
     <div>
       {/* Filters */}
@@ -217,11 +229,9 @@ export default function TransactionList({ initialFilters = {} }) {
                         {getCategoryName(transaction.categoryId)}
                       </td>
                       <td
-                        className={`px-6 py-4 whitespace-nowrap text-sm font-medium text-right ${
-                          transaction.amount > 0
-                            ? 'text-green-600 dark:text-green-400'
-                            : 'text-red-600 dark:text-red-400'
-                        }`}
+                        className={`px-6 py-4 whitespace-nowrap text-sm font-medium text-right ${getAmountColorClass(
+                          transaction,
+                        )}`}
                       >
                         {formatAmount(transaction.amount)}
                       </td>

@@ -14,6 +14,7 @@ export default function CategoryForm({
   const initialFormState = {
     name: category ? category.name : '',
     isIncome: category ? category.isIncome : false,
+    isSaving: category ? category.IsSaving : false,
   };
 
   const [formData, setFormData] = useState(initialFormState);
@@ -27,6 +28,7 @@ export default function CategoryForm({
       setFormData({
         name: category.name,
         isIncome: category.isIncome,
+        isSaving: category.isSaving,
       });
     }
   }, [category]);
@@ -39,6 +41,28 @@ export default function CategoryForm({
       return () => clearTimeout(timer);
     }
   }, [successMessage]);
+
+  const handleCategoryTypeChange = (typeId) => {
+    if (typeId === 'income') {
+      setFormData({
+        ...formData,
+        isIncome: true,
+        isSaving: false,
+      });
+    } else if (typeId === 'saving') {
+      setFormData({
+        ...formData,
+        isIncome: false,
+        isSaving: true,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        isIncome: false,
+        isSaving: false,
+      });
+    }
+  };
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
@@ -66,6 +90,7 @@ export default function CategoryForm({
       const data = {
         name: formData.name.trim(),
         isIncome: formData.isIncome,
+        isSaving: formData.isSaving,
       };
 
       if (!data.name) {
@@ -98,6 +123,12 @@ export default function CategoryForm({
     }
   };
 
+  const getCategoryType = () => {
+    if (formData.isIncome) return 'income';
+    if (formData.isSaving) return 'saving';
+    return 'expense';
+  };
+
   return (
     <div>
       {error && (
@@ -113,27 +144,54 @@ export default function CategoryForm({
       )}
 
       <form onSubmit={handleSubmit} noValidate>
-        {/* Kategorityp */}
+        {/* Category type */}
         <div className="mb-4">
-          <div className="flex items-center">
-            <input
-              id="isIncome"
-              name="isIncome"
-              type="checkbox"
-              checked={formData.isIncome}
-              onChange={handleChange}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label
-              htmlFor="isIncome"
-              className="ml-2 block text-sm text-gray-700 dark:text-gray-300"
+          <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+            Kategorityp
+          </label>
+          <div className="grid grid-cols-3 gap-2">
+            <button
+              type="button"
+              onClick={() => handleCategoryTypeChange('income')}
+              className={`py-2 px-3 rounded-md flex items-center justify-center ${
+                getCategoryType() === 'income'
+                  ? 'bg-green-100 border border-green-500 dark:bg-green-900/20 dark:border-green-700'
+                  : 'bg-gray-100 border border-gray-300 dark:bg-gray-800 dark:border-gray-700'
+              }`}
             >
-              Är detta en inkomstkategori?
-            </label>
+              <span className="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
+              Inkomst
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleCategoryTypeChange('saving')}
+              className={`py-2 px-3 rounded-md flex items-center justify-center ${
+                getCategoryType() === 'saving'
+                  ? 'bg-blue-100 border border-blue-500 dark:bg-blue-900/20 dark:border-blue-700'
+                  : 'bg-gray-100 border border-gray-300 dark:bg-gray-800 dark:border-gray-700'
+              }`}
+            >
+              <span className="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
+              Sparande
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleCategoryTypeChange('expense')}
+              className={`py-2 px-3 rounded-md flex items-center justify-center ${
+                getCategoryType() === 'expense'
+                  ? 'bg-red-100 border border-red-500 dark:bg-red-900/20 dark:border-red-700'
+                  : 'bg-gray-100 border border-gray-300 dark:bg-gray-800 dark:border-gray-700'
+              }`}
+            >
+              <span className="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
+              Utgift
+            </button>
           </div>
         </div>
 
-        {/* Kategorinamn */}
+        {/* Category name */}
         <div className="mb-6">
           <label
             className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
@@ -146,14 +204,20 @@ export default function CategoryForm({
             id="name"
             name="name"
             type="text"
-            placeholder="T.ex. Mat, Hyra, Lön"
+            placeholder={`T.ex. ${
+              getCategoryType() === 'income'
+                ? 'Lön, Bidrag'
+                : getCategoryType() === 'saving'
+                  ? 'Sparkonto, Aktieinvesteringar'
+                  : 'Mat, Hyra'
+            }`}
             value={formData.name}
             onChange={handleChange}
             required
           />
         </div>
 
-        {/* Knappar */}
+        {/* Buttons */}
         <div className="flex items-center justify-between">
           {category && (
             <button

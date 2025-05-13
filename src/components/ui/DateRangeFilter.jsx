@@ -127,20 +127,41 @@ export default function DateRangeFilter({
                 Kategori
               </label>
               <select
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-800 leading-tight focus:outline-none focus:shadow-outline"
-                id="categoryId"
-                name="categoryId"
-                value={filters.categoryId}
-                onChange={handleFilterChange}
-              >
-                <option value="">Alla kategorier</option>
-                {categories
-                  .sort((a, b) => a.name.localeCompare(b.name, 'sv')) // Sortera alfabetiskt
-                  .map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
+               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-800 leading-tight focus:outline-none focus:shadow-outline"
+               id="categoryId"
+               name="categoryId"
+               value={filters.categoryId}
+               onChange={handleFilterChange}
+             >
+               <option value="">Alla kategorier</option>
+               
+               {/* Group and sort categories */}
+               <optgroup label="Inkomster">
+                 {categories
+                   .filter(cat => cat.isIncome)
+                   .sort((a, b) => a.name.localeCompare(b.name, 'sv'))
+                   .map(category => (
+                     <option key={category.id} value={category.id}>{category.name}</option>
+                   ))}
+               </optgroup>
+               
+               <optgroup label="Sparande">
+                 {categories
+                   .filter(cat => !cat.isIncome && cat.isSaving)
+                   .sort((a, b) => a.name.localeCompare(b.name, 'sv'))
+                   .map(category => (
+                     <option key={category.id} value={category.id}>{category.name}</option>
+                   ))}
+               </optgroup>
+               
+               <optgroup label="Utgifter">
+                 {categories
+                   .filter(cat => !cat.isIncome && !cat.isSaving)
+                   .sort((a, b) => a.name.localeCompare(b.name, 'sv'))
+                   .map(category => (
+                     <option key={category.id} value={category.id}>{category.name}</option>
+                   ))}
+               </optgroup>
               </select>
             </div>
           )}

@@ -270,14 +270,52 @@ export default function TransactionForm({
             onChange={handleChange}
           >
             <option value="">Välj kategori (valfritt)</option>
-            {categories
-              .filter((category) => category.isIncome === formData.isIncome)
-              .sort((a, b) => a.name.localeCompare(b.name, 'sv')) // Sortera alfabetiskt
-              .map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
+            {formData.isIncome && (
+              <>
+                <optgroup label="Inkomster">
+                  {categories
+                    .filter((cat) => cat.isIncome)
+                    .sort((a, b) => a.name.localeCompare(b.name, 'sv'))
+                    .map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))}
+                </optgroup>
+              </>
+            )}
+
+            {/* Sparkategorier - endast när isIncome är false */}
+            {!formData.isIncome && (
+              <>
+                <optgroup label="Sparande">
+                  {categories
+                    .filter((cat) => !cat.isIncome && cat.isSaving)
+                    .sort((a, b) => a.name.localeCompare(b.name, 'sv'))
+                    .map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))}
+                </optgroup>
+              </>
+            )}
+
+            {/* Utgiftskategorier - endast när isIncome är false */}
+            {!formData.isIncome && (
+              <>
+                <optgroup label="Utgifter">
+                  {categories
+                    .filter((cat) => !cat.isIncome && !cat.isSaving)
+                    .sort((a, b) => a.name.localeCompare(b.name, 'sv'))
+                    .map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))}
+                </optgroup>
+              </>
+            )}
           </select>
         </div>
 

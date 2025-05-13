@@ -14,6 +14,10 @@ export default function CategoryList({ categories, loading, onUpdate, onDelete }
     .filter((cat) => cat.isIncome)
     .sort((a, b) => a.name.localeCompare(b.name, 'sv'));
 
+  const savingCategories = categories
+    .filter((cat) => cat.isSaving)
+    .sort((a, b) => a.name.locateCompare(b.name, 'sv'));
+
   const expenseCategories = categories
     .filter((cat) => !cat.isIncome)
     .sort((a, b) => a.name.localeCompare(b.name, 'sv'));
@@ -51,10 +55,10 @@ export default function CategoryList({ categories, loading, onUpdate, onDelete }
 
   return (
     <div>
-      {/* Income categories section */}
+      {/* Income categories */}
       <div className="mb-6">
-        <h3 className="text-md font-medium text-gray-800 dark:text-white mb-3 border-b pb-2">
-          <span className="inline-block w-3 h-3 bg-green-500 rounded-full mr-2"></span>
+        <h3 className="text-md font-medium text-gray-800 dark:text-white mb-3 border-b pb-2 flex items-center">
+          <span className="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
           Inkomstkategorier ({incomeCategories.length})
         </h3>
         {incomeCategories.length === 0 ? (
@@ -89,10 +93,46 @@ export default function CategoryList({ categories, loading, onUpdate, onDelete }
         )}
       </div>
 
-      {/* Expense categories section */}
+      {/* Saving categories */}
+      <div className="mb-6">
+        <h3 className="text-md font-medium text-gray-800 dark:text-white mb-3 border-b pb-2 flex items-center">
+          <span className="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
+          Sparkategorier ({savingCategories.length})
+        </h3>
+        {savingCategories.length === 0 ? (
+          <p className="text-sm text-gray-500 dark:text-gray-400">Inga sparkategorier skapade.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {savingCategories.map((category) => (
+              <div
+                key={category.id}
+                className="flex justify-between items-center p-3 rounded bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30"
+              >
+                <span className="font-medium">{category.name}</span>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => setEditingCategory(category)}
+                    className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm"
+                  >
+                    Redigera
+                  </button>
+                  <button
+                    onClick={() => setDeletingCategory(category)}
+                    className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 text-sm"
+                  >
+                    Ta bort
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Expense categories */}
       <div>
-        <h3 className="text-md font-medium text-gray-800 dark:text-white mb-3 border-b pb-2">
-          <span className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2"></span>
+        <h3 className="text-md font-medium text-gray-800 dark:text-white mb-3 border-b pb-2 flex items-center">
+          <span className="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
           Utgiftskategorier ({expenseCategories.length})
         </h3>
         {expenseCategories.length === 0 ? (

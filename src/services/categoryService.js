@@ -17,7 +17,7 @@ import { ValidationError, NotFoundError, AppError } from '@/errors/classes';
  */
 export const createCategory = async (categoryData) => {
   try {
-    const { name, isIncome, userId } = categoryData;
+    const { name, isIncome, isSaving, userId } = categoryData;
 
     if (!name || !userId) {
       throw new ValidationError('Namn och användar-ID krävs');
@@ -27,6 +27,7 @@ export const createCategory = async (categoryData) => {
       data: {
         name,
         isIncome: isIncome || false,
+        isSaving: isSaving || false,
         userId,
       },
     });
@@ -113,7 +114,7 @@ export const updateCategory = async (categoryId, categoryData) => {
       throw new ValidationError('Kategori-ID krävs');
     }
 
-    const { name, isIncome } = categoryData;
+    const { name, isIncome, isSaving } = categoryData;
 
     const existingCategory = await getCategoryById(categoryId);
     if (!existingCategory) {
@@ -125,6 +126,7 @@ export const updateCategory = async (categoryId, categoryData) => {
       data: {
         name: name !== undefined ? name : existingCategory.name,
         isIncome: isIncome !== undefined ? isIncome : existingCategory.isIncome,
+        isSaving: isSaving !== undefined ? isSaving : existingCategory.isSaving,
       },
     });
 
@@ -211,6 +213,11 @@ export const createDefaultCategories = async (userId) => {
       { name: 'Gåvor', isIncome: true },
       { name: 'Återbetalning', isIncome: true },
 
+      { name: 'Sparkonto', isIncome: false, isSaving: true },
+      { name: 'Aktieinvesteringar', isIncome: false, isSaving: true },
+      { name: 'Fondsparande', isIncome: false, isSaving: true },
+      { name: 'Pension', isIncome: false, isSaving: true },
+
       { name: 'Hyra/Boende', isIncome: false },
       { name: 'Mat och hushåll', isIncome: false },
       { name: 'Transport', isIncome: false },
@@ -227,6 +234,7 @@ export const createDefaultCategories = async (userId) => {
           data: {
             name: category.name,
             isIncome: category.isIncome,
+            isSaving: category.isSaving,
             userId,
           },
         }),

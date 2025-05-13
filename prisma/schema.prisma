@@ -34,6 +34,7 @@ model Category {
   id           String        @id @default(uuid())
   name         String
   isIncome     Boolean       @default(false)
+  isSaving     Boolean       @default(false)
   createdAt    DateTime      @default(now())
   userId       String?
   user         User?         @relation(fields: [userId], references: [id])
