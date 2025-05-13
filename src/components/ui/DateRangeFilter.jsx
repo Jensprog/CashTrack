@@ -134,11 +134,13 @@ export default function DateRangeFilter({
                 onChange={handleFilterChange}
               >
                 <option value="">Alla kategorier</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
+                {categories
+                  .sort((a, b) => a.name.localeCompare(b.name, 'sv')) // Sortera alfabetiskt
+                  .map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
               </select>
             </div>
           )}

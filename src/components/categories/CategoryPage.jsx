@@ -107,8 +107,8 @@ export default function CategoryPage() {
                 Om kategorier
               </h2>
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
-                Kategorier hjälper dig att organisera dina inkomster och utgifter. 
-                Du kan skapa egna kategorier för att anpassa efter dina behov.
+                Kategorier hjälper dig att organisera dina inkomster och utgifter. Du kan skapa egna
+                kategorier för att anpassa efter dina behov.
               </p>
               <ul className="text-sm text-gray-600 dark:text-gray-400 list-disc pl-5 space-y-2">
                 <li>Inkomstkategorier används för pengar du får in (gröna)</li>

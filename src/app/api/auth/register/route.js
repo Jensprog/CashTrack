@@ -26,7 +26,7 @@ export async function POST(request) {
     }
 
     const newUser = await createUser(email, password);
-    
+
     await createDefaultCategories(newUser.id);
 
     const token = generateToken(newUser.id);

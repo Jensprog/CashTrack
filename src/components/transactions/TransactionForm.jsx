@@ -272,6 +272,7 @@ export default function TransactionForm({
             <option value="">Välj kategori (valfritt)</option>
             {categories
               .filter((category) => category.isIncome === formData.isIncome)
+              .sort((a, b) => a.name.localeCompare(b.name, 'sv')) // Sortera alfabetiskt
               .map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.name}

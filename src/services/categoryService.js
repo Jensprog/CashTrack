@@ -191,18 +191,18 @@ export const createDefaultCategories = async (userId) => {
     }
 
     const existingCategories = await prisma.category.findMany({
-        where: {
-            userId,
-            name: {
-                in: ['Lön', 'Hyra/Boende'],
-            },
+      where: {
+        userId,
+        name: {
+          in: ['Lön', 'Hyra/Boende'],
         },
-        take: 1,
+      },
+      take: 1,
     });
 
     if (existingCategories.length > 0) {
-        console.log('User already has default categories. Skipping creation.');
-        return [];
+      console.log('User already has default categories. Skipping creation.');
+      return [];
     }
 
     const defaultCategories = [
@@ -210,7 +210,6 @@ export const createDefaultCategories = async (userId) => {
       { name: 'Bidrag', isIncome: true },
       { name: 'Gåvor', isIncome: true },
       { name: 'Återbetalning', isIncome: true },
-      { name: 'Övrigt', isIncome: true },
 
       { name: 'Hyra/Boende', isIncome: false },
       { name: 'Mat och hushåll', isIncome: false },

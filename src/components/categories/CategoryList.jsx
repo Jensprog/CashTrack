@@ -11,12 +11,12 @@ export default function CategoryList({ categories, loading, onUpdate, onDelete }
   const [deletingCategory, setDeletingCategory] = useState(null);
 
   const incomeCategories = categories
-  .filter((cat) => cat.isIncome)
-  .sort((a, b) => a.name.localeCompare(b.name, 'sv'));
+    .filter((cat) => cat.isIncome)
+    .sort((a, b) => a.name.localeCompare(b.name, 'sv'));
 
   const expenseCategories = categories
-  .filter((cat) => !cat.isIncome)
-  .sort((a, b) => a.name.localeCompare(b.name, 'sv'));
+    .filter((cat) => !cat.isIncome)
+    .sort((a, b) => a.name.localeCompare(b.name, 'sv'));
 
   const handleCategoryUpdated = (updatedCategory) => {
     setEditingCategory(null);
