@@ -8,10 +8,13 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
-    "format": "prettier --write \"**/*.{js,jsx}\"",
+    "format": "prettier --write '**/*.{js,jsx,json,css,html,md,yml,yaml}'",
     "type": "module",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "stress:setup": "node tests/setup-stresstest.js",
+    "stress:run": "artillery run tests/dbstresstest.yml",
+    "stress": "npm run stress:setup && npm run stress:run"
   },
   "contributors": [
     "Jens Karlsson <jk224vx@student.lnu.se>"
@@ -35,6 +38,7 @@
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
+    "artillery": "^2.0.21",
     "eslint": "^9",
     "eslint-config-next": "15.3.0",
     "eslint-config-prettier": "^10.1.2",
