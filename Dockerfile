@@ -6,13 +6,10 @@ RUN apk add --no-cache libc6-compat openssl
 # Sätt arbetskatalogen i containern
 WORKDIR /app
 
-# VIKTIGT: Kopiera BARA package.json och package-lock.json först
-# Detta gör att denna layer endast byggs om när dessa filer ändras
 COPY package.json package-lock.json* ./
 RUN npm ci
 
-# SEDAN kopierar du resten av koden
-# Detta gör att föregående layer (npm ci) kan återanvändas om package*.json inte ändrats
+# Kopierar resten av koden
 COPY . .
 
 # Generera Prisma-klient

@@ -4,7 +4,7 @@ import CategoryForm from '../../../src/components/categories/CategoryForm';
 const mockOnSubmit = jest.fn();
 
 describe('CategoryForm', () => {
-    it ('renders without crashing', () => {
+    it('renders without crashing', () => {
         render(<CategoryForm onSubmit={mockOnSubmit} />);
 
         expect(screen.getByText(/Kategorityp/i)).toBeInTheDocument();
