@@ -27,7 +27,7 @@ export const verifyToken = (token) => {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     return decoded;
-  } catch (_) { // eslint-disable-line no-unused-vars
+  } catch {
     return null;
   }
 };
