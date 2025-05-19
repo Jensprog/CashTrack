@@ -3,6 +3,7 @@
  * displaying the most common expenses in either percentage or SEK. 
  * Using the DateRangeFilter UI-component to be able to select a specific period.
  */
+'use client';
 
 import { useState, useEffect } from 'react';
 import { useTransactions } from '@/context/TransactionContext';
@@ -20,7 +21,7 @@ function SpendingChart() {
         let total = 0;
 
         transactions.forEach(transaction => {
-            if (transactions.amount < 0 && transactions.category) {
+            if (transaction.amount < 0 && transaction.category) {
                 const categoryName = transaction.category.name;
                 const amount = Math.abs(transaction.amount);
 
@@ -36,7 +37,7 @@ function SpendingChart() {
         const data = Object.keys(expensesByCategory).map(category => ({
             name: category,
             value: expensesByCategory[category],
-            percent: (expensesByCategory[category] / total) = 100
+            percent: (expensesByCategory[category] / total) * 100
         }));
 
         data.sort((a, b) => b.value - a.value);
@@ -58,14 +59,14 @@ function SpendingChart() {
     };
 
     const COLORS = [
-        '#008FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8',
+        '#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8',
         '#82ca9d', '#8dd1e1', '#a4de6c', '#d0ed57', '#ffc658'
     ];
 
     const formatValue = (value) => {
         if (displayMode === 'amount') {
             return new Intl.NumberFormat('sv-SE', {
-                style: 'curreny',
+                style: 'currency',
                 currency: 'SEK'
             }).format(value);
         } else {
