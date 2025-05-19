@@ -130,7 +130,11 @@ function SpendingChart() {
                         outerRadius={140}
                         fill="#8884d8"
                         dataKey={displayMode === 'amount' ? 'value' : 'percent'}
-                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(1)}%`}
+                        label={({ name, index }) => {
+                          const entry = chartData[index];
+                          const displayValue = displayMode === 'amount' ? entry.value : entry.percent;
+                          return `${name}: ${formatValue(displayValue)}`;
+                        }}
                       >
                         {chartData.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
