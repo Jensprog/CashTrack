@@ -1,37 +1,37 @@
 config:
-  target: "http://localhost:3000"
+  target: 'http://localhost:3000'
   phases:
     - duration: 30
       arrivalRate: 2
       rampTo: 10
-      name: "Ökande användarbelastning (2-10 användare per sekund)"
+      name: 'Ökande användarbelastning (2-10 användare per sekund)'
   defaults:
     headers:
-      Content-Type: "application/json"
+      Content-Type: 'application/json'
 
 scenarios:
-  - name: "Inloggning och transaktionsskapande"
+  - name: 'Inloggning och transaktionsskapande'
     flow:
       # 1. Logga in med fördefinierade användare
       - post:
-          url: "/api/auth/login"
+          url: '/api/auth/login'
           json:
-            email: "test@example.com"
-            password: "Test123!"
+            email: 'test@example.com'
+            password: 'Test123!'
           capture:
-            - json: "$.data.csrfToken"
-              as: "csrfToken"
+            - json: '$.data.csrfToken'
+              as: 'csrfToken'
           cookies:
             save: true
 
       # 2. Skapa en transaktion
       - post:
-          url: "/api/transactions"
+          url: '/api/transactions'
           json:
-            amount: "{{ $randomNumber(1000, 10000) }}"
-            description: "Stress Test {{ $randomString(5) }}"
-            date: "2025-05-14"
+            amount: '{{ $randomNumber(1000, 10000) }}'
+            description: 'Stress Test {{ $randomString(5) }}'
+            date: '2025-05-14'
           headers:
-            X-CSRF-Token: "{{ csrfToken }}"
+            X-CSRF-Token: '{{ csrfToken }}'
           cookies:
             use: true
