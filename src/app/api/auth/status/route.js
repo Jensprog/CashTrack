@@ -4,7 +4,6 @@
  * This route verifies if the user is logged in and returns the user information.
  */
 
-import { NextResponse } from 'next/server';
 import { getUserById } from '@/services/userService';
 import { ValidationError } from '@/errors/classes';
 import { successResponse, errorResponse } from '@/helpers/api';
@@ -24,7 +23,7 @@ export async function GET(request) {
     if (!user) {
       throw new ValidationError('Användaren hittades inte');
     }
-
+    // eslint-disable-next-line no-unused-vars
     const { password, ...userWithoutPassword } = user;
 
     return successResponse({ user: userWithoutPassword }, 'Användarinformation hämtad', 200);

@@ -3,7 +3,6 @@
  * This middleware verifies that incoming non-GET requests have a valid CSRF token.
  */
 
-import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { ForbiddenError } from '@/errors/classes';
 import { errorResponse } from '@/helpers/api';

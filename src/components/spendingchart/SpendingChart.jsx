@@ -127,7 +127,7 @@ function SpendingChart() {
                         cx="50%"
                         cy="50%"
                         labelLine={true}
-                        outerRadius={150}
+                        outerRadius={140}
                         fill="#8884d8"
                         dataKey={displayMode === 'amount' ? 'value' : 'percent'}
                         label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(1)}%`}

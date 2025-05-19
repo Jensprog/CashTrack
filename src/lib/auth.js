@@ -22,12 +22,12 @@ export const generateToken = (userId) => {
   return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
 };
 
-//Verify JWT token
+// Verify JWT token
 export const verifyToken = (token) => {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     return decoded;
-  } catch (error) {
+  } catch (_) { // eslint-disable-line no-unused-vars
     return null;
   }
 };
