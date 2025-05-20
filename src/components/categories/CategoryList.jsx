@@ -16,7 +16,7 @@ export default function CategoryList({ categories, loading, onUpdate, onDelete }
 
   const savingCategories = categories
     .filter((cat) => cat.isSaving)
-    .sort((a, b) => a.name.locateCompare(b.name, 'sv'));
+    .sort((a, b) => a.name.localeCompare(b.name, 'sv'));
 
   const expenseCategories = categories
     .filter((cat) => !cat.isIncome)
