@@ -33,6 +33,6 @@ deploy_production:
     - chmod 600 ~/.ssh/config
     - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@194.47.178.35 "echo 'SSH connection test'" || echo "SSH connection failed"
     - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@194.47.178.35 "cd ~/cashtrack && docker system prune -af || true"
-    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@194.47.178.35 "cd ~/cashtrack && git pull origin main && docker-compose -f docker-compose.yml -f docker-compose.production.yml down && docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
+    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@194.47.178.35 "cd ~/cashtrack && git pull origin main && JWT_SECRET=\"$JWT_SECRET\" docker-compose -f docker-compose.yml -f docker-compose.production.yml down && JWT_SECRET=\"$JWT_SECRET\" docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build -d"
   only:
     - main

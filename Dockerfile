@@ -1,28 +1,26 @@
 FROM node:18-alpine AS base
-
 # Installera beroenden som behövs för Prisma
 RUN apk add --no-cache libc6-compat openssl
-
 # Sätt arbetskatalogen i containern
 WORKDIR /app
 
+ARG JWT_SECRET
+ENV JWT_SECRET=${JWT_SECRET:-secure_default_secret}
+
 COPY package.json package-lock.json* ./
 RUN npm ci
-
 # Kopierar resten av koden
 COPY . .
-
 # Generera Prisma-klient
 RUN npx prisma generate
-
 # Bygg applikationen
 RUN npm run build
 
 # Produktionskörning
 FROM node:18-alpine AS runner
 WORKDIR /app
-
 ENV NODE_ENV=production
+ENV JWT_SECRET=${JWT_SECRET:-secure_default_secret}
 
 # Skapa en icke-root-användare för att köra applikationen
 RUN addgroup --system --gid 1001 nodejs
