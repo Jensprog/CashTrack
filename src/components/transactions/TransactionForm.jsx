@@ -143,7 +143,7 @@ export default function TransactionForm({
       onSuccess(response?.transaction);
     } catch (error) {
       console.error('Transaction error', error);
-      if (error.reponse?.data?.message) {
+      if (error.response?.data?.message) {
         setError(error.response.data.message);
       } else {
         setError(error.message || 'Ett fel inträffade. Försök igen senare');
@@ -248,7 +248,7 @@ export default function TransactionForm({
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-800 leading-tight focus:outline-none focus:shadow-outline"
               id="amount"
               name="amount"
-              type="number"
+              type="text"
               step="0.01"
               min="0"
               placeholder="0.00"
