@@ -56,7 +56,6 @@ export async function POST(request) {
     });
 
     // Return success response with token and user (excluding password)
-    // eslint-disable-next-line no-unused-vars
     const { password: _, ...userWithoutPassword } = user;
 
     return successResponse(
