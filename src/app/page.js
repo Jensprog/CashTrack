@@ -23,8 +23,8 @@ export default function Home() {
             Ta kontroll över din <span className="text-blue-600 dark:text-blue-400">ekonomi</span>
           </h1>
           <p className="mt-4 text-xl text-gray-600 dark:text-gray-300">
-            CashTrack hjälper dig hålla koll på dina inkomster och utgifter med flexibla datumperioder. 
-            Se din ekonomi lön-till-lön, veckovis eller med egna tidsintervall.
+            CashTrack hjälper dig hålla koll på dina inkomster och utgifter med flexibla
+            datumperioder. Se din ekonomi lön-till-lön, veckovis eller med egna tidsintervall.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4">
             <Link
@@ -54,10 +54,18 @@ export default function Home() {
                   <circle cx="100" cy="100" r="40" fill="#f87171" />
                   <path d="M 100 100 L 100 20 A 80 80 0 0 1 159 65 Z" fill="#34d399" />
                   <path d="M 100 100 L 159 65 A 80 80 0 0 1 145 141 Z" fill="#fbbf24" />
-                  <text x="230" y="50" fill="currentColor" fontSize="14">Mat: 32%</text>
-                  <text x="230" y="80" fill="currentColor" fontSize="14">Hyra: 40%</text>
-                  <text x="230" y="110" fill="currentColor" fontSize="14">Nöje: 15%</text>
-                  <text x="230" y="140" fill="currentColor" fontSize="14">Transport: 13%</text>
+                  <text x="230" y="50" fill="currentColor" fontSize="14">
+                    Mat: 32%
+                  </text>
+                  <text x="230" y="80" fill="currentColor" fontSize="14">
+                    Hyra: 40%
+                  </text>
+                  <text x="230" y="110" fill="currentColor" fontSize="14">
+                    Nöje: 15%
+                  </text>
+                  <text x="230" y="140" fill="currentColor" fontSize="14">
+                    Transport: 13%
+                  </text>
                 </svg>
               </div>
             </div>
@@ -163,7 +171,7 @@ export default function Home() {
                 Budgetanalys
               </h3>
               <p className="text-gray-600 dark:text-gray-300">
-                Visualisera dina utgifter i tydliga diagram och se exakt hur dina pengar fördelas 
+                Visualisera dina utgifter i tydliga diagram och se exakt hur dina pengar fördelas
                 mellan olika kategorier.
               </p>
             </div>
@@ -189,20 +197,34 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="p-4 bg-white dark:bg-gray-800">
-                  <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Dashboard</h3>
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">
+                    Dashboard
+                  </h3>
                   <div className="space-y-3">
                     <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-                      <h4 className="text-sm font-medium text-blue-800 dark:text-blue-300 mb-2">Balans</h4>
-                      <p className="text-xl font-semibold text-green-600 dark:text-green-400">13 300 kr</p>
+                      <h4 className="text-sm font-medium text-blue-800 dark:text-blue-300 mb-2">
+                        Balans
+                      </h4>
+                      <p className="text-xl font-semibold text-green-600 dark:text-green-400">
+                        13 300 kr
+                      </p>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
-                        <h4 className="text-sm font-medium text-green-800 dark:text-green-300 mb-2">Inkomster</h4>
-                        <p className="text-lg font-semibold text-green-600 dark:text-green-400">25 000 kr</p>
+                        <h4 className="text-sm font-medium text-green-800 dark:text-green-300 mb-2">
+                          Inkomster
+                        </h4>
+                        <p className="text-lg font-semibold text-green-600 dark:text-green-400">
+                          25 000 kr
+                        </p>
                       </div>
                       <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg">
-                        <h4 className="text-sm font-medium text-red-800 dark:text-red-300 mb-2">Utgifter</h4>
-                        <p className="text-lg font-semibold text-red-600 dark:text-red-400">11 700 kr</p>
+                        <h4 className="text-sm font-medium text-red-800 dark:text-red-300 mb-2">
+                          Utgifter
+                        </h4>
+                        <p className="text-lg font-semibold text-red-600 dark:text-red-400">
+                          11 700 kr
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -214,7 +236,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            
+
             {/* Budget Analysis Screenshot */}
             <div className="bg-gray-50 dark:bg-gray-900 rounded-lg overflow-hidden shadow-lg">
               <div className="p-1">
@@ -226,7 +248,9 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="p-4 bg-white dark:bg-gray-800">
-                  <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Budgetanalys</h3>
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">
+                    Budgetanalys
+                  </h3>
                   <div className="h-48 flex items-center justify-center">
                     <svg viewBox="0 0 200 200" className="w-full h-full">
                       {/* Simplified pie chart */}
@@ -245,7 +269,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            
+
             {/* Transactions Screenshot */}
             <div className="bg-gray-50 dark:bg-gray-900 rounded-lg overflow-hidden shadow-lg">
               <div className="p-1">
@@ -257,14 +281,18 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="p-4 bg-white dark:bg-gray-800">
-                  <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Transaktioner</h3>
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">
+                    Transaktioner
+                  </h3>
                   <div className="space-y-2">
                     <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-700/50 rounded-md">
                       <div>
                         <div className="font-medium">Lön</div>
                         <div className="text-xs text-gray-500 dark:text-gray-400">2025-04-25</div>
                       </div>
-                      <div className="font-medium text-green-600 dark:text-green-400">+25 000 kr</div>
+                      <div className="font-medium text-green-600 dark:text-green-400">
+                        +25 000 kr
+                      </div>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-700/50 rounded-md">
                       <div>
