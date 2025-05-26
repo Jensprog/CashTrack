@@ -10,6 +10,7 @@ import Link from 'next/link';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const { user, loading, logout } = useAuth();
 
   // Toggle mobile menu
@@ -17,9 +18,14 @@ export default function Header() {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const toggleProfileMenu = () => {
+    setIsProfileMenuOpen(!isProfileMenuOpen);
+  };
+
   // Handle logout
   const handleLogout = async () => {
     await logout();
+    setIsProfileMenuOpen(false);
   };
 
   return (
@@ -42,6 +48,7 @@ export default function Header() {
               </Link>
             )}
           </div>
+
           {/* Desktop navigation */}
           <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
             {!loading &&
@@ -71,15 +78,62 @@ export default function Header() {
                   >
                     Kategorier
                   </Link>
+
+                  {/* Profile dropdown */}
                   <div className="ml-3 relative">
                     <div>
                       <button
-                        onClick={handleLogout}
-                        className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium"
+                        onClick={toggleProfileMenu}
+                        className="flex items-center text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium"
                       >
-                        Logga ut
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5 mr-1"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        {user?.email?.split('@')[0] || 'Profil'}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className={`h-4 w-4 ml-1 transform transition-transform ${isProfileMenuOpen ? 'rotate-180' : ''}`}
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
                       </button>
                     </div>
+
+                    {/* Profile dropdown menu */}
+                    {isProfileMenuOpen && (
+                      <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-50">
+                        <div className="py-1" role="menu">
+                          <Link
+                            href="/useraccount"
+                            className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                            onClick={() => setIsProfileMenuOpen(false)}
+                          >
+                            Mitt konto
+                          </Link>
+                          <button
+                            onClick={handleLogout}
+                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                          >
+                            Logga ut
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </>
               ) : (
@@ -153,17 +207,43 @@ export default function Header() {
                   <Link
                     href="/dashboard"
                     className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium"
+                    onClick={() => setIsMenuOpen(false)}
                   >
                     Översikt
                   </Link>
                   <Link
                     href="/transactions"
                     className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium"
+                    onClick={() => setIsMenuOpen(false)}
                   >
                     Transaktioner
                   </Link>
+                  <Link
+                    href="/spendingchart"
+                    className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Budgetanalys
+                  </Link>
+                  <Link
+                    href="/categories"
+                    className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Kategorier
+                  </Link>
+                  <Link
+                    href="/useraccount"
+                    className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Mitt konto
+                  </Link>
                   <button
-                    onClick={handleLogout}
+                    onClick={() => {
+                      handleLogout();
+                      setIsMenuOpen(false);
+                    }}
                     className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium w-full text-left"
                   >
                     Logga ut
@@ -174,12 +254,14 @@ export default function Header() {
                   <Link
                     href="/login"
                     className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium"
+                    onClick={() => setIsMenuOpen(false)}
                   >
                     Logga in
                   </Link>
                   <Link
                     href="/register"
                     className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium"
+                    onClick={() => setIsMenuOpen(false)}
                   >
                     Skapa konto
                   </Link>
