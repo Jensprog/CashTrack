@@ -21,10 +21,12 @@ const eslintConfig = [
       "no-undef": "error",
       "prefer-const": "error",
       "no-var": "error",
-      "no-console": "warn",
+      "no-console": ["warn", {
+        "allow": ["error", "warn"]
+      }],
       "react-hooks/exhaustive-deps": "warn"
-    }
   }
+}
 ];
 
 export default eslintConfig;

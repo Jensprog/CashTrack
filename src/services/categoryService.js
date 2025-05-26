@@ -203,7 +203,6 @@ export const createDefaultCategories = async (userId) => {
     });
 
     if (existingCategories.length > 0) {
-      console.log('User already has default categories. Skipping creation.');
       return [];
     }
 
