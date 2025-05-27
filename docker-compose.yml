@@ -27,6 +27,7 @@ services:
       - MYSQL_DATABASE=${MYSQL_DATABASE:-cashtrack}
     volumes:
       - mysql-data:/var/lib/mysql
+      - ./mysql/conf:/etc/mysql/conf.d
     networks:
       - cashtrack-network
 

@@ -15,6 +15,7 @@ services:
       - MYSQL_DATABASE=${MYSQL_DATABASE:-cashtrack}
     volumes:
       - mysql-data:/var/lib/mysql
+      - ./mysql/conf:/etc/mysql/conf.d
 
   nginx:
     container_name: cashtrack-nginx
@@ -39,6 +40,6 @@ services:
     volumes:
       - ./nginx/certbot/conf:/etc/letsencrypt
       - ./nginx/certbot/www:/var/www/certbot
-    command: certonly --webroot --webroot-path=/var/www/certbot --email student@example.com --agree-tos --no-eff-email --force-renewal -d cscloud8-35.lnu.se
+    command: certonly --webroot --webroot-path=/var/www/certbot --email jens.karlsson@hotmail.com --agree-tos --no-eff-email --force-renewal -d cashtrack.se -d www.cashtrack.se
     depends_on:
       - nginx
