@@ -12,6 +12,23 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals"),
   {
+    files: ["**/__tests__/**/*", "**/*.test.js", "**/*test.jsx"],
+    env: {
+      jest: true,
+      node: true,
+    },
+    globals: {
+      jest: "readonly",
+      test: "readonly",
+      describe: "readonly",
+      expect: "readonly",
+      beforeEach: "readonly",
+      afterEach: "readonly",
+      beforeAll: "readonly",
+      afterAll: "readonly",
+    },
+  },
+  {
     rules: {
       "no-unused-vars": ["error", { 
         "vars": "all", 
