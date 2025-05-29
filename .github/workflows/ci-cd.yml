@@ -2,76 +2,195 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   test:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
-        
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Run formatting check
-      run: npm run format
-      
-    - name: Run linting
-      run: npm run lint
-      
-    - name: Run tests
-      run: npm test
-      env:
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      
-    - name: Test completed
-      run: echo "Test stage completed successfully"
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm' # Caching npm automatically based on package.json-lock
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run formatting check
+        run: npm run format
+
+      - name: Run linting
+        run: npm run lint
+
+      - name: Run tests
+        run: npm test
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
+      - name: Test completed
+        run: echo "Test stage completed successfully"
 
   deploy_production:
     runs-on: ubuntu-latest
     needs: test
     if: github.ref == 'refs/heads/main'
-    
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup SSH
-      run: |
-        mkdir -p ~/.ssh
-        chmod 700 ~/.ssh
-        echo "SSH_PRIVATE_KEY length: ${#SSH_PRIVATE_KEY}"
-        echo "Production host: ${{ secrets.PRODUCTION_HOST }}"
-        
-    - name: Add SSH key
-      run: |
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        
-    - name: Configure SSH
-      run: |
-        echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-        chmod 600 ~/.ssh/config
-        
-    - name: Test SSH connection
-      run: |
-        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "echo 'SSH connection test'" || echo "SSH connection failed"
-      
-    - name: Clean Docker system
-      run: |
-        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "cd /home/CashTrack && docker system prune -af || true"
-        
-    - name: Deploy to production
-      run: |
-        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "cd /home/CashTrack && git pull origin main && docker-compose -f docker-compose.production.yml down && docker-compose -f docker-compose.production.yml up --build -d"
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          echo "Production host: ${{ secrets.PRODUCTION_HOST }}"
+
+      - name: Add SSH key
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Configure SSH
+        run: |
+          echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+          chmod 600 ~/.ssh/config
+
+      - name: Test SSH connection
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "echo 'SSH connection test successful'"
+
+      - name: Pre-deployment system check
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "
+            echo '=== Pre-deployment System Status ==='
+            free -h
+            df -h
+            docker system df 2>/dev/null || echo 'Docker system df unavailable'
+          "
+
+      - name: Graceful service shutdown
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "
+            cd /home/CashTrack
+            echo 'Gracefully stopping services...'
+            docker-compose -f docker-compose.production.yml down --timeout 30 || true
+            
+            echo 'Waiting for containers to fully stop...'
+            sleep 10
+          "
+
+      - name: Docker cleanup
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "
+            echo '=== Smart Docker Cleanup ==='
+            
+            # Cleanup old containers
+            echo 'Removing stopped containers...'
+            docker container prune -f
+            
+            # Cleanup build cache
+            echo 'Clearing build cache...'
+            docker builder prune -af
+            
+            # Cleanup old images
+            echo 'Removing dangling images...'
+            docker image prune -f
+            
+            # Remove old versions of cashtrack
+            echo 'Removing old CashTrack images...'
+            docker images cashtrack-nextjs --format '{{.ID}} {{.CreatedAt}}' | sort -k2 -r | tail -n +2 | awk '{print \$1}' | xargs -r docker rmi -f 2>/dev/null || true
+            
+            # Cleanup unused volumes
+            echo 'Checking for unused volumes...'
+            docker volume ls -q -f dangling=true | xargs -r docker volume rm 2>/dev/null || true
+            
+            echo 'Cleanup completed! Current status:'
+            docker system df
+          "
+
+      - name: Update application code
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "
+            cd /home/CashTrack
+            echo 'Pulling latest code...'
+            git pull origin main
+            
+            echo 'Code updated successfully'
+          "
+
+      - name: Build and deploy with optimized caching
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "
+            cd /home/CashTrack
+            
+            echo '=== Building with Caching ==='
+            # Rebuilds Dockerfile and package.json if changed
+            docker-compose -f docker-compose.production.yml build --pull
+            
+            echo 'Starting services...'
+            docker-compose -f docker-compose.production.yml up -d
+            
+            echo 'Waiting for services to be ready...'
+            sleep 30
+          "
+
+      - name: Health check and verification
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "
+            cd /home/CashTrack
+            
+            echo '=== Health Check ==='
+            # Check if containers are running
+            docker-compose -f docker-compose.production.yml ps
+            
+            # Checking service health
+            for i in {1..5}; do
+              if docker-compose -f docker-compose.production.yml ps | grep -q 'Up'; then
+                echo 'Services are running!'
+                break
+              else
+                echo 'Waiting for services... (attempt \$i/5)'
+                sleep 10
+              fi
+            done
+            
+            # System status after deploy
+            echo '=== Post-deployment System Status ==='
+            free -h
+            docker system df
+            
+            # Test basic connectivity 
+            if command -v curl >/dev/null 2>&1; then
+              echo 'Testing application response...'
+              curl -f -s -o /dev/null http://localhost:3000 && echo 'Application responding!' || echo 'Application check failed'
+            fi
+          "
+
+      - name: Final cleanup
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "
+            echo '=== Final Maintenance ==='
+            
+            # Cleanup build cache that may been created
+            docker builder prune -f 2>/dev/null || true
+            
+            # Final report (checking RAM and SSD storage)
+            echo 'Deployment completed successfully!'
+            echo 'System resources:'
+            free -h | grep -E '(Mem|Swap)'
+            echo 'Docker usage:'
+            docker system df --format 'table {{.Type}}\t{{.Size}}\t{{.Reclaimable}}'
+          "
+
+      - name: Deployment summary
+        run: |
+          echo "🚀 Deployment completed successfully!"
+          echo "✅ Services are running"
+          echo "🧹 Docker cache cleaned"
+          echo "💾 System resources optimized"

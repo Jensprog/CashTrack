@@ -8,29 +8,29 @@ import { verifyToken } from '@/lib/auth';
 import UserAccount from '@/components/auth/UserAccount';
 
 export const metadata = {
-    title: 'Mitt Konto - CashTrack',
-    description: 'Hantera ditt CashTrack-konto',
+  title: 'Mitt Konto - CashTrack',
+  description: 'Hantera ditt CashTrack-konto',
 };
 
 export const dynamic = 'force-dynamic';
 
 export default async function AccountPage() {
-    try {
-        const cookieStore = await cookies();
-        const tokenCookie = cookieStore.get('token');
+  try {
+    const cookieStore = await cookies();
+    const tokenCookie = cookieStore.get('token');
 
-        if (!tokenCookie) {
-            redirect('/login');
-        }
-
-        const decoded = verifyToken(tokenCookie.value);
-        if (!decoded) {
-            redirect('/login');
-        }
-        
-        return <UserAccount />;
-    } catch(error) {
-        console.error('Authentication error:', error);
-        redirect('/login');
+    if (!tokenCookie) {
+      redirect('/login');
     }
+
+    const decoded = verifyToken(tokenCookie.value);
+    if (!decoded) {
+      redirect('/login');
+    }
+
+    return <UserAccount />;
+  } catch (error) {
+    console.error('Authentication error:', error);
+    redirect('/login');
+  }
 }

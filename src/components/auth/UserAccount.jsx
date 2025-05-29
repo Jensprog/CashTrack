@@ -12,7 +12,6 @@ import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/axiosConfig';
 
-
 export default function UserAccount() {
   // Get user data and logout function from AuthContext.
   const { user, logout } = useAuth();
