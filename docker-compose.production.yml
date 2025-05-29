@@ -1,5 +1,4 @@
-version: '3.8'
-
+# Ta bort version (deprecated)
 services:
   nextjs:
     restart: always
@@ -8,6 +7,11 @@ services:
       - DATABASE_URL=mysql://root:${MYSQL_ROOT_PASSWORD:-password}@cashtrack-mysql:3306/${MYSQL_DATABASE:-cashtrack}
       - DIRECT_URL=${DIRECT_URL}
       - JWT_SECRET=${JWT_SECRET:-secure_production_secret}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - cashtrack-network
 
   mysql:
     restart: always
@@ -15,8 +19,17 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-password}
       - MYSQL_DATABASE=${MYSQL_DATABASE:-cashtrack}
     volumes:
-      - mysql-data:/var/lib/mysql
+      # External volume shall not be deleted
+      - cashtrack_mysql_persistent:/var/lib/mysql
       - ./mysql/conf:/etc/mysql/conf.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-password}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - cashtrack-network
 
   nginx:
     container_name: cashtrack-nginx
@@ -44,3 +57,15 @@ services:
     command: certonly --webroot --webroot-path=/var/www/certbot --email jens.karlsson@hotmail.com --agree-tos --no-eff-email --force-renewal -d cashtrack.se -d www.cashtrack.se
     depends_on:
       - nginx
+    networks:
+      - cashtrack-network
+
+# External volume
+volumes:
+  cashtrack_mysql_persistent:
+    external: true
+    name: cashtrack_mysql_persistent
+
+networks:
+  cashtrack-network:
+    driver: bridge
