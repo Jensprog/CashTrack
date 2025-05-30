@@ -88,29 +88,28 @@ jobs:
       - name: Docker cleanup
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "
-            echo '=== Smart Docker Cleanup ==='
+            echo '=== Safe Docker Cleanup - Data Preservation Priority ==='
             
-            # Cleanup old containers
+            # Cleanup old containers (endast stopped containers)
             echo 'Removing stopped containers...'
             docker container prune -f
             
-            # Cleanup build cache
+            # Cleanup build cache (frigör diskutrymme)
             echo 'Clearing build cache...'
             docker builder prune -af
             
-            # Cleanup old images
+            # Cleanup dangling images (ej använda images)
             echo 'Removing dangling images...'
             docker image prune -f
             
-            # Remove old versions of cashtrack
+            # Remove old versions of cashtrack specifically
             echo 'Removing old CashTrack images...'
             docker images cashtrack-nextjs --format '{{.ID}} {{.CreatedAt}}' | sort -k2 -r | tail -n +2 | awk '{print \$1}' | xargs -r docker rmi -f 2>/dev/null || true
             
-            # Cleanup unused volumes
-            echo 'Checking for unused volumes...'
-            docker volume ls -q -f dangling=true | xargs -r docker volume rm 2>/dev/null || true
+            # VIKTIG: Rensar ALDRIG volymer för att skydda databas-data
+            echo 'Skipping volume cleanup to preserve database data'
             
-            echo 'Cleanup completed! Current status:'
+            echo 'Safe cleanup completed! Current status:'
             docker system df
           "
 
