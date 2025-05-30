@@ -1,6 +1,11 @@
-# Ta bort version (deprecated)
+version: '3.8'
+
 services:
   nextjs:
+    container_name: cashtrack-nextjs
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: always
     environment:
       - NODE_ENV=production
@@ -8,26 +13,20 @@ services:
       - DIRECT_URL=${DIRECT_URL}
       - JWT_SECRET=${JWT_SECRET:-secure_production_secret}
     depends_on:
-      mysql:
-        condition: service_healthy
+      - mysql
     networks:
       - cashtrack-network
 
   mysql:
+    container_name: cashtrack-mysql
+    image: mysql:8
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-password}
       - MYSQL_DATABASE=${MYSQL_DATABASE:-cashtrack}
     volumes:
-      # External volume shall not be deleted
-      - cashtrack_mysql_persistent:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
       - ./mysql/conf:/etc/mysql/conf.d
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-password}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
     networks:
       - cashtrack-network
 
@@ -60,11 +59,8 @@ services:
     networks:
       - cashtrack-network
 
-# External volume
 volumes:
-  cashtrack_mysql_persistent:
-    external: true
-    name: cashtrack_mysql_persistent
+  mysql-data:
 
 networks:
   cashtrack-network:
