@@ -45,7 +45,7 @@ USER root
 RUN chmod +x ./start.sh
 USER nextjs
 
-# KRITISKT: Säkerställ att Prisma client fungerar i runtime
+# Säkerställ att Prisma client fungerar i runtime
 RUN npx prisma generate
 
 # Exponera porten som applikationen lyssnar på
