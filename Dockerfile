@@ -37,12 +37,7 @@ COPY --from=base --chown=nextjs:nodejs /app/package.json ./package.json
 COPY --from=base --chown=nextjs:nodejs /app/public ./public
 COPY --from=base --chown=nextjs:nodejs /app/prisma ./prisma
 
-# Kopiera startup script
-COPY --from=base --chown=nextjs:nodejs /app/scripts/start.sh ./start.sh
-
-# Gör scriptet körbart
 USER root
-RUN chmod +x ./start.sh
 USER nextjs
 
 # Säkerställ att Prisma client fungerar i runtime
@@ -52,4 +47,4 @@ RUN npx prisma generate
 EXPOSE 3000
 
 # Starta applikationen med startup script
-CMD ["./start.sh"]
+CMD ["npm", "start"]
