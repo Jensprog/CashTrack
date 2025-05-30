@@ -10,13 +10,10 @@ ENV JWT_SECRET=${JWT_SECRET:-secure_default_secret}
 # Kopiera package.json för dependency caching
 COPY package.json package-lock.json* ./
 RUN npm ci
-
 # Kopierar resten av koden
 COPY . .
-
 # VIKTIGT: Generera Prisma-klient INNAN build
 RUN npx prisma generate
-
 # Bygg applikationen
 RUN npm run build
 
@@ -40,14 +37,19 @@ COPY --from=base --chown=nextjs:nodejs /app/package.json ./package.json
 COPY --from=base --chown=nextjs:nodejs /app/public ./public
 COPY --from=base --chown=nextjs:nodejs /app/prisma ./prisma
 
-# KRITISKT: Säkerställ att Prisma client fungerar i runtime
+# Kopiera startup script
+COPY --from=base --chown=nextjs:nodejs /app/scripts/start.sh ./start.sh
+
+# Gör scriptet körbart
+USER root
+RUN chmod +x ./start.sh
 USER nextjs
 
-# Generera Prisma client igen i runtime för säkerhets skull
+# KRITISKT: Säkerställ att Prisma client fungerar i runtime
 RUN npx prisma generate
 
 # Exponera porten som applikationen lyssnar på
 EXPOSE 3000
 
-# Starta applikationen
-CMD ["npm", "start"]
+# Starta applikationen med startup script
+CMD ["./start.sh"]
