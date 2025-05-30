@@ -11,6 +11,7 @@ import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/axiosConfig';
+import ChangePassword from '@/components/auth/ChangePasswordForm';
 
 export default function UserAccount() {
   // Get user data and logout function from AuthContext.
@@ -165,6 +166,11 @@ export default function UserAccount() {
                 >
                   Logga ut
                 </button>
+              </div>
+
+              {/* Ändra lösenord */}
+              <div className="border-b border-gray-200 dark:border-gray-700 pb-7">
+                <ChangePassword />
               </div>
 
               {/* Radera konto */}
