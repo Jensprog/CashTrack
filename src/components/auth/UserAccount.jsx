@@ -22,7 +22,7 @@ export default function UserAccount() {
   const [activeSection, setActiveSection] = useState('profile');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   // State for account deletion.
   const [deleteConfirmation, setDeleteConfirmation] = useState('');
@@ -102,9 +102,9 @@ export default function UserAccount() {
           </div>
         )}
 
-        {success && (
+        {successMessage && (
           <div className="mb-4 p-3 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800 rounded">
-            {success}
+            {successMessage}
           </div>
         )}
 

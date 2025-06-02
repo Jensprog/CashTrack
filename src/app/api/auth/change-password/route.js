@@ -4,7 +4,7 @@
 
 import { authMiddleware } from '@/middlewares/authMiddleware';
 import { comparePassword, hashPassword } from '@/lib/auth';
-import { AuthenticationError } from '@/errors/classes';
+import { ValidationError } from '@/errors/classes';
 import { successResponse, errorResponse } from '@/helpers/api';
 import { getUserById } from '@/services/userService';
 import { prisma } from '@/lib/db';
@@ -22,7 +22,7 @@ export async function PUT(request) {
 
     const isCurrentPasswordValid = await comparePassword(currentPassword, user.password);
     if (!isCurrentPasswordValid) {
-      throw new AuthenticationError('Nuvarande lösenord är felaktigt.');
+      throw new ValidationError('Nuvarande lösenord är felaktigt.');
     }
 
     const hashedNewPassword = await hashPassword(newPassword);
