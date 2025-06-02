@@ -25,7 +25,7 @@ CashTrack är en fullstack-applikation som låter dig spåra dina inkomster och 
 
 ## Kom igång
 
-För detaljerade instruktioner om installation, konfiguration och deployment, se vår Wiki-dokumentation.
+OBS! Uppdatering kommer. 
 
 ## Dokumentation
 
