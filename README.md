@@ -32,7 +32,7 @@ För detaljerade instruktioner om installation, konfiguration och deployment, se
 All omfattande dokumentation finns i projektets [Wiki](../../wiki):
 
 - [Kravspecifikation](../../wiki/Kravspecifikation)
-- [Product-backlog](../../wiki/Product-backlog)
+- [Product Backlog](../../wiki/Product-backlog)
 - [Projektvision](../../wiki/Projektvision)
 - [Testspecifikation](../../wiki/Testspecifikation)
 - [Testrapporter](../../wiki/Testrapport-1) (Testrapport 1-5)
