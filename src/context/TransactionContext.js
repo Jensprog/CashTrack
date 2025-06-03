@@ -35,9 +35,10 @@ export const TransactionProvider = ({ children }) => {
   const [financialData, setFinancialData] = useState({
     balance: 0,
     income: 0,
+    savings: 0,
     expenses: 0,
-    weekly: { balance: 0, income: 0, expenses: 0 },
-    monthly: { balance: 0, income: 0, expenses: 0 },
+    weekly: { balance: 0, income: 0, savings: 0, expenses: 0 },
+    monthly: { balance: 0, income: 0, savings: 0, expenses: 0 },
   });
 
   // Calculate financial data from transactions
@@ -58,11 +59,14 @@ export const TransactionProvider = ({ children }) => {
     // Total balance from all transactions
     let totalBalance = 0;
     let totalIncome = 0;
+    let totalSavings = 0;
     let totalExpenses = 0;
 
     // Weekly and monthly data
     let weeklyIncome = 0;
     let weeklyExpenses = 0;
+    let weeklySavings = 0;
+    let monthlySavings = 0;
     let monthlyIncome = 0;
     let monthlyExpenses = 0;
 
@@ -77,6 +81,8 @@ export const TransactionProvider = ({ children }) => {
       // Total income and expenses
       if (amount > 0) {
         totalIncome += amount;
+      } else if (transaction.category?.isSaving) {
+        totalSavings += Math.abs(amount);
       } else {
         totalExpenses += Math.abs(amount);
       }
@@ -85,6 +91,8 @@ export const TransactionProvider = ({ children }) => {
       if (transactionDate >= weekStart) {
         if (amount > 0) {
           weeklyIncome += amount;
+        } else if (transaction.category?.isSaving) {
+          weeklySavings += Math.abs(amount);
         } else {
           weeklyExpenses += Math.abs(amount);
         }
@@ -94,6 +102,8 @@ export const TransactionProvider = ({ children }) => {
       if (transactionDate >= monthStart) {
         if (amount > 0) {
           monthlyIncome += amount;
+        } else if (transaction.category?.isSaving) {
+          monthlySavings += Math.abs(amount);
         } else {
           monthlyExpenses += Math.abs(amount);
         }
@@ -105,12 +115,14 @@ export const TransactionProvider = ({ children }) => {
       // Total for all transactions
       balance: totalBalance,
       income: totalIncome,
+      savings: totalSavings,
       expenses: totalExpenses,
 
       // Weekly data
       weekly: {
         balance: totalBalance,
         income: weeklyIncome,
+        savings: weeklySavings,
         expenses: weeklyExpenses,
       },
 
@@ -118,6 +130,7 @@ export const TransactionProvider = ({ children }) => {
       monthly: {
         balance: totalBalance,
         income: monthlyIncome,
+        savings: monthlySavings,
         expenses: monthlyExpenses,
       },
     });
