@@ -14,7 +14,7 @@ export default function CategoryForm({
   const initialFormState = {
     name: category ? category.name : '',
     isIncome: category ? category.isIncome : false,
-    isSaving: category ? category.IsSaving : false,
+    isSaving: category ? category.isSaving : false,
   };
 
   const [formData, setFormData] = useState(initialFormState);
