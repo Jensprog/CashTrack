@@ -38,7 +38,7 @@ export default function FinancialOverview() {
     return new Intl.NumberFormat('sv-SE', {
       style: 'currency',
       currency: 'SEK',
-      maximumFractionDigits: 0,
+      maximumFractionDigits: 2,
     }).format(amount);
   };
 
