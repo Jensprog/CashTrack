@@ -32,6 +32,7 @@ export const TransactionProvider = ({ children }) => {
     endDate: '',
     categoryId: '',
   });
+
   const [financialData, setFinancialData] = useState({
     balance: 0,
     income: 0,
