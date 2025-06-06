@@ -188,7 +188,7 @@ export default function TransactionForm({
       )}
 
       <form onSubmit={handleSubmit} noValidate>
-        {/* Transaction Type - Nya knappar */}
+        {/* Transaction Type */}
         <div className="mb-4">
           <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
             Transaktionstyp
