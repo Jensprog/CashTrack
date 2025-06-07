@@ -1,9 +1,10 @@
-import { createSavingsAccount } from '@/services/savingsAccountService';
+import { createSavingsAccount, getUserSavingsAccounts } from '@/services/savingsAccountService';
 
 jest.mock('@/lib/db', () => ({
   prisma: {
     savingsAccount: {
       create: jest.fn(),
+      findMany: jest.fn(),
     },
   },
 }));
@@ -92,6 +93,60 @@ describe('SavingsAccount Service', () => {
       await expect(createSavingsAccount(testData)).rejects.toThrow(
         'Sparmål måste vara ett positivt nummer',
       );
+    });
+  });
+
+  describe('getUserSavingsAccounts', () => {
+    it('should return user savings accounts with transactions', async () => {
+      const mockSavingsAccounts = [
+        {
+          id: 'savings-789',
+          name: 'Semesterresa',
+          description: 'Spara till semester',
+          userId: 'test@example.com',
+          category: {
+            id: 'cat-456',
+            name: 'Resa',
+          },
+          transactions: [],
+          createdAt: new Date(),
+        },
+      ];
+
+      prisma.savingsAccount.findMany.mockResolvedValue(mockSavingsAccounts);
+
+      const result = await getUserSavingsAccounts('test@example.com');
+
+      expect(result).toEqual(mockSavingsAccounts);
+      expect(prisma.savingsAccount.findMany).toHaveBeenCalledWith({
+        where: { userId: 'test@example.com' },
+        include: {
+          category: true,
+          transactions: {
+            include: {
+              category: true,
+            },
+            orderBy: {
+              date: 'desc',
+            },
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+    });
+
+    it('should return empty array when user has no savings accounts', async () => {
+      prisma.savingsAccount.findMany.mockResolvedValue([]);
+
+      const result = await getUserSavingsAccounts('test@example.com');
+
+      expect(result).toEqual([]);
+    });
+
+    it('should throw ValidationError when userId is missing', async () => {
+      await expect(getUserSavingsAccounts()).rejects.toThrow('Användar-ID krävs');
     });
   });
 });
