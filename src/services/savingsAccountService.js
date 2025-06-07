@@ -76,3 +76,34 @@ export const getUserSavingsAccounts = async (userId) => {
     throw error;
   }
 };
+
+export const getSavingsAccountById = async (savingsAccountId) => {
+  try {
+    if (!savingsAccountId) {
+      throw new ValidationError('Sparkonto-ID krävs');
+    }
+
+    const savingsAccount = await prisma.savingsAccount.findUnique({
+      where: { id: savingsAccountId },
+      include: {
+        category: true,
+        transactions: {
+          include: {
+            category: true,
+          },
+          orderBy: {
+            date: 'desc',
+          },
+        },
+      },
+    });
+
+    return savingsAccount;
+  } catch (error) {
+    console.error('Error fetching savings account by ID:', error);
+    if (error instanceof AppError) {
+      throw error;
+    }
+    throw error;
+  }
+};

@@ -1,10 +1,15 @@
-import { createSavingsAccount, getUserSavingsAccounts } from '@/services/savingsAccountService';
+import {
+  createSavingsAccount,
+  getUserSavingsAccounts,
+  getSavingsAccountById,
+} from '@/services/savingsAccountService';
 
 jest.mock('@/lib/db', () => ({
   prisma: {
     savingsAccount: {
       create: jest.fn(),
       findMany: jest.fn(),
+      findUnique: jest.fn(),
     },
   },
 }));
@@ -147,6 +152,55 @@ describe('SavingsAccount Service', () => {
 
     it('should throw ValidationError when userId is missing', async () => {
       await expect(getUserSavingsAccounts()).rejects.toThrow('Användar-ID krävs');
+    });
+  });
+
+  describe('getSavingsAccountById', () => {
+    it('should return savings account by ID', async () => {
+      const mockSavingsAccount = {
+        id: 'savings-123',
+        name: 'Bröllop',
+        description: 'Spara till bröllop',
+        userId: 'test@example.com',
+        category: {
+          id: 'cat-456',
+          name: 'Bröllop',
+        },
+        transactions: [],
+        createdAt: new Date(),
+      };
+
+      prisma.savingsAccount.findUnique.mockResolvedValue(mockSavingsAccount);
+
+      const result = await getSavingsAccountById('savings-123');
+
+      expect(result).toEqual(mockSavingsAccount);
+      expect(prisma.savingsAccount.findUnique).toHaveBeenCalledWith({
+        where: { id: 'savings-123' },
+        include: {
+          category: true,
+          transactions: {
+            include: {
+              category: true,
+            },
+            orderBy: {
+              date: 'desc',
+            },
+          },
+        },
+      });
+    });
+
+    it('should return null when savings account does not exist', async () => {
+      prisma.savingsAccount.findUnique.mockResolvedValue(null);
+
+      const result = await getSavingsAccountById('savings-123');
+
+      expect(result).toBeNull();
+    });
+
+    it('should throw ValidationError when savings account ID is missing', async () => {
+      await expect(getSavingsAccountById()).rejects.toThrow('Sparkonto-ID krävs');
     });
   });
 });
