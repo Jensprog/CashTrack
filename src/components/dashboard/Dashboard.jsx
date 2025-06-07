@@ -16,7 +16,7 @@ import Link from 'next/link';
 import api from '@/lib/axiosConfig';
 
 function DashboardContent() {
-  const { fetchTransactions, customFilters, setCustomFilters, loading } = useTransactions();
+  const { fetchTransactions, customFilters } = useTransactions();
 
   const [categories, setCategories] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
