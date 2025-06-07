@@ -16,6 +16,7 @@ model User {
   updatedAt     DateTime      @updatedAt
   transactions  Transaction[]
   categories    Category[]
+  savingsAccounts SavingsAccount[]
 }
 
 model Transaction {
@@ -29,6 +30,8 @@ model Transaction {
   user        User        @relation(fields: [userId], references: [id])
   categoryId  String?
   category    Category?   @relation(fields: [categoryId], references: [id])
+  savingsAccountId String?
+  savingsAccount SavingsAccount? @relation(fields: [savingsAccountId], references: [id])
 }
 
 model Category {
@@ -39,5 +42,21 @@ model Category {
   createdAt    DateTime      @default(now())
   userId       String?
   user         User?         @relation(fields: [userId], references: [id])
+  transactions Transaction[]
+  savingsAccounts SavingsAccount[]
+}
+
+model SavingsAccount {
+  id          String      @id @default(uuid())
+  name        String
+  description String?
+  targetAmount Float?
+  currentAmount Float     @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+  categoryId String?
+  category Category? @relation(fields: [categoryId], references: [id])
   transactions Transaction[]
 }
