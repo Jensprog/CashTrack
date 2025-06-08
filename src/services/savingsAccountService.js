@@ -1,5 +1,5 @@
 /**
- * SavingsAccount service.
+ * @file SavingsAccount service.
  *
  * This file contains functions for handling savings account operations:
  * - Create savings account

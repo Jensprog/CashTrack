@@ -1,5 +1,5 @@
 /**
- * Backend API route for category management.
+ * @file Backend API route for category management.
  *
  * This route handles CRUD operations for transactions:
  * - Creating new categories

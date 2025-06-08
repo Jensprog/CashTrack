@@ -1,6 +1,5 @@
 /**
- * The LoginPage component is a Next.js page that renders a login
- * form.
+ * @file The login page, renders LoginForm component.
  */
 
 import LoginForm from '@/components/auth/LoginForm';

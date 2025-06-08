@@ -1,5 +1,5 @@
 /**
- * Custom error classes for structured error handling
+ * @file Custom error classes for structured error handling
  *
  * These classes extend the native Error class to add HTTP status codes
  * and improve error categorization throughout the application.

@@ -1,5 +1,5 @@
 /**
- * The TransactionList component is a React functional component that
+ * @file The TransactionList component is a React functional component that
  * - Lists and displays transactions with sorting capabilities.
  * - Filtering transactions by date range and category.
  * - Editing existing transactions.

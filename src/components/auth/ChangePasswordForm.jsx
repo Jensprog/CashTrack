@@ -1,5 +1,5 @@
 /**
- * This component is responsible for changing an existing password to a new one.
+ * @file This component is responsible for changing an existing password to a new one.
  * Only works if the user knows the old password they want to change from.
  */
 'use client';

@@ -1,5 +1,5 @@
 /**
- * Authentication utilities
+ * @file Authentication utilities
  *
  * This file contains helper functions for user authentication:
  * - Password hashing and verification

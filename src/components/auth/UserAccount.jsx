@@ -1,5 +1,5 @@
 /**
- * This component is responsible for handling a logged on users account.
+ * @file This component is responsible for handling a logged on users account.
  * - Deleting user account and all related data.
  * - Exporting user data (future implementation).
  * - Change username, password (future implemenation).

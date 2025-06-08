@@ -1,5 +1,5 @@
 /**
- * LatestTransactions component
+ * @file LatestTransactions component
  *
  * Displays the 5 most recent transactions from TransactionList.
  */

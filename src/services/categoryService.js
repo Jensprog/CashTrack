@@ -1,5 +1,5 @@
 /**
- * This file contains functions to handle category related operations:
+ * @file This file contains functions to handle category related operations:
  * - Category creation
  * - Category fetching
  * - Category update

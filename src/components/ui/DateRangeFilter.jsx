@@ -1,5 +1,5 @@
 /**
- * This component is responsible to display a date range filter.
+ * @file This component is responsible to display a date range filter.
  *
  * Can be reused in other components so users can choose a custom date range
  * to get an overview of their incomes and expenses.

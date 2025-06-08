@@ -1,5 +1,5 @@
 /**
- * Database connection utility using Prisma ORM
+ * @file Database connection utility using Prisma ORM
  *
  * This file creates and exports a Prisma client instance that connects to the MySQL database.
  * It uses a global variable in development to prevent multiple connections during hot reloading.

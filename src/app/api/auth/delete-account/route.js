@@ -1,5 +1,5 @@
 /**
- * Route that handles deletion of user data.
+ * @file Route that handles deletion of user data.
  */
 
 import { authMiddleware } from '@/middlewares/authMiddleware';

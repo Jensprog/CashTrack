@@ -1,5 +1,5 @@
 /**
- * CategoryList component to show a list of categories.
+ * @file CategoryList component to show a list of categories.
  */
 'use client';
 

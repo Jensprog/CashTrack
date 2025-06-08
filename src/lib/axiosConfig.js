@@ -1,5 +1,5 @@
 /**
- * Axios configuration with security enhancements
+ * @file Axios configuration with security enhancements
  *
  * This file sets up a customized axios instance that automatically
  * includes CSRF tokens in request headers for protected API calls.

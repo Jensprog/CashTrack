@@ -1,3 +1,6 @@
+/**
+ * @file Main page for the application.
+ */
 'use client';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';

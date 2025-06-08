@@ -1,5 +1,5 @@
 /**
- * Client component for the transaction page.
+ * @file Client component for the transaction page.
  *
  * This component contains the transaction form and transaction list.
  */

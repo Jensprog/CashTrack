@@ -1,5 +1,5 @@
 /**
- * CategoryForm component is a form to add and edit categories.
+ * @file CategoryForm component is a form to add and edit categories.
  */
 'use client';
 

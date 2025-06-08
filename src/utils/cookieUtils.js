@@ -1,5 +1,5 @@
 /**
- * Cookie helper function for LoginForm, AuthContext and axiosConfig.
+ * @file Cookie helper function for LoginForm, AuthContext and axiosConfig.
  */
 
 export const setCookie = (name, value, maxAge = 604800) => {

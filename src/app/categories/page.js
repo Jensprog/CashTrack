@@ -1,5 +1,5 @@
 /**
- * Categories page component.
+ * @file Categories page component.
  *
  * This server component handles authentication checks and renders the categories
  * content for authenticated users only.

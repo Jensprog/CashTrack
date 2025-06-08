@@ -1,6 +1,5 @@
 /**
- * The RegisterPage component is a Next.js page that renders a registration
- * form.
+ * @file The register page, renders RegisterForm component.
  */
 
 import RegisterForm from '@/components/auth/RegisterForm';

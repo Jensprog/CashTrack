@@ -1,5 +1,5 @@
 /**
- * The FinancialOverview component displays summary information
+ * @file The FinancialOverview component displays summary information
  * about the user's financial transactions.
  */
 'use client';

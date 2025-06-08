@@ -1,5 +1,5 @@
 /**
- * This components responsibility is to render a pie chart for the user,
+ * @file This components responsibility is to render a pie chart for the user,
  * displaying the most common expenses in either percentage or SEK.
  * Using the DateRangeFilter UI-component to be able to select a specific period.
  */

@@ -1,5 +1,5 @@
 /**
- * Dashboard component.
+ * @file Dashboard component.
  *
  * This client component is the main container for the dashboard overview page.
  * It shows a summary of all transactions, monthly or weekly with a custom

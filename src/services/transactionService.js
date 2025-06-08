@@ -1,5 +1,5 @@
 /**
- * Transaction service.
+ * @file Transaction service.
  *
  * This file contains functions for handling transaction-related operations:
  * - Transaction creation

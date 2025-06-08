@@ -1,5 +1,5 @@
 /**
- * The TransactionForm component is a React functional component that
+ * @file The TransactionForm component is a React functional component that
  * provides a form for adding or editing transactions.
  */
 'use client';

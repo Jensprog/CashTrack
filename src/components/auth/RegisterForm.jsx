@@ -1,5 +1,5 @@
 /**
- * The RegisterForm component is a React functional component that
+ * @file The RegisterForm component is a React functional component that
  * provides a registration form for users.
  */
 'use client';

@@ -1,5 +1,5 @@
 /**
- * The Header component displays the navigation bar at the top of the application.
+ * @file The Header component displays the navigation bar at the top of the application.
  * It dynamincally shows different links based on authentication status.
  */
 'use client';

@@ -1,5 +1,5 @@
 /**
- * Transaction Context Provider.
+ * @file Transaction Context Provider.
  *
  * This context provides transaction state and functions across the application
  * for communication between transaction-related components.
