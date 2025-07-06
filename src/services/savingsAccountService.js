@@ -9,7 +9,7 @@
  */
 
 import { prisma } from '@/lib/db';
-import { ValidationError, /*NotFoundError*/ AppError } from '@/errors/classes';
+import { ValidationError, NotFoundError, AppError } from '@/errors/classes';
 
 export const createSavingsAccount = async (savingsData) => {
   try {
@@ -80,7 +80,7 @@ export const getUserSavingsAccounts = async (userId) => {
 export const getSavingsAccountById = async (savingsAccountId) => {
   try {
     if (!savingsAccountId) {
-      throw new ValidationError('Sparkonto-ID krävs');
+      throw new NotFoundError('Sparkontot hittades inte');
     }
 
     const savingsAccount = await prisma.savingsAccount.findUnique({

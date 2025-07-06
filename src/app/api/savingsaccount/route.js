@@ -2,13 +2,9 @@
  * @file API route for managing savings accounts.
  */
 
-import {
-  createSavingsAccount,
-  getUserSavingsAccounts,
-  /* getSavingsAccountById, */
-} from '@/services/savingsAccountService';
+import { createSavingsAccount, getUserSavingsAccounts } from '@/services/savingsAccountService';
 import { authMiddleware } from '@/middlewares/authMiddleware';
-import { ValidationError, /*NotFoundError*/ } from '@/errors/classes';
+import { ValidationError } from '@/errors/classes';
 import { successResponse, errorResponse } from '@/helpers/api';
 
 export async function GET(request) {
