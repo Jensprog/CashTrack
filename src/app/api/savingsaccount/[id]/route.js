@@ -1,4 +1,8 @@
-import { getSavingsAccountById, updateSavingsAccount, deleteSavingsAccount } from '@/services/savingsAccountService';
+import {
+  getSavingsAccountById,
+  updateSavingsAccount,
+  deleteSavingsAccount,
+} from '@/services/savingsAccountService';
 import { authMiddleware } from '@/middlewares/authMiddleware';
 import { NotFoundError, ValidationError } from '@/errors/classes';
 import { successResponse, errorResponse } from '@/helpers/api';
@@ -24,7 +28,7 @@ export async function GET(request, { params }) {
   }
 }
 
-export async function PUT(request) {
+export async function PUT(request, { params }) {
   try {
     const userId = await authMiddleware(request);
 
@@ -32,7 +36,8 @@ export async function PUT(request) {
       return userId;
     }
 
-    const { id, name, description, targetAmount, categoryId } = await request.json();
+    const { id } = params;
+    const { name, description, targetAmount, categoryId } = await request.json();
     if (!id) {
       throw new ValidationError('Sparkonto-ID krävs');
     }
