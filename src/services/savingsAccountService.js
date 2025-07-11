@@ -127,6 +127,7 @@ export const updateSavingsAccount = async (savingsAccountId, savingsData) => {
       }
     }
 
+
     const updatedSavingsAccount = await prisma.savingsAccount.update({
       where: { id: savingsAccountId },
       data: {
@@ -138,7 +139,7 @@ export const updateSavingsAccount = async (savingsAccountId, savingsData) => {
               ? parseFloat(targetAmount)
               : null
             : existingSavingsAccount.targetAmount,
-        categoryId: categoryId !== undefined ? categoryId : existingSavingsAccount.categoryId,
+        categoryId: categoryId !== undefined ? (categoryId || null) : existingSavingsAccount.categoryId,
       },
       include: {
         category: true,
