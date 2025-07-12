@@ -43,20 +43,15 @@ export async function POST(request) {
       return userId;
     }
 
-    const { name, isIncome = false, isSaving = false } = await request.json();
+    const { name, isIncome = false } = await request.json();
 
     if (!name) {
       throw new ValidationError('Kategorinamn krävs');
     }
 
-    if (isIncome && isSaving) {
-      throw new ValidationError('En kategori kan inte vara både inkomst och sparande');
-    }
-
     const newCategory = await createCategory({
       name,
       isIncome,
-      isSaving,
       userId,
     });
 
@@ -74,7 +69,7 @@ export async function PUT(request) {
       return userId;
     }
 
-    const { id, name, isIncome, isSaving } = await request.json();
+    const { id, name, isIncome } = await request.json();
 
     if (!id) {
       throw new ValidationError('Kategori-ID krävs');
@@ -89,14 +84,9 @@ export async function PUT(request) {
       throw new ValidationError('Du har inte behörighet att ändra denna kategori');
     }
 
-    if (isIncome && isSaving) {
-      throw new ValidationError('En kategori kan inte vara både inkomst och sparande');
-    }
-
     const updatedCategory = await updateCategory(id, {
       name,
       isIncome,
-      isSaving,
     });
 
     return successResponse({ category: updatedCategory }, 'Kategori uppdaterad', 200);

@@ -135,11 +135,6 @@ export default function TransactionList({ initialFilters = {} }) {
     if (transaction.amount > 0) {
       return 'text-green-600 dark:text-green-400';
     }
-
-    if (transaction.category && transaction.category.isSaving) {
-      return 'text-blue-600 dark:text-blue-400';
-    }
-
     return 'text-red-600 dark:text-red-400';
   };
 

@@ -147,20 +147,9 @@ export default function DateRangeFilter({
                     ))}
                 </optgroup>
 
-                <optgroup label="Sparande">
-                  {categories
-                    .filter((cat) => !cat.isIncome && cat.isSaving)
-                    .sort((a, b) => a.name.localeCompare(b.name, 'sv'))
-                    .map((category) => (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    ))}
-                </optgroup>
-
                 <optgroup label="Utgifter">
                   {categories
-                    .filter((cat) => !cat.isIncome && !cat.isSaving)
+                    .filter((cat) => !cat.isIncome)
                     .sort((a, b) => a.name.localeCompare(b.name, 'sv'))
                     .map((category) => (
                       <option key={category.id} value={category.id}>

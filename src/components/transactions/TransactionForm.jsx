@@ -27,8 +27,6 @@ export default function TransactionForm({
     transactionType: transaction
       ? transaction.amount > 0
         ? 'income'
-        : transaction.category?.isSaving
-          ? 'saving'
           : 'expense'
       : 'expense',
   };
@@ -158,16 +156,14 @@ export default function TransactionForm({
   };
 
   const filteredCategories = categories
-    .filter((category) => {
-      if (formData.transactionType === 'income') {
-        return category.isIncome;
-      } else if (formData.transactionType === 'saving') {
-        return !category.isIncome && category.isSaving;
-      } else {
-        return !category.isIncome && !category.isSaving;
-      }
-    })
-    .sort((a, b) => a.name.localeCompare(b.name, 'sv'));
+  .filter((category) => {
+    if (formData.transactionType === 'income') {
+      return category.isIncome;
+    } else {
+      return !category.isIncome;
+    }
+  })
+  .sort((a, b) => a.name.localeCompare(b.name, 'sv'));
 
   return (
     <div className="bg-white dark:bg-gray-900 shadow-md rounded px-8 pt-6 pb-8 mb-4">
@@ -206,20 +202,6 @@ export default function TransactionForm({
               <span className="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
               Inkomst
             </button>
-
-            <button
-              type="button"
-              onClick={() => handleTransactionTypeChange('saving')}
-              className={`py-2 px-3 rounded-md flex items-center justify-center ${
-                formData.transactionType === 'saving'
-                  ? 'bg-blue-100 border border-blue-500 dark:bg-blue-900/20 dark:border-blue-700'
-                  : 'bg-gray-100 border border-gray-300 dark:bg-gray-800 dark:border-gray-700'
-              }`}
-            >
-              <span className="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
-              Sparande
-            </button>
-
             <button
               type="button"
               onClick={() => handleTransactionTypeChange('expense')}
@@ -260,8 +242,6 @@ export default function TransactionForm({
               className={`absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none ${
                 formData.transactionType === 'income'
                   ? 'text-green-500'
-                  : formData.transactionType === 'saving'
-                    ? 'text-blue-500'
                     : 'text-red-500'
               }`}
             >

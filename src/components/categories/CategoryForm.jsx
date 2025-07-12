@@ -14,7 +14,6 @@ export default function CategoryForm({
   const initialFormState = {
     name: category ? category.name : '',
     isIncome: category ? category.isIncome : false,
-    isSaving: category ? category.isSaving : false,
   };
 
   const [formData, setFormData] = useState(initialFormState);
@@ -28,7 +27,6 @@ export default function CategoryForm({
       setFormData({
         name: category.name,
         isIncome: category.isIncome,
-        isSaving: category.isSaving,
       });
     }
   }, [category]);
@@ -47,19 +45,16 @@ export default function CategoryForm({
       setFormData({
         ...formData,
         isIncome: true,
-        isSaving: false,
       });
     } else if (typeId === 'saving') {
       setFormData({
         ...formData,
         isIncome: false,
-        isSaving: true,
       });
     } else {
       setFormData({
         ...formData,
         isIncome: false,
-        isSaving: false,
       });
     }
   };
@@ -90,7 +85,6 @@ export default function CategoryForm({
       const data = {
         name: formData.name.trim(),
         isIncome: formData.isIncome,
-        isSaving: formData.isSaving,
       };
 
       if (!data.name) {
@@ -125,7 +119,6 @@ export default function CategoryForm({
 
   const getCategoryType = () => {
     if (formData.isIncome) return 'income';
-    if (formData.isSaving) return 'saving';
     return 'expense';
   };
 
