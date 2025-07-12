@@ -74,7 +74,7 @@ export default function LatestTransactions() {
             className={`font-medium ${
               transaction.amount > 0
                 ? 'text-green-600 dark:text-green-400'
-                  : 'text-red-600 dark:text-red-400'
+                : 'text-red-600 dark:text-red-400'
             }`}
           >
             {formatAmount(transaction.amount)}

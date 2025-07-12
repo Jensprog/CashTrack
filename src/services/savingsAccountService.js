@@ -53,10 +53,7 @@ export const getUserSavingsAccounts = async (userId) => {
       where: { userId: userId },
       include: {
         category: true,
-        transactions: {
-          include: {
-            category: true,
-          },
+        transfers: {
           orderBy: {
             date: 'desc',
           },
@@ -80,17 +77,14 @@ export const getUserSavingsAccounts = async (userId) => {
 export const getSavingsAccountById = async (savingsAccountId) => {
   try {
     if (!savingsAccountId) {
-      throw new NotFoundError('Sparkontot hittades inte');
+      throw new ValidationError('Sparkonto-ID krävs');
     }
 
     const savingsAccount = await prisma.savingsAccount.findUnique({
       where: { id: savingsAccountId },
       include: {
         category: true,
-        transactions: {
-          include: {
-            category: true,
-          },
+        transfers: {
           orderBy: {
             date: 'desc',
           },
@@ -127,26 +121,40 @@ export const updateSavingsAccount = async (savingsAccountId, savingsData) => {
       }
     }
 
+    if (categoryId !== undefined && categoryId !== null && categoryId !== '') {
+      const categoryExists = await prisma.category.findUnique({
+        where: { id: categoryId },
+      });
+      
+      if (!categoryExists) {
+        throw new ValidationError('Den angivna kategorin existerar inte');
+      }
+    }
+
+    const updateData = {};
+    
+    if (name !== undefined) {
+      updateData.name = name;
+    }
+    
+    if (description !== undefined) {
+      updateData.description = description;
+    }
+    
+    if (targetAmount !== undefined) {
+      updateData.targetAmount = targetAmount !== null ? parseFloat(targetAmount) : null;
+    }
+    
+    if (categoryId !== undefined) {
+      updateData.categoryId = (categoryId === '' || categoryId === null) ? null : categoryId;
+    }
+
     const updatedSavingsAccount = await prisma.savingsAccount.update({
       where: { id: savingsAccountId },
-      data: {
-        name: name !== undefined ? name : existingSavingsAccount.name,
-        description: description !== undefined ? description : existingSavingsAccount.description,
-        targetAmount:
-          targetAmount !== undefined
-            ? targetAmount !== null
-              ? parseFloat(targetAmount)
-              : null
-            : existingSavingsAccount.targetAmount,
-        categoryId:
-          categoryId !== undefined ? categoryId || null : existingSavingsAccount.categoryId,
-      },
+      data: updateData,
       include: {
         category: true,
-        transactions: {
-          include: {
-            category: true,
-          },
+        transfers: {
           orderBy: {
             date: 'desc',
           },
@@ -165,6 +173,11 @@ export const updateSavingsAccount = async (savingsAccountId, savingsData) => {
     if (error.code === 'P2025') {
       throw new NotFoundError('Sparkontot hittades inte');
     }
+
+    if (error.code === 'P2003') {
+      throw new ValidationError('Den angivna kategorin existerar inte eller är ogiltig');
+    }
+
     throw error;
   }
 };
@@ -172,22 +185,21 @@ export const updateSavingsAccount = async (savingsAccountId, savingsData) => {
 export const deleteSavingsAccount = async (savingsAccountId) => {
   try {
     if (!savingsAccountId) {
-      throw new ValidationError('Sparkonto-Id krävs');
+      throw new ValidationError('Sparkonto-ID krävs');
     }
 
     const existingSavingsAccount = await getSavingsAccountById(savingsAccountId);
-
     if (!existingSavingsAccount) {
       throw new NotFoundError('Sparkontot hittades inte');
     }
 
-    const linkedTransactions = await prisma.transaction.count({
+    const linkedTransfers = await prisma.transfer.count({
       where: { savingsAccountId: savingsAccountId },
     });
 
-    if (linkedTransactions > 0) {
+    if (linkedTransfers > 0) {
       throw new ValidationError(
-        `Kan inte radera sparkontot eftersom det har ${linkedTransactions} kopplade transaktioner. Flytta transaktionerna till ett annat konto först.`,
+        `Kan inte radera sparkontot eftersom det har ${linkedTransfers} kopplade överföringar. Ta bort överföringarna först eller koppla bort dem från sparkontot.`
       );
     }
 
@@ -204,6 +216,7 @@ export const deleteSavingsAccount = async (savingsAccountId) => {
     if (error.code === 'P2025') {
       throw new NotFoundError('Sparkontot hittades inte');
     }
+
     throw error;
   }
 };
@@ -219,13 +232,12 @@ export const calculateCurrentAmount = async (savingsAccountId) => {
     });
 
     const currentAmount = transactions.reduce((total, transaction) => {
-      return total + Math.abs(transaction.amount);
+      return total + Math.abs(transaction.amount); 
     }, 0);
 
     return currentAmount;
   } catch (error) {
     console.error('Error calculating current amount:', error);
-
     if (error instanceof AppError) {
       throw error;
     }

@@ -24,11 +24,7 @@ export default function TransactionForm({
       ? new Date(transaction.date).toISOString().split('T')[0]
       : new Date().toISOString().split('T')[0],
     categoryId: transaction?.categoryId || '',
-    transactionType: transaction
-      ? transaction.amount > 0
-        ? 'income'
-          : 'expense'
-      : 'expense',
+    transactionType: transaction ? (transaction.amount > 0 ? 'income' : 'expense') : 'expense',
   };
 
   // Form state
@@ -156,14 +152,14 @@ export default function TransactionForm({
   };
 
   const filteredCategories = categories
-  .filter((category) => {
-    if (formData.transactionType === 'income') {
-      return category.isIncome;
-    } else {
-      return !category.isIncome;
-    }
-  })
-  .sort((a, b) => a.name.localeCompare(b.name, 'sv'));
+    .filter((category) => {
+      if (formData.transactionType === 'income') {
+        return category.isIncome;
+      } else {
+        return !category.isIncome;
+      }
+    })
+    .sort((a, b) => a.name.localeCompare(b.name, 'sv'));
 
   return (
     <div className="bg-white dark:bg-gray-900 shadow-md rounded px-8 pt-6 pb-8 mb-4">
@@ -240,9 +236,7 @@ export default function TransactionForm({
             />
             <div
               className={`absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none ${
-                formData.transactionType === 'income'
-                  ? 'text-green-500'
-                    : 'text-red-500'
+                formData.transactionType === 'income' ? 'text-green-500' : 'text-red-500'
               }`}
             >
               {formData.transactionType === 'income' ? '+' : '-'}
