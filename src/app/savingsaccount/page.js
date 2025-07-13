@@ -8,7 +8,7 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { verifyToken } from '@/lib/auth';
-import SavingsAccountPage from '@/components/SavingsAccountPage';
+import SavingsAccountPage from '@/components/savingsaccount/SavingsAccountPage';
 
 export const metadata = {
   title: 'Sparkonton - CashTrack',

@@ -125,28 +125,28 @@ export const updateSavingsAccount = async (savingsAccountId, savingsData) => {
       const categoryExists = await prisma.category.findUnique({
         where: { id: categoryId },
       });
-      
+
       if (!categoryExists) {
         throw new ValidationError('Den angivna kategorin existerar inte');
       }
     }
 
     const updateData = {};
-    
+
     if (name !== undefined) {
       updateData.name = name;
     }
-    
+
     if (description !== undefined) {
       updateData.description = description;
     }
-    
+
     if (targetAmount !== undefined) {
       updateData.targetAmount = targetAmount !== null ? parseFloat(targetAmount) : null;
     }
-    
+
     if (categoryId !== undefined) {
-      updateData.categoryId = (categoryId === '' || categoryId === null) ? null : categoryId;
+      updateData.categoryId = categoryId === '' || categoryId === null ? null : categoryId;
     }
 
     const updatedSavingsAccount = await prisma.savingsAccount.update({
@@ -199,7 +199,7 @@ export const deleteSavingsAccount = async (savingsAccountId) => {
 
     if (linkedTransfers > 0) {
       throw new ValidationError(
-        `Kan inte radera sparkontot eftersom det har ${linkedTransfers} kopplade överföringar. Ta bort överföringarna först eller koppla bort dem från sparkontot.`
+        `Kan inte radera sparkontot eftersom det har ${linkedTransfers} kopplade överföringar. Ta bort överföringarna först eller koppla bort dem från sparkontot.`,
       );
     }
 
@@ -232,7 +232,7 @@ export const calculateCurrentAmount = async (savingsAccountId) => {
     });
 
     const currentAmount = transactions.reduce((total, transaction) => {
-      return total + Math.abs(transaction.amount); 
+      return total + Math.abs(transaction.amount);
     }, 0);
 
     return currentAmount;

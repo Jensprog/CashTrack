@@ -7,8 +7,8 @@
 
 import { useEffect, useState } from 'react';
 import api from '@/lib/axiosConfig';
-import SavingsAccountForm from './SavingsAccountForm';
-import SavingsAccountList from './SavingsAccountList';
+import SavingsAccountForm from '@/components/savingsaccount/SavingsAccountForm';
+import SavingsAccountList from '@/components/savingsaccount/SavingsAccountList';
 
 export default function SavingsAccountPage() {
   const [savingsAccounts, setSavingsAccounts] = useState([]);

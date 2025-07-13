@@ -73,6 +73,12 @@ export default function Header() {
                     Budgetanalys
                   </Link>
                   <Link
+                    href="/savingsaccount"
+                    className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Sparkonton
+                  </Link>
+                  <Link
                     href="/categories"
                     className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium"
                   >
