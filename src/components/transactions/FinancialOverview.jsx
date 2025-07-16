@@ -49,7 +49,6 @@ export default function FinancialOverview() {
         return {
           balance: financialData.balance,
           income: financialData.weekly.income,
-          savings: financialData.weekly.savings,
           expenses: financialData.weekly.expenses,
           label: 'Senaste veckan',
         };
@@ -57,7 +56,6 @@ export default function FinancialOverview() {
         return {
           balance: financialData.balance,
           income: financialData.monthly.income,
-          savings: financialData.monthly.savings,
           expenses: financialData.monthly.expenses,
           label: 'Senaste månaden',
         };
@@ -65,7 +63,6 @@ export default function FinancialOverview() {
         return {
           balance: financialData.balance,
           income: financialData.income,
-          savings: financialData.savings,
           expenses: financialData.expenses,
           label: getCustomPeriodLabel(),
         };
@@ -73,7 +70,6 @@ export default function FinancialOverview() {
         return {
           balance: financialData.balance,
           income: financialData.income,
-          savings: financialData.savings,
           expenses: financialData.expenses,
           label: 'Alla transaktioner',
         };
@@ -182,16 +178,6 @@ export default function FinancialOverview() {
               <p className="text-xl font-semibold text-green-600 dark:text-green-400">
                 {formatAmount(displayData.income)}
               </p>
-            </div>
-            <div className="grid grid-cols-1 gap-4">
-              <div className="bg-blue-50 dark:bg-blue-900/10 p-4 rounded-lg">
-                <h3 className="text-sm font-medium text-blue-800 dark:text-blue-300 mb-2">
-                  Sparande
-                </h3>
-                <p className="text-xl font-semibold text-blue-600 dark:text-blue-400">
-                  {formatAmount(displayData.savings)}
-                </p>
-              </div>
             </div>
             <div className="bg-red-50 dark:bg-red-900/10 p-4 rounded-lg">
               <h3 className="text-sm font-medium text-red-800 dark:text-red-300 mb-2">Utgifter</h3>

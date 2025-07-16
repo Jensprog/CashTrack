@@ -46,11 +46,6 @@ export default function CategoryForm({
         ...formData,
         isIncome: true,
       });
-    } else if (typeId === 'saving') {
-      setFormData({
-        ...formData,
-        isIncome: false,
-      });
     } else {
       setFormData({
         ...formData,
@@ -154,19 +149,6 @@ export default function CategoryForm({
             >
               <span className="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
               Inkomst
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleCategoryTypeChange('saving')}
-              className={`py-2 px-3 rounded-md flex items-center justify-center ${
-                getCategoryType() === 'saving'
-                  ? 'bg-blue-100 border border-blue-500 dark:bg-blue-900/20 dark:border-blue-700'
-                  : 'bg-gray-100 border border-gray-300 dark:bg-gray-800 dark:border-gray-700'
-              }`}
-            >
-              <span className="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
-              Sparande
             </button>
 
             <button
