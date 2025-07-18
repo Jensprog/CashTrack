@@ -50,6 +50,8 @@ export default function FinancialOverview() {
           balance: financialData.balance,
           income: financialData.weekly.income,
           expenses: financialData.weekly.expenses,
+          transfersToSavings: financialData.weekly.transfersToSavings,
+          transfersFromSavings: financialData.weekly.transfersFromSavings,
           label: 'Senaste veckan',
         };
       case 'month':
@@ -57,6 +59,8 @@ export default function FinancialOverview() {
           balance: financialData.balance,
           income: financialData.monthly.income,
           expenses: financialData.monthly.expenses,
+          transfersToSavings: financialData.monthly.transfersToSavings,
+          transfersFromSavings: financialData.monthly.transfersFromSavings,
           label: 'Senaste månaden',
         };
       case 'custom':
@@ -64,6 +68,8 @@ export default function FinancialOverview() {
           balance: financialData.balance,
           income: financialData.income,
           expenses: financialData.expenses,
+          transfersToSavings: financialData.transfersToSavings,
+          transfersFromSavings: financialData.transfersFromSavings,
           label: getCustomPeriodLabel(),
         };
       default:
@@ -71,6 +77,8 @@ export default function FinancialOverview() {
           balance: financialData.balance,
           income: financialData.income,
           expenses: financialData.expenses,
+          transfersToSavings: financialData.transfersToSavings,
+          transfersFromSavings: financialData.transfersFromSavings,
           label: 'Alla transaktioner',
         };
     }
@@ -157,7 +165,7 @@ export default function FinancialOverview() {
         <div className="space-y-4">
           <div className="bg-blue-50 dark:bg-blue-900/10 p-4 rounded-lg">
             <h3 className="text-sm font-medium text-blue-800 dark:text-blue-300 mb-2">
-              Balans ({displayData.label})
+              Huvudkonto-saldo ({displayData.label})
             </h3>
             <p
               className={`text-2xl font-semibold ${
@@ -179,11 +187,105 @@ export default function FinancialOverview() {
                 {formatAmount(displayData.income)}
               </p>
             </div>
+            
             <div className="bg-red-50 dark:bg-red-900/10 p-4 rounded-lg">
               <h3 className="text-sm font-medium text-red-800 dark:text-red-300 mb-2">Utgifter</h3>
               <p className="text-xl font-semibold text-red-600 dark:text-red-400">
                 {formatAmount(displayData.expenses)}
               </p>
+            </div>
+
+            {/* Transfer Section */}
+            {(displayData.transfersToSavings > 0 || displayData.transfersFromSavings > 0) && (
+              <div className="bg-purple-50 dark:bg-purple-900/10 p-4 rounded-lg border border-purple-200 dark:border-purple-800">
+                <h3 className="text-sm font-medium text-purple-800 dark:text-purple-300 mb-3">
+                  Överföringar
+                </h3>
+                <div className="space-y-2">
+                  {displayData.transfersToSavings > 0 && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-purple-700 dark:text-purple-400">
+                        Till sparkonton:
+                      </span>
+                      <span className="text-sm font-semibold text-purple-600 dark:text-purple-400">
+                        -{formatAmount(displayData.transfersToSavings)}
+                      </span>
+                    </div>
+                  )}
+                  {displayData.transfersFromSavings > 0 && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-purple-700 dark:text-purple-400">
+                        Från sparkonton:
+                      </span>
+                      <span className="text-sm font-semibold text-purple-600 dark:text-purple-400">
+                        +{formatAmount(displayData.transfersFromSavings)}
+                      </span>
+                    </div>
+                  )}
+                  <div className="pt-2 border-t border-purple-200 dark:border-purple-700">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-purple-600 dark:text-purple-400">
+                        Netto överföringar:
+                      </span>
+                      <span className={`text-xs font-medium ${
+                        (displayData.transfersFromSavings - displayData.transfersToSavings) >= 0
+                          ? 'text-green-600 dark:text-green-400'
+                          : 'text-red-600 dark:text-red-400'
+                      }`}>
+                        {displayData.transfersFromSavings - displayData.transfersToSavings >= 0 ? '+' : ''}
+                        {formatAmount(displayData.transfersFromSavings - displayData.transfersToSavings)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Balance Breakdown */}
+            <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                Saldo-uppdelning
+              </h3>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600 dark:text-gray-400">Inkomster:</span>
+                  <span className="text-green-600 dark:text-green-400">
+                    +{formatAmount(displayData.income)}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600 dark:text-gray-400">Utgifter:</span>
+                  <span className="text-red-600 dark:text-red-400">
+                    -{formatAmount(displayData.expenses)}
+                  </span>
+                </div>
+                {displayData.transfersToSavings > 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-600 dark:text-gray-400">Till sparkonton:</span>
+                    <span className="text-purple-600 dark:text-purple-400">
+                      -{formatAmount(displayData.transfersToSavings)}
+                    </span>
+                  </div>
+                )}
+                {displayData.transfersFromSavings > 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-600 dark:text-gray-400">Från sparkonton:</span>
+                    <span className="text-purple-600 dark:text-purple-400">
+                      +{formatAmount(displayData.transfersFromSavings)}
+                    </span>
+                  </div>
+                )}
+                <div className="pt-2 border-t border-gray-200 dark:border-gray-600">
+                  <div className="flex justify-between font-medium">
+                    <span className="text-gray-700 dark:text-gray-300">Huvudkonto-saldo:</span>
+                    <span className={displayData.balance >= 0 
+                      ? 'text-green-600 dark:text-green-400' 
+                      : 'text-red-600 dark:text-red-400'}>
+                      {formatAmount(displayData.balance)}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

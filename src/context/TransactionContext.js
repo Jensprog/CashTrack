@@ -42,7 +42,7 @@ export const TransactionProvider = ({ children }) => {
   });
 
   // Calculate financial data from transactions
-  const calculateFinancialData = useCallback((transactions) => {
+  const calculateFinancialData = useCallback(async (transactions) => {
     // Actual date for time period calculations
     const now = new Date();
 
@@ -101,18 +101,64 @@ export const TransactionProvider = ({ children }) => {
       }
     });
 
+    let totalTransfersToSavings = 0;
+      let totalTransfersFromSavings = 0;
+      let weeklyTransfersToSavings = 0;
+      let weeklyTransfersFromSavings = 0;
+      let monthlyTransfersToSavings = 0;
+      let monthlyTransfersFromSavings = 0;
+
+    try {
+      const transferResponse = await api.get('/transfers');
+      const transfers = transferResponse.data.data.transfers || [];
+
+      transfers.forEach((transfer) => {
+        const transferDate = new Date(transfer.date);
+
+        if (transfer.type === 'TO_SAVINGS') {
+          totalTransfersToSavings += transfer.amount;
+          totalBalance -= transfer.amount;
+
+          if (transferDate >= weekStart) {
+            weeklyTransfersToSavings += transfer.amount;
+          }
+
+          if (transferDate >= monthStart) {
+            monthlyTransfersToSavings += transfer.amount;
+          }
+        } else if (transfer.type === 'FROM_SAVINGS') {
+          totalTransfersFromSavings += transfer.amount;
+          totalBalance += transfer.amount;
+
+          if (transferDate >= weekStart) {
+            weeklyTransfersFromSavings += transfer.amount;
+          }
+
+          if (transferDate >= monthStart) {
+            monthlyTransfersFromSavings += transfer.amount;
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Error fetching transfers for balance calculation:', error);
+    }
+
     // Update state with calculated data
     setFinancialData({
       // Total for all transactions
       balance: totalBalance,
       income: totalIncome,
       expenses: totalExpenses,
+      transfersToSavings: totalTransfersToSavings || 0,
+      transfersFromSavings: totalTransfersFromSavings || 0,
 
       // Weekly data
       weekly: {
         balance: totalBalance,
         income: weeklyIncome,
         expenses: weeklyExpenses,
+        transfersToSavings: weeklyTransfersToSavings || 0,
+        transfersFromSavings: weeklyTransfersFromSavings || 0,
       },
 
       // Monthly data
@@ -120,6 +166,8 @@ export const TransactionProvider = ({ children }) => {
         balance: totalBalance,
         income: monthlyIncome,
         expenses: monthlyExpenses,
+        transfersToSavings: monthlyTransfersToSavings || 0,
+        transfersFromSavings: monthlyTransfersFromSavings || 0,
       },
     });
   }, []);

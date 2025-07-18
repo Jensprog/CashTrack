@@ -131,6 +131,7 @@ export default function SavingsAccountPage() {
                 loading={loading}
                 onUpdate={updateSavingsAccount}
                 onDelete={deleteSavingsAccount}
+                onRefresh={fetchSavingsAccounts}
               />
             </div>
           </div>

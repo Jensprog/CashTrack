@@ -5,10 +5,19 @@
 
 import { useState } from 'react';
 import SavingsAccountForm from '@/components/savingsaccount/SavingsAccountForm';
+import TransferForm from '@/components/transfers/TransferForm';
+import api from '@/lib/axiosConfig';
 
-export default function SavingsAccountList({ savingsAccounts, loading, onUpdate, onDelete }) {
+export default function SavingsAccountList({
+  savingsAccounts,
+  loading,
+  onUpdate,
+  onDelete,
+  onRefresh,
+}) {
   const [editingAccount, setEditingAccount] = useState(null);
   const [deletingAccount, setDeletingAccount] = useState(null);
+  const [transferModal, setTransferModal] = useState(null);
 
   const formatAmount = (amount) => {
     return new Intl.NumberFormat('sv-SE', {
@@ -33,6 +42,22 @@ export default function SavingsAccountList({ savingsAccounts, loading, onUpdate,
 
   const handleAccountUpdated = (updatedAccount) => {
     setEditingAccount(null);
+    if (onRefresh) onRefresh();
+  };
+
+  const handleTransferSuccess = (transfer) => {
+    setTransferModal(null);
+    if (onRefresh) onRefresh();
+  };
+
+  const handleCreateTransfer = async (transferData) => {
+    try {
+      const response = api.post('/transfers', transferData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating transfer:', error);
+      throw error;
+    }
   };
 
   const handleDeleteAccount = async () => {
@@ -156,12 +181,19 @@ export default function SavingsAccountList({ savingsAccounts, loading, onUpdate,
                 </div>
               )}
 
-              {/* Transfer Actions (placeholder for future) */}
+              {/* Transfer Actions */}
               <div className="flex space-x-2 pt-3 border-t border-gray-200 dark:border-gray-700">
-                <button className="flex-1 bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-3 rounded transition-colors">
+                <button
+                  onClick={() => setTransferModal({ type: 'TO_SAVINGS', accountId: account.id })}
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-3 rounded transition-colors"
+                >
                   Överför till
                 </button>
-                <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-3 rounded transition-colors">
+                <button
+                  onClick={() => setTransferModal({ type: 'FROM_SAVINGS', accountId: account.id })}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-3 rounded transition-colors"
+                  disabled={account.currentAmount <= 0}
+                >
                   Ta ut från
                 </button>
               </div>
@@ -179,6 +211,36 @@ export default function SavingsAccountList({ savingsAccounts, loading, onUpdate,
           );
         })}
       </div>
+
+      {/* Transfer modal */}
+      {transferModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl max-w-md w-full max-h-screen overflow-y-auto">
+            <div className="p-4">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
+                  {transferModal.type === 'TO_SAVINGS'
+                    ? 'Överför till sparkonto'
+                    : 'Ta ut från sparkonto'}
+                </h3>
+                <button
+                  onClick={() => setTransferModal(null)}
+                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                >
+                  &times;
+                </button>
+              </div>
+              <TransferForm
+                savingsAccountId={transferModal.accountId}
+                transferType={transferModal.type}
+                onSubmit={handleCreateTransfer}
+                onSuccess={handleTransferSuccess}
+                onCancel={() => setTransferModal(null)}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Edit account modal */}
       {editingAccount && (
