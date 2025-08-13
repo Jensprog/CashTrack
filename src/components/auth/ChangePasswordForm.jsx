@@ -111,7 +111,7 @@ export default function ChangePassword() {
         {/* New Password */}
         <div className="mb-4">
           <label
-            className="block text-blue-700 dark:text-blue-300 text-sm font-bold mb-2"
+            className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
             htmlFor="newPassword"
           >
             Nytt lösenord *

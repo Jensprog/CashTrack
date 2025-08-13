@@ -53,8 +53,8 @@ jobs:
 
       - name: Add SSH key
         run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519_deployment
+          chmod 600 ~/.ssh/id_ed25519_deployment
 
       - name: Configure SSH
         run: |
@@ -63,11 +63,11 @@ jobs:
 
       - name: Test SSH connection
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "echo 'SSH connection test successful'"
+          ssh -i ~/.ssh/id_ed25519_deployment -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "echo 'SSH connection test successful'"
 
       - name: Pre-deployment system check
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "
+          ssh -i ~/.ssh/id_ed25519_deployment -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "
             echo '=== Pre-deployment System Status ==='
             free -h
             df -h
@@ -76,7 +76,7 @@ jobs:
 
       - name: Graceful service shutdown
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "
+          ssh -i ~/.ssh/id_ed25519_deployment -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "
             cd /home/CashTrack
             echo 'Gracefully stopping services...'
             docker-compose -f docker-compose.production.yml down --timeout 30 || true
@@ -87,7 +87,7 @@ jobs:
 
       - name: Docker cleanup
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "
+          ssh -i ~/.ssh/id_ed25519_deployment -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "
             echo '=== Safe Docker Cleanup - Data Preservation Priority ==='
             
             # Cleanup old containers
@@ -114,7 +114,7 @@ jobs:
 
       - name: Update application code
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "
+          ssh -i ~/.ssh/id_ed25519_deployment -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "
             cd /home/CashTrack
             echo 'Pulling latest code...'
             git pull origin main
@@ -124,7 +124,7 @@ jobs:
 
       - name: Build and deploy with optimized caching
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "
+          ssh -i ~/.ssh/id_ed25519_deployment -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "
             cd /home/CashTrack
             
             echo '=== Building with Caching ==='
@@ -140,7 +140,7 @@ jobs:
 
       - name: Health check and verification
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "
+          ssh -i ~/.ssh/id_ed25519_deployment -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "
             cd /home/CashTrack
             
             echo '=== Health Check ==='
@@ -172,7 +172,7 @@ jobs:
 
       - name: Final cleanup
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "
+          ssh -i ~/.ssh/id_ed25519_deployment -o StrictHostKeyChecking=no root@${{ secrets.PRODUCTION_HOST }} "
             echo '=== Final Maintenance ==='
             
             # Cleanup build cache that may been created
