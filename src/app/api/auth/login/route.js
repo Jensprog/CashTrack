@@ -1,5 +1,5 @@
 /**
- * Backend API route for user login with enhanced security.
+ * @file Backend API route for user login with enhanced security.
  *
  * This route handles user login and sets HttpOnly cookies for authentication
  * instead of returning the token in the response body.

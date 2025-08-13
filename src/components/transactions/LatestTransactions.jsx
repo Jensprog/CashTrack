@@ -1,5 +1,5 @@
 /**
- * LatestTransactions component
+ * @file LatestTransactions component
  *
  * Displays the 5 most recent transactions from TransactionList.
  */
@@ -74,9 +74,7 @@ export default function LatestTransactions() {
             className={`font-medium ${
               transaction.amount > 0
                 ? 'text-green-600 dark:text-green-400'
-                : transaction.category?.isSaving
-                  ? 'text-blue-600 dark:text-blue-400'
-                  : 'text-red-600 dark:text-red-400'
+                : 'text-red-600 dark:text-red-400'
             }`}
           >
             {formatAmount(transaction.amount)}

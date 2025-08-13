@@ -1,5 +1,5 @@
 /**
- * Backend API route for user logout.
+ * @file Backend API route for user logout.
  *
  * This route handles user logout by clearing the authentication cookies.
  */

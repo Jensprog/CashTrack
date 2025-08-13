@@ -1,5 +1,5 @@
 /**
- * This component is responsible to display a date range filter.
+ * @file This component is responsible to display a date range filter.
  *
  * Can be reused in other components so users can choose a custom date range
  * to get an overview of their incomes and expenses.
@@ -147,20 +147,9 @@ export default function DateRangeFilter({
                     ))}
                 </optgroup>
 
-                <optgroup label="Sparande">
-                  {categories
-                    .filter((cat) => !cat.isIncome && cat.isSaving)
-                    .sort((a, b) => a.name.localeCompare(b.name, 'sv'))
-                    .map((category) => (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    ))}
-                </optgroup>
-
                 <optgroup label="Utgifter">
                   {categories
-                    .filter((cat) => !cat.isIncome && !cat.isSaving)
+                    .filter((cat) => !cat.isIncome)
                     .sort((a, b) => a.name.localeCompare(b.name, 'sv'))
                     .map((category) => (
                       <option key={category.id} value={category.id}>

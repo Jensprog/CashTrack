@@ -1,5 +1,5 @@
 /**
- * Transaction Context Provider.
+ * @file Transaction Context Provider.
  *
  * This context provides transaction state and functions across the application
  * for communication between transaction-related components.
@@ -36,14 +36,13 @@ export const TransactionProvider = ({ children }) => {
   const [financialData, setFinancialData] = useState({
     balance: 0,
     income: 0,
-    savings: 0,
     expenses: 0,
-    weekly: { balance: 0, income: 0, savings: 0, expenses: 0 },
-    monthly: { balance: 0, income: 0, savings: 0, expenses: 0 },
+    weekly: { balance: 0, income: 0, expenses: 0 },
+    monthly: { balance: 0, income: 0, expenses: 0 },
   });
 
   // Calculate financial data from transactions
-  const calculateFinancialData = useCallback((transactions) => {
+  const calculateFinancialData = useCallback(async (transactions) => {
     // Actual date for time period calculations
     const now = new Date();
 
@@ -60,14 +59,11 @@ export const TransactionProvider = ({ children }) => {
     // Total balance from all transactions
     let totalBalance = 0;
     let totalIncome = 0;
-    let totalSavings = 0;
     let totalExpenses = 0;
 
     // Weekly and monthly data
     let weeklyIncome = 0;
     let weeklyExpenses = 0;
-    let weeklySavings = 0;
-    let monthlySavings = 0;
     let monthlyIncome = 0;
     let monthlyExpenses = 0;
 
@@ -82,8 +78,6 @@ export const TransactionProvider = ({ children }) => {
       // Total income and expenses
       if (amount > 0) {
         totalIncome += amount;
-      } else if (transaction.category?.isSaving) {
-        totalSavings += Math.abs(amount);
       } else {
         totalExpenses += Math.abs(amount);
       }
@@ -92,8 +86,6 @@ export const TransactionProvider = ({ children }) => {
       if (transactionDate >= weekStart) {
         if (amount > 0) {
           weeklyIncome += amount;
-        } else if (transaction.category?.isSaving) {
-          weeklySavings += Math.abs(amount);
         } else {
           weeklyExpenses += Math.abs(amount);
         }
@@ -103,36 +95,79 @@ export const TransactionProvider = ({ children }) => {
       if (transactionDate >= monthStart) {
         if (amount > 0) {
           monthlyIncome += amount;
-        } else if (transaction.category?.isSaving) {
-          monthlySavings += Math.abs(amount);
         } else {
           monthlyExpenses += Math.abs(amount);
         }
       }
     });
 
+    let totalTransfersToSavings = 0;
+      let totalTransfersFromSavings = 0;
+      let weeklyTransfersToSavings = 0;
+      let weeklyTransfersFromSavings = 0;
+      let monthlyTransfersToSavings = 0;
+      let monthlyTransfersFromSavings = 0;
+
+    try {
+      const transferResponse = await api.get('/transfers');
+      const transfers = transferResponse.data.data.transfers || [];
+
+      transfers.forEach((transfer) => {
+        const transferDate = new Date(transfer.date);
+
+        if (transfer.type === 'TO_SAVINGS') {
+          totalTransfersToSavings += transfer.amount;
+          totalBalance -= transfer.amount;
+
+          if (transferDate >= weekStart) {
+            weeklyTransfersToSavings += transfer.amount;
+          }
+
+          if (transferDate >= monthStart) {
+            monthlyTransfersToSavings += transfer.amount;
+          }
+        } else if (transfer.type === 'FROM_SAVINGS') {
+          totalTransfersFromSavings += transfer.amount;
+          totalBalance += transfer.amount;
+
+          if (transferDate >= weekStart) {
+            weeklyTransfersFromSavings += transfer.amount;
+          }
+
+          if (transferDate >= monthStart) {
+            monthlyTransfersFromSavings += transfer.amount;
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Error fetching transfers for balance calculation:', error);
+    }
+
     // Update state with calculated data
     setFinancialData({
       // Total for all transactions
       balance: totalBalance,
       income: totalIncome,
-      savings: totalSavings,
       expenses: totalExpenses,
+      transfersToSavings: totalTransfersToSavings || 0,
+      transfersFromSavings: totalTransfersFromSavings || 0,
 
       // Weekly data
       weekly: {
         balance: totalBalance,
         income: weeklyIncome,
-        savings: weeklySavings,
         expenses: weeklyExpenses,
+        transfersToSavings: weeklyTransfersToSavings || 0,
+        transfersFromSavings: weeklyTransfersFromSavings || 0,
       },
 
       // Monthly data
       monthly: {
         balance: totalBalance,
         income: monthlyIncome,
-        savings: monthlySavings,
         expenses: monthlyExpenses,
+        transfersToSavings: monthlyTransfersToSavings || 0,
+        transfersFromSavings: monthlyTransfersFromSavings || 0,
       },
     });
   }, []);

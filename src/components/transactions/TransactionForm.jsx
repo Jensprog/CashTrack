@@ -1,5 +1,5 @@
 /**
- * The TransactionForm component is a React functional component that
+ * @file The TransactionForm component is a React functional component that
  * provides a form for adding or editing transactions.
  */
 'use client';
@@ -24,13 +24,7 @@ export default function TransactionForm({
       ? new Date(transaction.date).toISOString().split('T')[0]
       : new Date().toISOString().split('T')[0],
     categoryId: transaction?.categoryId || '',
-    transactionType: transaction
-      ? transaction.amount > 0
-        ? 'income'
-        : transaction.category?.isSaving
-          ? 'saving'
-          : 'expense'
-      : 'expense',
+    transactionType: transaction ? (transaction.amount > 0 ? 'income' : 'expense') : 'expense',
   };
 
   // Form state
@@ -161,10 +155,8 @@ export default function TransactionForm({
     .filter((category) => {
       if (formData.transactionType === 'income') {
         return category.isIncome;
-      } else if (formData.transactionType === 'saving') {
-        return !category.isIncome && category.isSaving;
       } else {
-        return !category.isIncome && !category.isSaving;
+        return !category.isIncome;
       }
     })
     .sort((a, b) => a.name.localeCompare(b.name, 'sv'));
@@ -206,20 +198,6 @@ export default function TransactionForm({
               <span className="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
               Inkomst
             </button>
-
-            <button
-              type="button"
-              onClick={() => handleTransactionTypeChange('saving')}
-              className={`py-2 px-3 rounded-md flex items-center justify-center ${
-                formData.transactionType === 'saving'
-                  ? 'bg-blue-100 border border-blue-500 dark:bg-blue-900/20 dark:border-blue-700'
-                  : 'bg-gray-100 border border-gray-300 dark:bg-gray-800 dark:border-gray-700'
-              }`}
-            >
-              <span className="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
-              Sparande
-            </button>
-
             <button
               type="button"
               onClick={() => handleTransactionTypeChange('expense')}
@@ -258,11 +236,7 @@ export default function TransactionForm({
             />
             <div
               className={`absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none ${
-                formData.transactionType === 'income'
-                  ? 'text-green-500'
-                  : formData.transactionType === 'saving'
-                    ? 'text-blue-500'
-                    : 'text-red-500'
+                formData.transactionType === 'income' ? 'text-green-500' : 'text-red-500'
               }`}
             >
               {formData.transactionType === 'income' ? '+' : '-'}

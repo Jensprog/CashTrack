@@ -1,5 +1,5 @@
 /**
- * Renders the UserAccount component.
+ * @file Renders the UserAccount component.
  */
 
 import { cookies } from 'next/headers';

@@ -1,5 +1,5 @@
 /**
- * Transactions page component.
+ * @file Transactions page component.
  *
  * This pages handles all transaction management functionality including
  * adding, editing, deleting and listing transactions.

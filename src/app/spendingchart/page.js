@@ -1,5 +1,5 @@
 /**
- * The page that renders the SpendingChart-component.
+ * @file The page that renders the SpendingChart-component.
  */
 'use client';
 

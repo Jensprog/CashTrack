@@ -1,5 +1,5 @@
 /**
- * User service
+ * @file User service
  *
  * This file contains functions for handling user-related operations:
  * - User retrieval

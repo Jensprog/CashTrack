@@ -1,5 +1,5 @@
 /**
- * The LoginForm component is a React functional component that
+ * @file The LoginForm component is a React functional component that
  * provides a login form for users.
  */
 'use client';

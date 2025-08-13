@@ -1,5 +1,5 @@
 /**
- * Client component for the category page.
+ * @file Client component for the category page.
  *
  * This component contains a form to create and handle categories.
  */

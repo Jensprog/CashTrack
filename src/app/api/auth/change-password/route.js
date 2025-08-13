@@ -1,5 +1,5 @@
 /**
- * Route that handles password change.
+ * @file Route that handles password change.
  */
 
 import { authMiddleware } from '@/middlewares/authMiddleware';

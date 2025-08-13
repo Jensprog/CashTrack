@@ -1,5 +1,5 @@
 /**
- * Backend API route for checking authentication status.
+ * @file Backend API route for checking authentication status.
  *
  * This route verifies if the user is logged in and returns the user information.
  */

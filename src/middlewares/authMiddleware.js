@@ -1,5 +1,5 @@
 /**
- * Authentication middleware using HttpOnly cookies
+ * @file Authentication middleware using HttpOnly cookies
  *
  * This middleware verifies the JWT token from cookies and
  * attaches the user ID to the request context for protected routes.

@@ -1,5 +1,5 @@
 /**
- * Authentication Context Provider.
+ * @file Authentication Context Provider.
  *
  * This context provides authentication state and functions across the application.
  */

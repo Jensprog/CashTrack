@@ -1,5 +1,5 @@
 /**
- * CategoryList component to show a list of categories.
+ * @file CategoryList component to show a list of categories.
  */
 'use client';
 
@@ -14,13 +14,7 @@ export default function CategoryList({ categories, loading, onUpdate, onDelete }
     .filter((cat) => cat.isIncome)
     .sort((a, b) => a.name.localeCompare(b.name, 'sv'));
 
-  const savingCategories = categories
-    .filter((cat) => cat.isSaving)
-    .sort((a, b) => a.name.localeCompare(b.name, 'sv'));
-
-  const expenseCategories = categories
-    .filter((cat) => !cat.isIncome && !cat.isSaving)
-    .sort((a, b) => a.name.localeCompare(b.name, 'sv'));
+  const expenseCategories = categories.sort((a, b) => a.name.localeCompare(b.name, 'sv'));
 
   const handleCategoryUpdated = (updatedCategory) => {
     setEditingCategory(null);
@@ -71,42 +65,6 @@ export default function CategoryList({ categories, loading, onUpdate, onDelete }
               <div
                 key={category.id}
                 className="flex justify-between items-center p-3 rounded bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-green-900/30"
-              >
-                <span className="font-medium">{category.name}</span>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => setEditingCategory(category)}
-                    className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm"
-                  >
-                    Redigera
-                  </button>
-                  <button
-                    onClick={() => setDeletingCategory(category)}
-                    className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 text-sm"
-                  >
-                    Ta bort
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Saving categories */}
-      <div className="mb-6">
-        <h3 className="text-md font-medium text-gray-800 dark:text-white mb-3 border-b pb-2 flex items-center">
-          <span className="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
-          Sparkategorier ({savingCategories.length})
-        </h3>
-        {savingCategories.length === 0 ? (
-          <p className="text-sm text-gray-500 dark:text-gray-400">Inga sparkategorier skapade.</p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {savingCategories.map((category) => (
-              <div
-                key={category.id}
-                className="flex justify-between items-center p-3 rounded bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30"
               >
                 <span className="font-medium">{category.name}</span>
                 <div className="flex space-x-2">

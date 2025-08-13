@@ -1,5 +1,5 @@
 /**
- * API-route to create standard categories.
+ * @file API-route to create standard categories.
  */
 
 import { createDefaultCategories } from '@/services/categoryService';

@@ -1,5 +1,5 @@
 /**
- * Dashboard page component.
+ * @file Dashboard page component.
  *
  * This server component handles authentication checks and renders the dashboard
  * content for authenticated users only.

@@ -1,5 +1,5 @@
 /**
- * API response utilities
+ * @file API response utilities
  *
  * Helper functions to standardize API responses across the application.
  * Provides consistent formatting for both success and error responses.

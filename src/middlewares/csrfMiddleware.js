@@ -1,5 +1,5 @@
 /**
- * CSRF protection middleware
+ * @file CSRF protection middleware
  * This middleware verifies that incoming non-GET requests have a valid CSRF token.
  */
 

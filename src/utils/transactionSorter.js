@@ -1,5 +1,5 @@
 /**
- * Utility functions for transaction handling.
+ * @file Utility functions for transaction handling.
  * Sorts transactions based on specified key and direciton.
  * Default sorting is by date (newest first) and then by createdAT (newest first).
  */

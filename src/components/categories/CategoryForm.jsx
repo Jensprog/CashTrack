@@ -1,5 +1,5 @@
 /**
- * CategoryForm component is a form to add and edit categories.
+ * @file CategoryForm component is a form to add and edit categories.
  */
 'use client';
 
@@ -14,7 +14,6 @@ export default function CategoryForm({
   const initialFormState = {
     name: category ? category.name : '',
     isIncome: category ? category.isIncome : false,
-    isSaving: category ? category.isSaving : false,
   };
 
   const [formData, setFormData] = useState(initialFormState);
@@ -28,7 +27,6 @@ export default function CategoryForm({
       setFormData({
         name: category.name,
         isIncome: category.isIncome,
-        isSaving: category.isSaving,
       });
     }
   }, [category]);
@@ -47,19 +45,11 @@ export default function CategoryForm({
       setFormData({
         ...formData,
         isIncome: true,
-        isSaving: false,
-      });
-    } else if (typeId === 'saving') {
-      setFormData({
-        ...formData,
-        isIncome: false,
-        isSaving: true,
       });
     } else {
       setFormData({
         ...formData,
         isIncome: false,
-        isSaving: false,
       });
     }
   };
@@ -90,7 +80,6 @@ export default function CategoryForm({
       const data = {
         name: formData.name.trim(),
         isIncome: formData.isIncome,
-        isSaving: formData.isSaving,
       };
 
       if (!data.name) {
@@ -125,7 +114,6 @@ export default function CategoryForm({
 
   const getCategoryType = () => {
     if (formData.isIncome) return 'income';
-    if (formData.isSaving) return 'saving';
     return 'expense';
   };
 
@@ -161,19 +149,6 @@ export default function CategoryForm({
             >
               <span className="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
               Inkomst
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleCategoryTypeChange('saving')}
-              className={`py-2 px-3 rounded-md flex items-center justify-center ${
-                getCategoryType() === 'saving'
-                  ? 'bg-blue-100 border border-blue-500 dark:bg-blue-900/20 dark:border-blue-700'
-                  : 'bg-gray-100 border border-gray-300 dark:bg-gray-800 dark:border-gray-700'
-              }`}
-            >
-              <span className="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
-              Sparande
             </button>
 
             <button

@@ -1,5 +1,5 @@
 /**
- * Backend API route for transaction management.
+ * @file Backend API route for transaction management.
  *
  * This route handles CRUD operations for transactions:
  * - Creating new transactions
