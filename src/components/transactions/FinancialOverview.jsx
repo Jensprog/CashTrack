@@ -225,7 +225,7 @@ export default function FinancialOverview() {
                   <div className="pt-2 border-t border-purple-200 dark:border-purple-700">
                     <div className="flex justify-between items-center">
                       <span className="text-xs text-purple-600 dark:text-purple-400">
-                        Netto överföringar:
+                        Överföringar:
                       </span>
                       <span className={`text-xs font-medium ${
                         (displayData.transfersFromSavings - displayData.transfersToSavings) >= 0
@@ -240,53 +240,6 @@ export default function FinancialOverview() {
                 </div>
               </div>
             )}
-
-            {/* Balance Breakdown */}
-            <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                Saldo-uppdelning
-              </h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Inkomster:</span>
-                  <span className="text-green-600 dark:text-green-400">
-                    +{formatAmount(displayData.income)}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Utgifter:</span>
-                  <span className="text-red-600 dark:text-red-400">
-                    -{formatAmount(displayData.expenses)}
-                  </span>
-                </div>
-                {displayData.transfersToSavings > 0 && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Till sparkonton:</span>
-                    <span className="text-purple-600 dark:text-purple-400">
-                      -{formatAmount(displayData.transfersToSavings)}
-                    </span>
-                  </div>
-                )}
-                {displayData.transfersFromSavings > 0 && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Från sparkonton:</span>
-                    <span className="text-purple-600 dark:text-purple-400">
-                      +{formatAmount(displayData.transfersFromSavings)}
-                    </span>
-                  </div>
-                )}
-                <div className="pt-2 border-t border-gray-200 dark:border-gray-600">
-                  <div className="flex justify-between font-medium">
-                    <span className="text-gray-700 dark:text-gray-300">Huvudkonto-saldo:</span>
-                    <span className={displayData.balance >= 0 
-                      ? 'text-green-600 dark:text-green-400' 
-                      : 'text-red-600 dark:text-red-400'}>
-                      {formatAmount(displayData.balance)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       )}

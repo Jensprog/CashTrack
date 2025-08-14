@@ -179,39 +179,57 @@ export default function TransactionForm({
         </div>
       )}
 
-      <form onSubmit={handleSubmit} noValidate>
-        {/* Transaction Type */}
-        <div className="mb-4">
-          <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
-            Transaktionstyp
-          </label>
-          <div className="grid grid-cols-3 gap-2">
-            <button
-              type="button"
-              onClick={() => handleTransactionTypeChange('income')}
-              className={`py-2 px-3 rounded-md flex items-center justify-center ${
-                formData.transactionType === 'income'
-                  ? 'bg-green-100 border border-green-500 dark:bg-green-900/20 dark:border-green-700'
-                  : 'bg-gray-100 border border-gray-300 dark:bg-gray-800 dark:border-gray-700'
-              }`}
-            >
-              <span className="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
-              Inkomst
-            </button>
-            <button
-              type="button"
-              onClick={() => handleTransactionTypeChange('expense')}
-              className={`py-2 px-3 rounded-md flex items-center justify-center ${
-                formData.transactionType === 'expense'
-                  ? 'bg-red-100 border border-red-500 dark:bg-red-900/20 dark:border-red-700'
-                  : 'bg-gray-100 border border-gray-300 dark:bg-gray-800 dark:border-gray-700'
-              }`}
-            >
-              <span className="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
-              Utgift
-            </button>
+      {!transaction && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          {/* Expense Form Section */}
+          <div 
+            className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+              formData.transactionType === 'expense'
+                ? 'border-red-500 bg-red-50 dark:bg-red-900/10'
+                : 'border-gray-200 dark:border-gray-700 hover:border-red-300 dark:hover:border-red-700'
+            }`}
+            onClick={() => handleTransactionTypeChange('expense')}
+          >
+            <div className="flex items-center mb-2">
+              <span className="w-4 h-4 bg-red-500 rounded-full mr-3"></span>
+              <h3 className="text-lg font-semibold text-red-600 dark:text-red-400">Lägg till utgift</h3>
+            </div>
+            <p className="text-sm text-gray-600 dark:text-gray-400">För kostnader, räkningar och andra utgifter</p>
+          </div>
+
+          {/* Income Form Section */}
+          <div 
+            className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+              formData.transactionType === 'income'
+                ? 'border-green-500 bg-green-50 dark:bg-green-900/10'
+                : 'border-gray-200 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-700'
+            }`}
+            onClick={() => handleTransactionTypeChange('income')}
+          >
+            <div className="flex items-center mb-2">
+              <span className="w-4 h-4 bg-green-500 rounded-full mr-3"></span>
+              <h3 className="text-lg font-semibold text-green-600 dark:text-green-400">Lägg till inkomst</h3>
+            </div>
+            <p className="text-sm text-gray-600 dark:text-gray-400">För lön, bonus och andra inkomster</p>
           </div>
         </div>
+      )}
+
+      <form onSubmit={handleSubmit} noValidate>
+        {/* Selected Transaction Type Indicator */}
+        {(formData.transactionType && !transaction) && (
+          <div className="mb-4 p-3 rounded-lg border-l-4 border-l-current bg-gray-50 dark:bg-gray-800">
+            <div className={`flex items-center ${
+              formData.transactionType === 'income' 
+                ? 'text-green-600 dark:text-green-400' 
+                : 'text-red-600 dark:text-red-400'
+            }`}>
+              <span className="font-medium">
+                {formData.transactionType === 'income' ? 'Lägger till inkomst' : 'Lägger till utgift'}
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Amount */}
         <div className="mb-4">

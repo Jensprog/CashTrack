@@ -20,7 +20,6 @@ export default function SavingsAccountForm({
         ? savingsAccount.targetAmount.toString()
         : ''
       : '',
-    categoryId: savingsAccount ? savingsAccount.categoryId || '' : '',
   };
 
   const [formData, setFormData] = useState(initialFormState);
@@ -48,7 +47,6 @@ export default function SavingsAccountForm({
         name: savingsAccount.name,
         description: savingsAccount.description || '',
         targetAmount: savingsAccount.targetAmount ? savingsAccount.targetAmount.toString() : '',
-        categoryId: savingsAccount.categoryId || '',
       });
     }
   }, [savingsAccount]);
@@ -82,7 +80,6 @@ export default function SavingsAccountForm({
         name: formData.name.trim(),
         description: formData.description.trim() || null,
         targetAmount: formData.targetAmount ? parseFloat(formData.targetAmount) : null,
-        categoryId: formData.categoryId || null,
       };
 
       if (!data.name) {
@@ -103,7 +100,6 @@ export default function SavingsAccountForm({
           name: '',
           description: '',
           targetAmount: '',
-          categoryId: '',
         });
       }
 
@@ -119,10 +115,6 @@ export default function SavingsAccountForm({
       setIsLoading(false);
     }
   };
-
-  const filteredCategories = categories
-    .filter((category) => category.isIncome)
-    .sort((a, b) => a.name.localeCompare(b.name, 'sv'));
 
   return (
     <div>
@@ -199,33 +191,6 @@ export default function SavingsAccountForm({
           />
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             Lämna tomt om du inte har ett specifikt sparmål
-          </p>
-        </div>
-
-        {/* Category */}
-        <div className="mb-6">
-          <label
-            className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
-            htmlFor="categoryId"
-          >
-            Kategori
-          </label>
-          <select
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-800 leading-tight focus:outline-none focus:shadow-outline"
-            id="categoryId"
-            name="categoryId"
-            value={formData.categoryId}
-            onChange={handleChange}
-          >
-            <option value="">Välj kategori (valfritt)</option>
-            {filteredCategories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Kategorisera ditt sparkonto för bättre översikt
           </p>
         </div>
 
