@@ -4,16 +4,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTransactions } from '@/context/TransactionContext';
 import api from '@/lib/axiosConfig';
 
 export default function TransferForm({
   transfer = null,
   savingsAccountId = null,
-  transferType = 'TO-SAVINGS',
-  onSubmit,
+  transferType = 'TO_SAVINGS',
   onSuccess = () => {},
   onCancel = () => {},
 }) {
+  // Get functions from TransactionContext
+  const { createTransfer, updateTransfer } = useTransactions();
   const initialFormState = {
     amount: transfer ? Math.abs(transfer.amount).toString() : '',
     description: transfer?.description || '',
@@ -104,7 +106,7 @@ export default function TransferForm({
       }
 
       // Savings accounts need to have sufficient balance for transfers
-      if (data.type === 'FROM-SAVINGS' && selectedAccount) {
+      if (data.type === 'FROM_SAVINGS' && selectedAccount) {
         if (selectedAccount.currentAmount < data.amount) {
           throw new Error(
             `Otillräckligt saldo. Tillgängligt: ${selectedAccount.currentAmount.toFixed(2)}`,
@@ -112,11 +114,12 @@ export default function TransferForm({
         }
       }
 
-      const response = await onSubmit(data);
-
+      let response;
       if (transfer) {
+        response = await updateTransfer(transfer.id, data);
         setSuccessMessage('Överföringen har uppdaterats!');
       } else {
+        response = await createTransfer(data);
         setSuccessMessage('Överföringen har skapats!');
         setFormData({
           amount: '',
@@ -127,7 +130,7 @@ export default function TransferForm({
         });
       }
 
-      onSuccess(response?.data?.transfer);
+      onSuccess(response?.transfer);
     } catch (error) {
       console.error('Transfer error:', error);
       if (error.response?.data?.message) {

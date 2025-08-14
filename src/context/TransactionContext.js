@@ -262,10 +262,58 @@ export const TransactionProvider = ({ children }) => {
     [fetchTransactions],
   );
 
+  // Create transfer
+  const createTransfer = useCallback(
+    async (transferData) => {
+      try {
+        const response = await api.post('/transfers', transferData);
+        await fetchTransactions();
+        return response.data;
+      } catch (error) {
+        console.error('Error creating transfer:', error);
+        throw error;
+      }
+    },
+    [fetchTransactions],
+  );
+
+  // Update transfer
+  const updateTransfer = useCallback(
+    async (id, transferData) => {
+      try {
+        const response = await api.put('/transfers', {
+          id,
+          ...transferData,
+        });
+        await fetchTransactions();
+        return response.data;
+      } catch (error) {
+        console.error('Error updating transfer:', error);
+        throw error;
+      }
+    },
+    [fetchTransactions],
+  );
+
+  // Delete transfer
+  const deleteTransfer = useCallback(
+    async (id) => {
+      try {
+        await api.delete(`/transfers?id=${id}`);
+        await fetchTransactions();
+      } catch (error) {
+        console.error('Error deleting transfer:', error);
+        throw error;
+      }
+    },
+    [fetchTransactions],
+  );
+
   // Fetch transactions on initial render
   useEffect(() => {
     fetchTransactions();
   }, [fetchTransactions]);
+
 
   // Context value to provide for components
   const value = {
@@ -280,6 +328,9 @@ export const TransactionProvider = ({ children }) => {
     createTransaction,
     updateTransaction,
     deleteTransaction,
+    createTransfer,
+    updateTransfer,
+    deleteTransfer,
     setFilters,
   };
 

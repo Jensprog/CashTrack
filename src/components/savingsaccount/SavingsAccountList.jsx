@@ -50,15 +50,6 @@ export default function SavingsAccountList({
     if (onRefresh) onRefresh();
   };
 
-  const handleCreateTransfer = async (transferData) => {
-    try {
-      const response = api.post('/transfers', transferData);
-      return response.data;
-    } catch (error) {
-      console.error('Error creating transfer:', error);
-      throw error;
-    }
-  };
 
   const handleDeleteAccount = async () => {
     if (!deletingAccount) return;
@@ -233,7 +224,6 @@ export default function SavingsAccountList({
               <TransferForm
                 savingsAccountId={transferModal.accountId}
                 transferType={transferModal.type}
-                onSubmit={handleCreateTransfer}
                 onSuccess={handleTransferSuccess}
                 onCancel={() => setTransferModal(null)}
               />
