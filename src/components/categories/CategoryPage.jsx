@@ -112,7 +112,6 @@ export default function CategoryPage() {
               </p>
               <ul className="text-sm text-gray-600 dark:text-gray-400 list-disc pl-5 space-y-2">
                 <li>Inkomstkategorier används för pengar du får in (gröna)</li>
-                <li>Sparandekategorier används för pengarna du sparar eller investerar(blåa)</li>
                 <li>Utgiftskategorier används för pengar du spenderar (röda)</li>
                 <li>Du kan lägga till, redigera och ta bort kategorier när som helst</li>
               </ul>

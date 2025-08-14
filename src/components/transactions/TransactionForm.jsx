@@ -215,22 +215,6 @@ export default function TransactionForm({
         </div>
       )}
 
-      <form onSubmit={handleSubmit} noValidate>
-        {/* Selected Transaction Type Indicator */}
-        {(formData.transactionType && !transaction) && (
-          <div className="mb-4 p-3 rounded-lg border-l-4 border-l-current bg-gray-50 dark:bg-gray-800">
-            <div className={`flex items-center ${
-              formData.transactionType === 'income' 
-                ? 'text-green-600 dark:text-green-400' 
-                : 'text-red-600 dark:text-red-400'
-            }`}>
-              <span className="font-medium">
-                {formData.transactionType === 'income' ? 'Lägger till inkomst' : 'Lägger till utgift'}
-              </span>
-            </div>
-          </div>
-        )}
-
         {/* Amount */}
         <div className="mb-4">
           <label
@@ -340,7 +324,6 @@ export default function TransactionForm({
                 : 'Spara'}
           </button>
         </div>
-      </form>
     </div>
   );
 }
