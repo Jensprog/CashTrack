@@ -193,15 +193,30 @@ export const deleteSavingsAccount = async (savingsAccountId) => {
       throw new NotFoundError('Sparkontot hittades inte');
     }
 
-    const linkedTransfers = await prisma.transfer.count({
+    // Calculate current balance to check if there's money left
+    const transfers = await prisma.transfer.findMany({
       where: { savingsAccountId: savingsAccountId },
     });
 
-    if (linkedTransfers > 0) {
+    let currentBalance = 0;
+    transfers.forEach((transfer) => {
+      if (transfer.type === 'TO_SAVINGS') {
+        currentBalance += transfer.amount;
+      } else if (transfer.type === 'FROM_SAVINGS') {
+        currentBalance -= transfer.amount;
+      }
+    });
+
+    if (currentBalance > 0) {
       throw new ValidationError(
-        `Kan inte radera sparkontot eftersom det har ${linkedTransfers} kopplade överföringar. Ta bort överföringarna först eller koppla bort dem från sparkontot.`,
+        `Kan inte radera sparkontot eftersom det innehåller ${currentBalance.toFixed(2)} kr. Överför pengarna till ett aktivt konto först.`,
       );
     }
+
+    // Delete associated transfers first to be able to delete the account
+    await prisma.transfer.deleteMany({
+      where: { savingsAccountId: savingsAccountId },
+    });
 
     await prisma.savingsAccount.delete({
       where: { id: savingsAccountId },

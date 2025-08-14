@@ -68,7 +68,7 @@ export default function SavingsAccountList({
       setDeletingAccount(null);
     } catch (error) {
       console.error('Error deleting savings account:', error);
-      alert('Kunde inte ta bort sparkontot. Försök igen senare.');
+      alert(error.response?.data?.message || 'Kunde inte ta bort sparkontot. Försök igen senare.');
     }
   };
 

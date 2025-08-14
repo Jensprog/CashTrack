@@ -36,7 +36,7 @@ export async function PUT(request, { params }) {
       return userId;
     }
 
-    const { id } = params;
+    const { id } = await params;
     const { name, description, targetAmount, categoryId } = await request.json();
     if (!id) {
       throw new ValidationError('Sparkonto-ID krävs');
