@@ -214,7 +214,7 @@ export default function TransactionForm({
           </div>
         </div>
       )}
-
+      <form onSubmit={handleSubmit} noValidate>
         {/* Amount */}
         <div className="mb-4">
           <label
@@ -324,6 +324,7 @@ export default function TransactionForm({
                 : 'Spara'}
           </button>
         </div>
+        </form>
     </div>
   );
 }
