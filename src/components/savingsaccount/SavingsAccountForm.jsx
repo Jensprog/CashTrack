@@ -23,14 +23,9 @@ export default function SavingsAccountForm({
   };
 
   const [formData, setFormData] = useState(initialFormState);
-  const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
 
   useEffect(() => {
     if (successMessage) {
@@ -50,16 +45,6 @@ export default function SavingsAccountForm({
       });
     }
   }, [savingsAccount]);
-
-  const fetchCategories = async () => {
-    try {
-      const response = await api.get('/categories');
-      setCategories(response.data.data.categories || []);
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-      setError('Kunde inte hämta kategorier. Försök igen senare.');
-    }
-  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;

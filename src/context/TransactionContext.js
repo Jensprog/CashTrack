@@ -217,7 +217,6 @@ export const TransactionProvider = ({ children }) => {
     async (transactionData) => {
       try {
         const response = await api.post('/transactions', transactionData);
-        // Update trancation list and financial data
         await fetchTransactions();
         return response.data;
       } catch (error) {
@@ -236,7 +235,6 @@ export const TransactionProvider = ({ children }) => {
           id,
           ...transactionData,
         });
-        // Update transaction list and financial data
         await fetchTransactions();
         return response.data;
       } catch (error) {
@@ -252,7 +250,6 @@ export const TransactionProvider = ({ children }) => {
     async (id) => {
       try {
         await api.delete(`/transactions?id=${id}`);
-        // Update transaction list and financial data
         await fetchTransactions();
       } catch (error) {
         console.error('Error deleting transaction:', error);
