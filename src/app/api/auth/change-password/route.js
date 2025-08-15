@@ -5,7 +5,8 @@
 import { authMiddleware } from '@/middlewares/authMiddleware';
 import { comparePassword, hashPassword } from '@/lib/auth';
 import { ValidationError } from '@/utils/errorClasses';
-import { successResponse, errorResponse } from '@/helpers/api';
+import { successResponse } from '@/helpers/api';
+import { handlePrismaError } from '@/utils/prismaErrorHandler';
 import { getUserById } from '@/services/userService';
 import { prisma } from '@/lib/db';
 
@@ -34,6 +35,6 @@ export async function PUT(request) {
 
     return successResponse(null, 'Lösenordet har ändrats', 200);
   } catch (error) {
-    return errorResponse(error);
+    handlePrismaError(error, 'Password change');
   }
 }

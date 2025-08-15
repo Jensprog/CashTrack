@@ -4,7 +4,8 @@
 
 import { authMiddleware } from '@/middlewares/authMiddleware';
 import { prisma } from '@/lib/db';
-import { successResponse, errorResponse } from '@/helpers/api';
+import { successResponse } from '@/helpers/api';
+import { handlePrismaError } from '@/utils/prismaErrorHandler';
 
 export async function DELETE(request) {
   try {
@@ -36,6 +37,6 @@ export async function DELETE(request) {
 
     return successResponse(null, 'Kontot har raderats permanent', 200);
   } catch (error) {
-    return errorResponse(error);
+    handlePrismaError(error, 'Account deletion');
   }
 }

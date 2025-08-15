@@ -3,7 +3,8 @@
  */
 
 import { createDefaultCategories } from '@/services/categoryService';
-import { successResponse, errorResponse } from '@/helpers/api';
+import { successResponse } from '@/helpers/api';
+import { handlePrismaError } from '@/utils/prismaErrorHandler';
 import { authMiddleware } from '@/middlewares/authMiddleware';
 import { prisma } from '@/lib/db';
 
@@ -38,7 +39,7 @@ export async function POST(request) {
 
       return successResponse({ categories }, 'Standardkategorier skapade', 201);
     } catch (error) {
-      return errorResponse(error);
+      handlePrismaError(error, 'Create default categories');
     }
   }
 }

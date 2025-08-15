@@ -54,7 +54,7 @@ export default function RegisterForm() {
       // Redirect to login page after a short delay
       setTimeout(() => {
         router.push('/login');
-      }, 2000);
+      }, 1000);
     } catch (error) {
       console.error('Registration error:', error);
       if (error.response?.data?.message) {

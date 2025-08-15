@@ -13,9 +13,9 @@ export const handlePrismaError = (error, context = 'Operation') => {
     case 'P2002':
       throw new ConflictError(`${context} already exists`);
     case 'P2003':
-      throw new ValidationError('Invalid references');
+      throw new ValidationError(`Invalid references in ${context}`);
     case 'P2025':
-      throw new NotFoundError('Resource not found');
+      throw new NotFoundError(`Resource not found in ${context}`);
     default:
       throw new AppError(`${context} failed`);
   }
