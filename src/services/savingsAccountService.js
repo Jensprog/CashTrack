@@ -177,23 +177,27 @@ export const deleteSavingsAccount = async (savingsAccountId) => {
       throw new NotFoundError('Sparkontot hittades inte');
     }
 
-    // Calculate current balance to check if there's money left
+    // Calculate current balance to check if there's money left (including initial balance)
+    const currentBalance = existingSavingsAccount.initialBalance || 0;
+    
     const transfers = await prisma.transfer.findMany({
       where: { savingsAccountId: savingsAccountId },
     });
 
-    let currentBalance = 0;
+    let transferBalance = 0;
     transfers.forEach((transfer) => {
       if (transfer.type === 'TO_SAVINGS') {
-        currentBalance += transfer.amount;
+        transferBalance += transfer.amount;
       } else if (transfer.type === 'FROM_SAVINGS') {
-        currentBalance -= transfer.amount;
+        transferBalance -= transfer.amount;
       }
     });
 
-    if (currentBalance > 0) {
+    const totalBalance = currentBalance + transferBalance;
+
+    if (totalBalance > 0) {
       throw new ValidationError(
-        `Kan inte radera sparkontot eftersom det innehåller ${currentBalance.toFixed(2)} kr. Överför pengarna till ett aktivt konto först.`,
+        `Kan inte radera sparkontot eftersom det innehåller ${totalBalance.toFixed(2)} kr. Överför pengarna till ett aktivt konto först.`,
       );
     }
 
