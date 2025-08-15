@@ -20,6 +20,7 @@ export default function SavingsAccountForm({
         ? savingsAccount.targetAmount.toString()
         : ''
       : '',
+    initialBalance: savingsAccount ? '' : '',
   };
 
   const [formData, setFormData] = useState(initialFormState);
@@ -42,6 +43,7 @@ export default function SavingsAccountForm({
         name: savingsAccount.name,
         description: savingsAccount.description || '',
         targetAmount: savingsAccount.targetAmount ? savingsAccount.targetAmount.toString() : '',
+        initialBalance: '',
       });
     }
   }, [savingsAccount]);
@@ -65,6 +67,7 @@ export default function SavingsAccountForm({
         name: formData.name.trim(),
         description: formData.description.trim() || null,
         targetAmount: formData.targetAmount ? parseFloat(formData.targetAmount) : null,
+        initialBalance: !savingsAccount && formData.initialBalance ? parseFloat(formData.initialBalance) : null,
       };
 
       if (!data.name) {
@@ -73,6 +76,10 @@ export default function SavingsAccountForm({
 
       if (data.targetAmount !== null && (isNaN(data.targetAmount) || data.targetAmount <= 0)) {
         throw new Error('Målsumma måste vara ett positivt tal');
+      }
+
+      if (data.initialBalance !== null && (isNaN(data.initialBalance) || data.initialBalance < 0)) {
+        throw new Error('Startbelopp måste vara ett positivt tal eller noll');
       }
 
       const response = await onSubmit(data);
@@ -85,6 +92,7 @@ export default function SavingsAccountForm({
           name: '',
           description: '',
           targetAmount: '',
+          initialBalance: '',
         });
       }
 
@@ -178,6 +186,32 @@ export default function SavingsAccountForm({
             Lämna tomt om du inte har ett specifikt sparmål
           </p>
         </div>
+
+        {/* Initial Balance - only show when creating new account */}
+        {!savingsAccount && (
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+              htmlFor="initialBalance"
+            >
+              Startbelopp (kr)
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-800 leading-tight focus:outline-none focus:shadow-outline"
+              id="initialBalance"
+              name="initialBalance"
+              type="number"
+              step="0.01"
+              min="0"
+              placeholder="Hur mycket pengar finns redan på kontot? (valfritt)"
+              value={formData.initialBalance}
+              onChange={handleChange}
+            />
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Ange befintligt saldo om du redan har pengar på detta sparkonto
+            </p>
+          </div>
+        )}
 
         {/* Buttons */}
         <div className="flex items-center justify-between">

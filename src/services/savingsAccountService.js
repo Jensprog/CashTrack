@@ -13,7 +13,7 @@ import { ValidationError, NotFoundError, AppError } from '@/errors/classes';
 
 export const createSavingsAccount = async (savingsData) => {
   try {
-    const { name, description, targetAmount, userId } = savingsData;
+    const { name, description, targetAmount, initialBalance, userId } = savingsData;
 
     if (!name || !userId) {
       throw new ValidationError('Namn och användar-ID krävs');
@@ -28,6 +28,8 @@ export const createSavingsAccount = async (savingsData) => {
         name,
         description: description || null,
         targetAmount: targetAmount ? parseFloat(targetAmount) : null,
+        initialBalance: initialBalance ? parseFloat(initialBalance) : 0,
+        currentAmount: initialBalance ? parseFloat(initialBalance) : 0,
         userId,
       },
     });

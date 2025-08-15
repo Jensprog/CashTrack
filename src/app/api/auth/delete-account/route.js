@@ -22,6 +22,14 @@ export async function DELETE(request) {
       where: { userId },
     });
 
+    await prisma.transfer.deleteMany({
+      where: { userId },
+    });
+
+    await prisma.savingsAccount.deleteMany({
+      where: { userId },
+    });
+
     await prisma.user.delete({
       where: { id: userId },
     });

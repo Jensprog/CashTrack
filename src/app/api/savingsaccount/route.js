@@ -31,7 +31,7 @@ export async function POST(request) {
       return userId;
     }
 
-    const { name, description, targetAmount } = await request.json();
+    const { name, description, targetAmount, initialBalance } = await request.json();
 
     if (!name) {
       throw new ValidationError('Kontonamn krävs');
@@ -41,6 +41,7 @@ export async function POST(request) {
       name,
       description,
       targetAmount,
+      initialBalance,
       userId,
     });
 

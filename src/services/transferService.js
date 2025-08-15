@@ -243,11 +243,22 @@ export const calculateSavingsAccountBalance = async (savingsAccountId) => {
       throw new ValidationError('Sparkonto-ID krävs');
     }
 
+    const savingsAccount = await prisma.savingsAccount.findUnique({
+      where: { id: savingsAccountId },
+    });
+
+    if (!savingsAccount) {
+      throw new NotFoundError('Sparkonto hittades inte');
+    }
+
     const transfers = await prisma.transfer.findMany({
       where: { savingsAccountId },
     });
 
-    let balance = 0;
+    // Start with the initial balance from initialBalance field
+    let balance = savingsAccount.initialBalance || 0;
+    
+    // Add/subtract transfers
     transfers.forEach((transfer) => {
       if (transfer.type === 'TO_SAVINGS') {
         balance += transfer.amount;

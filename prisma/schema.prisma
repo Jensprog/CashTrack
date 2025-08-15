@@ -49,6 +49,7 @@ model SavingsAccount {
   name        String
   description String?
   targetAmount Float?
+  initialBalance Float   @default(0)
   currentAmount Float     @default(0)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
