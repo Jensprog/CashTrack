@@ -4,7 +4,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import api from '@/lib/axiosConfig';
 
 export default function SavingsAccountForm({
   savingsAccount = null,
@@ -13,14 +12,10 @@ export default function SavingsAccountForm({
   onCancel = () => {},
 }) {
   const initialFormState = {
-    name: savingsAccount ? savingsAccount.name : '',
-    description: savingsAccount ? savingsAccount.description || '' : '',
-    targetAmount: savingsAccount
-      ? savingsAccount.targetAmount
-        ? savingsAccount.targetAmount.toString()
-        : ''
-      : '',
-    initialBalance: savingsAccount ? '' : '',
+    name: savingsAccount?.name || '',
+    description: savingsAccount?.description || '',
+    targetAmount: savingsAccount?.targetAmount?.toString() || '',
+    initialBalance: '',
   };
 
   const [formData, setFormData] = useState(initialFormState);
@@ -40,9 +35,9 @@ export default function SavingsAccountForm({
   useEffect(() => {
     if (savingsAccount) {
       setFormData({
-        name: savingsAccount.name,
+        name: savingsAccount.name || '',
         description: savingsAccount.description || '',
-        targetAmount: savingsAccount.targetAmount ? savingsAccount.targetAmount.toString() : '',
+        targetAmount: savingsAccount.targetAmount?.toString() || '',
         initialBalance: '',
       });
     }

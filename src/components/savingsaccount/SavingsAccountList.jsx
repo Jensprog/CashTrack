@@ -6,7 +6,6 @@
 import { useState } from 'react';
 import SavingsAccountForm from '@/components/savingsaccount/SavingsAccountForm';
 import TransferForm from '@/components/transfers/TransferForm';
-import api from '@/lib/axiosConfig';
 
 export default function SavingsAccountList({
   savingsAccounts,
