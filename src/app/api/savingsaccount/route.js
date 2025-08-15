@@ -31,7 +31,7 @@ export async function POST(request) {
       return userId;
     }
 
-    const { name, description, targetAmount, categoryId } = await request.json();
+    const { name, description, targetAmount } = await request.json();
 
     if (!name) {
       throw new ValidationError('Kontonamn krävs');
@@ -42,7 +42,6 @@ export async function POST(request) {
       description,
       targetAmount,
       userId,
-      categoryId,
     });
 
     return successResponse({ savingsAccount: newSavingsAccount }, 'Sparkonto skapat', 201);

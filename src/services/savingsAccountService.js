@@ -13,7 +13,7 @@ import { ValidationError, NotFoundError, AppError } from '@/errors/classes';
 
 export const createSavingsAccount = async (savingsData) => {
   try {
-    const { name, description, targetAmount, userId, categoryId } = savingsData;
+    const { name, description, targetAmount, userId } = savingsData;
 
     if (!name || !userId) {
       throw new ValidationError('Namn och användar-ID krävs');
@@ -29,7 +29,6 @@ export const createSavingsAccount = async (savingsData) => {
         description: description || null,
         targetAmount: targetAmount ? parseFloat(targetAmount) : null,
         userId,
-        categoryId: categoryId || null,
       },
     });
 
@@ -52,7 +51,6 @@ export const getUserSavingsAccounts = async (userId) => {
     const savingsAccounts = await prisma.savingsAccount.findMany({
       where: { userId: userId },
       include: {
-        category: true,
         transfers: {
           orderBy: {
             date: 'desc',
@@ -83,7 +81,6 @@ export const getSavingsAccountById = async (savingsAccountId) => {
     const savingsAccount = await prisma.savingsAccount.findUnique({
       where: { id: savingsAccountId },
       include: {
-        category: true,
         transfers: {
           orderBy: {
             date: 'desc',
@@ -108,7 +105,7 @@ export const updateSavingsAccount = async (savingsAccountId, savingsData) => {
       throw new ValidationError('Sparkonto-ID krävs');
     }
 
-    const { name, description, targetAmount, categoryId } = savingsData;
+    const { name, description, targetAmount } = savingsData;
 
     const existingSavingsAccount = await getSavingsAccountById(savingsAccountId);
     if (!existingSavingsAccount) {
@@ -118,16 +115,6 @@ export const updateSavingsAccount = async (savingsAccountId, savingsData) => {
     if (targetAmount !== undefined && targetAmount !== null) {
       if (isNaN(targetAmount) || parseFloat(targetAmount) <= 0) {
         throw new ValidationError('Sparmål måste vara ett positivt nummer');
-      }
-    }
-
-    if (categoryId !== undefined && categoryId !== null && categoryId !== '') {
-      const categoryExists = await prisma.category.findUnique({
-        where: { id: categoryId },
-      });
-
-      if (!categoryExists) {
-        throw new ValidationError('Den angivna kategorin existerar inte');
       }
     }
 
@@ -145,15 +132,10 @@ export const updateSavingsAccount = async (savingsAccountId, savingsData) => {
       updateData.targetAmount = targetAmount !== null ? parseFloat(targetAmount) : null;
     }
 
-    if (categoryId !== undefined) {
-      updateData.categoryId = categoryId === '' || categoryId === null ? null : categoryId;
-    }
-
     const updatedSavingsAccount = await prisma.savingsAccount.update({
       where: { id: savingsAccountId },
       data: updateData,
       include: {
-        category: true,
         transfers: {
           orderBy: {
             date: 'desc',

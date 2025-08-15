@@ -101,11 +101,6 @@ export default function SavingsAccountList({
                       {account.description}
                     </p>
                   )}
-                  {account.category && (
-                    <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-                      Kategori: {account.category.name}
-                    </p>
-                  )}
                 </div>
                 <div className="flex space-x-2 ml-4">
                   <button

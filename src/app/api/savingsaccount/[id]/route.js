@@ -37,7 +37,7 @@ export async function PUT(request, { params }) {
     }
 
     const { id } = await params;
-    const { name, description, targetAmount, categoryId } = await request.json();
+    const { name, description, targetAmount } = await request.json();
     if (!id) {
       throw new ValidationError('Sparkonto-ID krävs');
     }
@@ -55,7 +55,6 @@ export async function PUT(request, { params }) {
       name,
       description,
       targetAmount,
-      categoryId,
     });
 
     return successResponse({ savingsAccount: updatedSavingsAccount }, 'Sparkonto uppdaterat', 201);
