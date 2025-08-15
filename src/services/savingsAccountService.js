@@ -9,7 +9,8 @@
  */
 
 import { prisma } from '@/lib/db';
-import { ValidationError, NotFoundError, AppError } from '@/errors/classes';
+import { ValidationError, NotFoundError } from '@/utils/errorClasses';
+import { handlePrismaError } from '@/utils/prismaErrorHandler';
 
 export const createSavingsAccount = async (savingsData) => {
   try {
@@ -37,10 +38,7 @@ export const createSavingsAccount = async (savingsData) => {
     return savingsAccount;
   } catch (error) {
     console.error('Error creating savings account:', error);
-    if (error instanceof AppError) {
-      throw error;
-    }
-    throw error;
+    handlePrismaError(error, 'Savings account creation');
   }
 };
 
@@ -67,10 +65,7 @@ export const getUserSavingsAccounts = async (userId) => {
     return savingsAccounts;
   } catch (error) {
     console.error('Error fetching savings account:', error);
-    if (error instanceof AppError) {
-      throw error;
-    }
-    throw error;
+    handlePrismaError(error, 'Savings account fetching');
   }
 };
 
@@ -94,10 +89,7 @@ export const getSavingsAccountById = async (savingsAccountId) => {
     return savingsAccount;
   } catch (error) {
     console.error('Error fetching savings account by ID:', error);
-    if (error instanceof AppError) {
-      throw error;
-    }
-    throw error;
+    handlePrismaError(error, 'Savings account ID fetching');
   }
 };
 
@@ -149,20 +141,7 @@ export const updateSavingsAccount = async (savingsAccountId, savingsData) => {
     return updatedSavingsAccount;
   } catch (error) {
     console.error('Error updating savings account:', error);
-
-    if (error instanceof AppError) {
-      throw error;
-    }
-
-    if (error.code === 'P2025') {
-      throw new NotFoundError('Sparkontot hittades inte');
-    }
-
-    if (error.code === 'P2003') {
-      throw new ValidationError('Den angivna kategorin existerar inte eller är ogiltig');
-    }
-
-    throw error;
+    handlePrismaError(error, 'Savings account updating');
   }
 };
 
@@ -179,7 +158,7 @@ export const deleteSavingsAccount = async (savingsAccountId) => {
 
     // Calculate current balance to check if there's money left (including initial balance)
     const currentBalance = existingSavingsAccount.initialBalance || 0;
-    
+
     const transfers = await prisma.transfer.findMany({
       where: { savingsAccountId: savingsAccountId },
     });
@@ -211,16 +190,7 @@ export const deleteSavingsAccount = async (savingsAccountId) => {
     });
   } catch (error) {
     console.error('Error deleting savings account:', error);
-
-    if (error instanceof AppError) {
-      throw error;
-    }
-
-    if (error.code === 'P2025') {
-      throw new NotFoundError('Sparkontot hittades inte');
-    }
-
-    throw error;
+    handlePrismaError(error, 'Savings account deletion');
   }
 };
 
@@ -241,9 +211,6 @@ export const calculateCurrentAmount = async (savingsAccountId) => {
     return currentAmount;
   } catch (error) {
     console.error('Error calculating current amount:', error);
-    if (error instanceof AppError) {
-      throw error;
-    }
-    throw error;
+    handlePrismaError(error, 'Savings account current amount calculation');
   }
 };

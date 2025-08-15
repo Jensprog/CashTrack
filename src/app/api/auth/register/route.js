@@ -9,7 +9,7 @@
 import { createUser } from '@/services/userService';
 import { createDefaultCategories } from '@/services/categoryService';
 import { generateToken } from '@/lib/auth';
-import { ValidationError } from '@/errors/classes';
+import { ValidationError } from '@/utils/errorClasses';
 import { successResponse, errorResponse } from '@/helpers/api';
 
 export async function POST(request) {

@@ -182,7 +182,7 @@ export default function TransactionForm({
       {!transaction && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           {/* Expense Form Section */}
-          <div 
+          <div
             className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
               formData.transactionType === 'expense'
                 ? 'border-red-500 bg-red-50 dark:bg-red-900/10'
@@ -192,13 +192,17 @@ export default function TransactionForm({
           >
             <div className="flex items-center mb-2">
               <span className="w-4 h-4 bg-red-500 rounded-full mr-3"></span>
-              <h3 className="text-lg font-semibold text-red-600 dark:text-red-400">Lägg till utgift</h3>
+              <h3 className="text-lg font-semibold text-red-600 dark:text-red-400">
+                Lägg till utgift
+              </h3>
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">För kostnader, räkningar och andra utgifter</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              För kostnader, räkningar och andra utgifter
+            </p>
           </div>
 
           {/* Income Form Section */}
-          <div 
+          <div
             className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
               formData.transactionType === 'income'
                 ? 'border-green-500 bg-green-50 dark:bg-green-900/10'
@@ -208,9 +212,13 @@ export default function TransactionForm({
           >
             <div className="flex items-center mb-2">
               <span className="w-4 h-4 bg-green-500 rounded-full mr-3"></span>
-              <h3 className="text-lg font-semibold text-green-600 dark:text-green-400">Lägg till inkomst</h3>
+              <h3 className="text-lg font-semibold text-green-600 dark:text-green-400">
+                Lägg till inkomst
+              </h3>
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">För lön, bonus och andra inkomster</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              För lön, bonus och andra inkomster
+            </p>
           </div>
         </div>
       )}
@@ -324,7 +332,7 @@ export default function TransactionForm({
                 : 'Spara'}
           </button>
         </div>
-        </form>
+      </form>
     </div>
   );
 }

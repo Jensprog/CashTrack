@@ -5,7 +5,7 @@
  */
 
 import { getUserById } from '@/services/userService';
-import { ValidationError } from '@/errors/classes';
+import { ValidationError } from '@/utils/errorClasses';
 import { successResponse, errorResponse } from '@/helpers/api';
 import { authMiddleware } from '@/middlewares/authMiddleware';
 

@@ -7,7 +7,8 @@
  */
 
 import { prisma } from '@/lib/db';
-import { ValidationError, NotFoundError, AppError } from '@/errors/classes';
+import { ValidationError, NotFoundError } from '@/utils/errorClasses';
+import { handlePrismaError } from '@/utils/prismaErrorHandler';
 
 /**
  * Create a new category
@@ -34,11 +35,7 @@ export const createCategory = async (categoryData) => {
     return category;
   } catch (error) {
     console.error('Error creating category:', error);
-
-    if (error instanceof AppError) {
-      throw error;
-    }
-    throw error;
+    handlePrismaError(error, 'Category creation');
   }
 };
 
@@ -65,11 +62,7 @@ export const getUserCategories = async (userId) => {
     return [...userCategories, ...defaultCategories];
   } catch (error) {
     console.error('Error getting user categories:', error);
-
-    if (error instanceof AppError) {
-      throw error;
-    }
-    throw error;
+    handlePrismaError(error, 'User categories fetching');
   }
 };
 
@@ -92,11 +85,7 @@ export const getCategoryById = async (categoryId) => {
     return category;
   } catch (error) {
     console.error('Error getting category by ID:', error);
-
-    if (error instanceof AppError) {
-      throw error;
-    }
-    throw error;
+    handlePrismaError(error, 'Category ID fetching');
   }
 };
 
@@ -131,15 +120,7 @@ export const updateCategory = async (categoryId, categoryData) => {
     return updatedCategory;
   } catch (error) {
     console.error('Error updating the category:', error);
-
-    if (error instanceof AppError) {
-      throw error;
-    }
-
-    if (error.code === 'P2025') {
-      throw new NotFoundError('Kategorin hittades inte');
-    }
-    throw error;
+    handlePrismaError(error, 'Category updating');
   }
 };
 
@@ -165,16 +146,7 @@ export const deleteCategory = async (categoryId) => {
     });
   } catch (error) {
     console.error('Error deleting category:', error);
-
-    if (error instanceof AppError) {
-      throw error;
-    }
-
-    if (error.code === 'P2025') {
-      throw new NotFoundError('Kategorin hittades inte');
-    }
-
-    throw error;
+    handlePrismaError(error, 'Category deletion');
   }
 };
 
@@ -235,10 +207,6 @@ export const createDefaultCategories = async (userId) => {
     return createdCategories;
   } catch (error) {
     console.error('Error creating default categories:', error);
-
-    if (error instanceof AppError) {
-      throw error;
-    }
-    throw error;
+    handlePrismaError(error, 'Default categories creation');
   }
 };

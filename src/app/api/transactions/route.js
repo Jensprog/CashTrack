@@ -15,7 +15,7 @@ import {
   deleteTransaction,
   getTransactionById,
 } from '@/services/transactionService';
-import { ValidationError, NotFoundError } from '@/errors/classes';
+import { ValidationError, NotFoundError } from '@/utils/errorClasses';
 import { successResponse, errorResponse } from '@/helpers/api';
 import { authMiddleware } from '@/middlewares/authMiddleware';
 

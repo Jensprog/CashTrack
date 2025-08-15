@@ -9,7 +9,8 @@
 
 import { hashPassword } from '@/lib/auth';
 import { prisma } from '@/lib/db';
-import { ValidationError, ConflictError, AppError } from '@/errors/classes';
+import { ValidationError, ConflictError } from '@/utils/errorClasses';
+import { handlePrismaError } from '@/utils/prismaErrorHandler';
 
 // Get user by email
 export const getUserByEmail = async (email) => {
@@ -20,7 +21,7 @@ export const getUserByEmail = async (email) => {
     return user;
   } catch (error) {
     console.error('Error getting user by email:', error);
-    return null;
+    handlePrismaError(error, 'User fetching by email');
   }
 };
 
@@ -33,7 +34,7 @@ export const getUserById = async (id) => {
     return user;
   } catch (error) {
     console.error('Error getting user by ID:', error);
-    return null;
+    handlePrismaError(error, 'User fetching by ID');
   }
 };
 
@@ -66,15 +67,7 @@ export const createUser = async (email, password) => {
     });
     return user;
   } catch (error) {
-    if (error.code === 'P2002' && error.meta?.target?.includes('email')) {
-      throw new ConflictError('E-postadressen används redan');
-    }
-
-    if (error instanceof AppError) {
-      throw error;
-    }
-
     console.error('Error creating user:', error);
-    throw error;
+    handlePrismaError(error, 'User creation');
   }
 };

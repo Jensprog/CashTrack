@@ -4,7 +4,7 @@
 
 import { createSavingsAccount, getUserSavingsAccounts } from '@/services/savingsAccountService';
 import { authMiddleware } from '@/middlewares/authMiddleware';
-import { ValidationError } from '@/errors/classes';
+import { ValidationError } from '@/utils/errorClasses';
 import { successResponse, errorResponse } from '@/helpers/api';
 
 export async function GET(request) {

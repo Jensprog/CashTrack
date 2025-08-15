@@ -62,7 +62,8 @@ export default function SavingsAccountForm({
         name: formData.name.trim(),
         description: formData.description.trim() || null,
         targetAmount: formData.targetAmount ? parseFloat(formData.targetAmount) : null,
-        initialBalance: !savingsAccount && formData.initialBalance ? parseFloat(formData.initialBalance) : null,
+        initialBalance:
+          !savingsAccount && formData.initialBalance ? parseFloat(formData.initialBalance) : null,
       };
 
       if (!data.name) {

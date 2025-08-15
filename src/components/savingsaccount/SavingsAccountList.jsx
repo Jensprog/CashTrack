@@ -49,7 +49,6 @@ export default function SavingsAccountList({
     if (onRefresh) onRefresh();
   };
 
-
   const handleDeleteAccount = async () => {
     if (!deletingAccount) return;
 

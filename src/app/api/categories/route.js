@@ -16,7 +16,7 @@ import {
   getCategoryById,
 } from '@/services/categoryService';
 import { successResponse, errorResponse } from '@/helpers/api';
-import { ValidationError, NotFoundError } from '@/errors/classes';
+import { ValidationError, NotFoundError } from '@/utils/errorClasses';
 import { authMiddleware } from '@/middlewares/authMiddleware';
 
 export async function GET(request) {

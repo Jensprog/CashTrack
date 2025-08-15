@@ -7,7 +7,7 @@
  */
 import { getUserByEmail } from '@/services/userService';
 import { comparePassword, generateToken } from '@/lib/auth';
-import { AuthenticationError } from '@/errors/classes';
+import { AuthenticationError } from '@/utils/errorClasses';
 import { successResponse, errorResponse } from '@/helpers/api';
 import { cookies } from 'next/headers';
 import csrf from 'csrf';

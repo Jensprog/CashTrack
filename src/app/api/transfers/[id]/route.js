@@ -4,7 +4,7 @@
 
 import { getTransferById, updateTransfer, deleteTransfer } from '@/services/transferService';
 import { authMiddleware } from '@/middlewares/authMiddleware';
-import { ValidationError, NotFoundError } from '@/errors/classes';
+import { ValidationError, NotFoundError } from '@/utils/errorClasses';
 import { successResponse, errorResponse } from '@/helpers/api';
 
 export async function GET(request, { params }) {

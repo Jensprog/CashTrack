@@ -4,7 +4,7 @@
  */
 
 import { cookies } from 'next/headers';
-import { ForbiddenError } from '@/errors/classes';
+import { ForbiddenError } from '@/utils/errorClasses';
 import { errorResponse } from '@/helpers/api';
 import csrf from 'csrf';
 

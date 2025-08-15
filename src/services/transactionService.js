@@ -9,7 +9,8 @@
  */
 
 import { prisma } from '@/lib/db';
-import { ValidationError, NotFoundError, AppError } from '@/errors/classes';
+import { ValidationError, NotFoundError } from '@/utils/errorClasses';
+import { handlePrismaError } from '@/utils/prismaErrorHandler';
 
 /**
  * Create a new transaction
@@ -43,11 +44,7 @@ export const createTransaction = async (transactionData) => {
     return transaction;
   } catch (error) {
     console.error('Error creating transaction:', error);
-
-    if (error instanceof AppError) {
-      throw error;
-    }
-    throw error;
+    handlePrismaError(error, 'Transaction creation');
   }
 };
 
@@ -101,12 +98,7 @@ export const getUserTransactions = async (userId, filters = {}) => {
     return transactions;
   } catch (error) {
     console.error('Error getting user transactions:', error);
-
-    if (error instanceof AppError) {
-      throw error;
-    }
-
-    throw error;
+    handlePrismaError(error, 'User transactions fetching');
   }
 };
 
@@ -132,12 +124,7 @@ export const getTransactionById = async (transactionId) => {
     return transaction;
   } catch (error) {
     console.error('Error getting transaction by ID:', error);
-
-    if (error instanceof AppError) {
-      throw error;
-    }
-
-    throw error;
+    handlePrismaError(error, 'Transaction ID fetching');
   }
 };
 
@@ -179,16 +166,7 @@ export const updateTransaction = async (transactionId, transactionData) => {
     return updatedTransaction;
   } catch (error) {
     console.error('Error updating transaction:', error);
-
-    if (error instanceof AppError) {
-      throw error;
-    }
-
-    if (error.code === 'P2025') {
-      throw new NotFoundError('Transaktionen hittades inte');
-    }
-
-    throw error;
+    handlePrismaError(error, 'Transaction updating');
   }
 };
 
@@ -215,15 +193,6 @@ export const deleteTransaction = async (transactionId) => {
     });
   } catch (error) {
     console.error('Error deleting transaction:', error);
-
-    if (error instanceof AppError) {
-      throw error;
-    }
-
-    if (error.code === 'P2025') {
-      throw new NotFoundError('Transaktionen hittades inte');
-    }
-
-    throw error;
+    handlePrismaError(error, 'Transaction deletion');
   }
 };

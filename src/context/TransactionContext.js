@@ -102,11 +102,11 @@ export const TransactionProvider = ({ children }) => {
     });
 
     let totalTransfersToSavings = 0;
-      let totalTransfersFromSavings = 0;
-      let weeklyTransfersToSavings = 0;
-      let weeklyTransfersFromSavings = 0;
-      let monthlyTransfersToSavings = 0;
-      let monthlyTransfersFromSavings = 0;
+    let totalTransfersFromSavings = 0;
+    let weeklyTransfersToSavings = 0;
+    let weeklyTransfersFromSavings = 0;
+    let monthlyTransfersToSavings = 0;
+    let monthlyTransfersFromSavings = 0;
 
     try {
       const transferResponse = await api.get('/transfers');
@@ -310,7 +310,6 @@ export const TransactionProvider = ({ children }) => {
   useEffect(() => {
     fetchTransactions();
   }, [fetchTransactions]);
-
 
   // Context value to provide for components
   const value = {

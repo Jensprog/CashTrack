@@ -4,7 +4,7 @@ import {
   deleteSavingsAccount,
 } from '@/services/savingsAccountService';
 import { authMiddleware } from '@/middlewares/authMiddleware';
-import { NotFoundError, ValidationError } from '@/errors/classes';
+import { NotFoundError, ValidationError } from '@/utils/errorClasses';
 import { successResponse, errorResponse } from '@/helpers/api';
 
 export async function GET(request, { params }) {

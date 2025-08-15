@@ -7,7 +7,7 @@
 
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/auth';
-import { AuthenticationError } from '@/errors/classes';
+import { AuthenticationError } from '@/utils/errorClasses';
 import { csrfMiddleware } from './csrfMiddleware';
 import { errorResponse } from '@/helpers/api';
 

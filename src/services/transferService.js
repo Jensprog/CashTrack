@@ -11,7 +11,8 @@
  */
 
 import { prisma } from '@/lib/db';
-import { ValidationError, NotFoundError, AppError } from '@/errors/classes';
+import { ValidationError, NotFoundError } from '@/utils/errorClasses';
+import { handlePrismaError } from '@/utils/prismaErrorHandler';
 
 export const createTransfer = async (transferData) => {
   try {
@@ -73,10 +74,7 @@ export const createTransfer = async (transferData) => {
     return transfer;
   } catch (error) {
     console.error('Error creating transfer:', error);
-    if (error instanceof AppError) {
-      throw error;
-    }
-    throw error;
+    handlePrismaError(error, 'Transfer creation');
   }
 };
 
@@ -121,10 +119,7 @@ export const getUserTransfers = async (userId, filters = {}) => {
     return transfers;
   } catch (error) {
     console.error('Error fetching user transfers:', error);
-    if (error instanceof AppError) {
-      throw error;
-    }
-    throw error;
+    handlePrismaError(error, 'User transfers fetching');
   }
 };
 
@@ -148,10 +143,7 @@ export const getTransferById = async (transferId) => {
     return transfer;
   } catch (error) {
     console.error('Error fetching transfer by ID:', error);
-    if (error instanceof AppError) {
-      throw error;
-    }
-    throw error;
+    handlePrismaError(error, 'Transfer ID fetching');
   }
 };
 
@@ -199,13 +191,7 @@ export const updateTransfer = async (transferId, transferData) => {
     return updatedTransfer;
   } catch (error) {
     console.error('Error updating transfer:', error);
-    if (error instanceof AppError) {
-      throw error;
-    }
-    if (error.code === 'P2025') {
-      throw new NotFoundError('Överföringen hittades inte');
-    }
-    throw error;
+    handlePrismaError(error, 'Transfer updating');
   }
 };
 
@@ -227,13 +213,7 @@ export const deleteTransfer = async (transferId) => {
     await updateSavingsAccountBalance(existingTransfer.savingsAccountId);
   } catch (error) {
     console.error('Error deleting transfer:', error);
-    if (error instanceof AppError) {
-      throw error;
-    }
-    if (error.code === 'P2025') {
-      throw new NotFoundError('Överföringen hittades inte');
-    }
-    throw error;
+    handlePrismaError(error, 'Transfer deletion');
   }
 };
 
@@ -257,7 +237,7 @@ export const calculateSavingsAccountBalance = async (savingsAccountId) => {
 
     // Start with the initial balance from initialBalance field
     let balance = savingsAccount.initialBalance || 0;
-    
+
     // Add/subtract transfers
     transfers.forEach((transfer) => {
       if (transfer.type === 'TO_SAVINGS') {
@@ -270,10 +250,7 @@ export const calculateSavingsAccountBalance = async (savingsAccountId) => {
     return Math.max(0, balance);
   } catch (error) {
     console.error('Error calculating savings account balance:', error);
-    if (error instanceof AppError) {
-      throw error;
-    }
-    throw error;
+    handlePrismaError(error, 'Savings account balance calculation');
   }
 };
 
@@ -287,10 +264,7 @@ export const updateSavingsAccountBalance = async (savingsAccountId) => {
     });
   } catch (error) {
     console.error('Error updating savings account balance:', error);
-    if (error instanceof AppError) {
-      throw error;
-    }
-    throw error;
+    handlePrismaError(error, 'Savings account balance updating');
   }
 };
 
@@ -324,9 +298,6 @@ export const calculateMainAccountBalance = async (userId) => {
     return balance;
   } catch (error) {
     console.error('Error calculating main account balance:', error);
-    if (error instanceof AppError) {
-      throw error;
-    }
-    throw error;
+    handlePrismaError(error, 'Main account balance calculation');
   }
 };

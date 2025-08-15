@@ -4,7 +4,7 @@
 
 import { authMiddleware } from '@/middlewares/authMiddleware';
 import { comparePassword, hashPassword } from '@/lib/auth';
-import { ValidationError } from '@/errors/classes';
+import { ValidationError } from '@/utils/errorClasses';
 import { successResponse, errorResponse } from '@/helpers/api';
 import { getUserById } from '@/services/userService';
 import { prisma } from '@/lib/db';

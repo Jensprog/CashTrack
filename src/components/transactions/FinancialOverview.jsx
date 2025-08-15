@@ -187,7 +187,7 @@ export default function FinancialOverview() {
                 {formatAmount(displayData.income)}
               </p>
             </div>
-            
+
             <div className="bg-red-50 dark:bg-red-900/10 p-4 rounded-lg">
               <h3 className="text-sm font-medium text-red-800 dark:text-red-300 mb-2">Utgifter</h3>
               <p className="text-xl font-semibold text-red-600 dark:text-red-400">
@@ -227,13 +227,19 @@ export default function FinancialOverview() {
                       <span className="text-xs text-purple-600 dark:text-purple-400">
                         Överföringar:
                       </span>
-                      <span className={`text-xs font-medium ${
-                        (displayData.transfersFromSavings - displayData.transfersToSavings) >= 0
-                          ? 'text-green-600 dark:text-green-400'
-                          : 'text-red-600 dark:text-red-400'
-                      }`}>
-                        {displayData.transfersFromSavings - displayData.transfersToSavings >= 0 ? '+' : ''}
-                        {formatAmount(displayData.transfersFromSavings - displayData.transfersToSavings)}
+                      <span
+                        className={`text-xs font-medium ${
+                          displayData.transfersFromSavings - displayData.transfersToSavings >= 0
+                            ? 'text-green-600 dark:text-green-400'
+                            : 'text-red-600 dark:text-red-400'
+                        }`}
+                      >
+                        {displayData.transfersFromSavings - displayData.transfersToSavings >= 0
+                          ? '+'
+                          : ''}
+                        {formatAmount(
+                          displayData.transfersFromSavings - displayData.transfersToSavings,
+                        )}
                       </span>
                     </div>
                   </div>
