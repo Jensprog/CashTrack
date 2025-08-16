@@ -39,12 +39,12 @@ export default function SavingsAccountList({
     return 'bg-red-500';
   };
 
-  const handleAccountUpdated = (updatedAccount) => {
+  const handleAccountUpdated = () => {
     setEditingAccount(null);
     if (onRefresh) onRefresh();
   };
 
-  const handleTransferSuccess = (transfer) => {
+  const handleTransferSuccess = () => {
     setTransferModal(null);
     if (onRefresh) onRefresh();
   };
