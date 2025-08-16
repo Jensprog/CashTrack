@@ -22,7 +22,7 @@ export async function authMiddleware(request) {
   // Check CSRF protection for non-GET requests
   const csrfResponse = await csrfMiddleware(request);
   if (csrfResponse) {
-    throw new AuthenticationError('CSRF validation failed');
+    throw new AuthenticationError('CSRF verifiering misslyckades');
   }
 
   // Get token from cookies
