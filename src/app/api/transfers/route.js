@@ -11,10 +11,6 @@ export async function GET(request) {
   try {
     const userId = await authMiddleware(request);
 
-    if (userId instanceof Response) {
-      return userId;
-    }
-
     const { searchParams } = new URL(request.url);
     const startDate = searchParams.get('startDate');
     const endDate = searchParams.get('endDate');

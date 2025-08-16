@@ -13,9 +13,6 @@ import { prisma } from '@/lib/db';
 export async function PUT(request) {
   try {
     const userId = await authMiddleware(request);
-    if (userId instanceof Response) {
-      return userId;
-    }
 
     const { currentPassword, newPassword } = await request.json();
 

@@ -23,10 +23,6 @@ export async function GET(request) {
   try {
     const userId = await authMiddleware(request);
 
-    if (userId instanceof Response) {
-      return userId;
-    }
-
     const categories = await getUserCategories(userId);
 
     return successResponse({ categories }, 'Kategorier hämtade', 200);

@@ -11,10 +11,6 @@ export async function GET(request, { params }) {
   try {
     const userId = await authMiddleware(request);
 
-    if (userId instanceof Response) {
-      return userId;
-    }
-
     const { id } = params;
     const savingsAccount = await getSavingsAccountById(id, userId);
 

@@ -25,11 +25,6 @@ export async function GET(request) {
     // Authenticate user
     const userId = await authMiddleware(request);
 
-    // Check if user is authenticated
-    if (userId instanceof Response) {
-      return userId;
-    }
-
     // Get query parameters for filtering
     const { searchParams } = new URL(request.url);
     const startDate = searchParams.get('startDate');

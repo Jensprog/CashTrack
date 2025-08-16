@@ -13,10 +13,6 @@ export async function POST(request) {
     try {
       const userId = await authMiddleware(request);
 
-      if (userId instanceof Response) {
-        return userId;
-      }
-
       const existingCategories = await prisma.category.findMany({
         where: {
           userId,

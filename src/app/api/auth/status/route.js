@@ -13,10 +13,6 @@ export async function GET(request) {
   try {
     const userId = await authMiddleware(request);
 
-    if (userId instanceof Response) {
-      return userId; // Return the error response from authMiddleware
-    }
-
     // Fetch user information
     const user = await getUserById(userId);
 
