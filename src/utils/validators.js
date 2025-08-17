@@ -46,7 +46,7 @@ export const validatePassword = (password) => {
  * @return {object} - An object containing isValid and perhaps error message.
  */
 export const validatePasswordMatch = (password, confirmPassword) => {
-  if (password != confirmPassword) {
+  if (password !== confirmPassword) {
     return { isValid: false, message: 'Lösenorden matchar inte' };
   }
 
