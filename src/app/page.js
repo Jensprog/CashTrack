@@ -350,6 +350,9 @@ export default function Home() {
             <div className="flex justify-center md:justify-start">
               <span className="text-xl font-bold text-blue-600 dark:text-blue-400">CashTrack</span>
             </div>
+             <a href="mailto:support@cashtrack.se?subject=&body=">
+                Contact Support
+              </a>
             <div className="mt-8 md:mt-0">
               <p className="text-center md:text-right text-gray-600 dark:text-gray-400">
                 &copy; {new Date().getFullYear()} CashTrack. Alla rättigheter förbehållna.

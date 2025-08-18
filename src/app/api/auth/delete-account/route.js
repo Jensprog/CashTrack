@@ -10,7 +10,7 @@ import { handlePrismaError } from '@/utils/prismaErrorHandler';
 export async function DELETE(request) {
   try {
     const userId = await authMiddleware(request);
-    
+
     await prisma.transaction.deleteMany({
       where: { userId },
     });
