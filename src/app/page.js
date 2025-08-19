@@ -38,7 +38,7 @@ export default function Home() {
             </Link>
             <Link
               href="/login"
-              className="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 px-6 py-3 rounded-md text-base font-medium transition-colors flex justify-center items-center"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md text-base font-medium transition-colors flex justify-center items-center"
             >
               Logga in
             </Link>
@@ -350,9 +350,18 @@ export default function Home() {
             <div className="flex justify-center md:justify-start">
               <span className="text-xl font-bold text-blue-600 dark:text-blue-400">CashTrack</span>
             </div>
-             <a href="mailto:support@cashtrack.se?subject=&body=">
+            <div className="flex flex-col items-center md:items-end space-y-2">
+              <span className="text-blue-600 dark:text-blue-400 w-24 text-center md:text-left font-bold">
+                Kundtjänst
+              </span>
+              <a
+                href="mailto:support@cashtrack.se?subject=&body="
+                className="text-gray-600 dark:text-gray-400 w-24 text-center md:text-left hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              >
                 Kontakta oss
               </a>
+            </div>
+
             <div className="mt-8 md:mt-0">
               <p className="text-center md:text-right text-gray-600 dark:text-gray-400">
                 &copy; {new Date().getFullYear()} CashTrack. Alla rättigheter förbehållna.
