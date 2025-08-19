@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { validateRegistrationForm } from '@/utils/validators';
 import Link from 'next/link';
 import axios from 'axios';
+import PasswordInput from '@/components/ui/PasswordInput';
 
 export default function RegisterForm() {
   const [email, setEmail] = useState('');
@@ -111,13 +112,11 @@ export default function RegisterForm() {
             >
               Lösenord
             </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-800 leading-tight focus:outline-none focus:shadow-outline"
+            <PasswordInput
               id="password"
-              type="password"
-              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="Ange ditt lösenord"
               required
             />
             <p className="text-xs text-gray-500 mt-1">Måste vara minst 8 tecken långt</p>

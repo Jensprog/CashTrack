@@ -10,6 +10,7 @@ import { validateLoginForm } from '@/utils/validators';
 import { setCookie } from '@/utils/cookieUtils';
 import Link from 'next/link';
 import axios from 'axios';
+import PasswordInput from '@/components/ui/PasswordInput';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
@@ -95,13 +96,11 @@ export default function LoginForm() {
             >
               Lösenord
             </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-800 leading-tight focus:outline-none focus:shadow-outline"
+            <PasswordInput
               id="password"
-              type="password"
-              placeholder="Ange ditt lösenord"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="Ange ditt lösenord"
               required
             />
           </div>
