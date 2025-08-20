@@ -13,6 +13,7 @@ import PasswordInput from '@/components/ui/PasswordInput';
 
 export default function RegisterForm() {
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -40,7 +41,8 @@ export default function RegisterForm() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('/api/auth/register', {
+      await axios.post('/api/auth/register', {
+        username,
         email,
         password,
       });
@@ -48,6 +50,7 @@ export default function RegisterForm() {
       setSuccessMessage('Registreringen lyckades! Du kan nu logga in.');
 
       // Clear form
+      setUsername('');
       setEmail('');
       setPassword('');
       setConfirmPassword('');
@@ -88,6 +91,23 @@ export default function RegisterForm() {
         )}
 
         <form onSubmit={handleSubmit} noValidate>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+              htmlFor="username"
+            >
+              Användarnamn
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-800 leading-tight focus:outline-none focus:shadow-outline"
+              id="username"
+              type="text"
+              placeholder="Ange ditt användarnamn"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
           <div className="mb-4">
             <label
               className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
