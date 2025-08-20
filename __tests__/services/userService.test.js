@@ -1,4 +1,4 @@
-import { getUserByEmail, createUser, getUserById } from '@/services/userService';
+import { getUserByEmail, createUser } from '@/services/userService';
 import { hashPassword } from '@/lib/auth';
 
 jest.mock('@/lib/db', () => ({
@@ -47,6 +47,7 @@ describe('User Service Functions', () => {
   test('createUser should create and return a new user with hashed password', async () => {
     const mockUser = {
       id: 'user123',
+      username: 'testuser',
       email: 'new@example.com',
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -55,17 +56,19 @@ describe('User Service Functions', () => {
     prisma.user.findUnique.mockResolvedValue(null);
     prisma.user.create.mockResolvedValue(mockUser);
 
-    const user = await createUser('new@example.com', 'password123');
+    const user = await createUser('testuser', 'new@example.com', 'password123');
 
     expect(user).toEqual(mockUser);
     expect(hashPassword).toHaveBeenCalledWith('password123');
     expect(prisma.user.create).toHaveBeenCalledWith({
       data: {
+        username: 'testuser',
         email: 'new@example.com',
         password: 'hashedPassword',
       },
       select: {
         id: true,
+        username: true,
         email: true,
         createdAt: true,
         updatedAt: true,
