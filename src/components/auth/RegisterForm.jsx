@@ -28,6 +28,7 @@ export default function RegisterForm() {
     setSuccessMessage('');
 
     const validation = validateRegistrationForm({
+      username,
       email,
       password,
       confirmPassword,

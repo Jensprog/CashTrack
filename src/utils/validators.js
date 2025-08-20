@@ -4,7 +4,26 @@
  */
 
 /**
- * Validates the email format.
+ * Validates the username format.
+ * @param {string} username - Username to validate.
+ * @returns {object} - An object containing isValid and perhaps error message.
+ */
+export const validateUsername = (username) => {
+  const usernameRegex = /^[0-9a-zA-Z]{3,20}$/;
+
+  if (!username) {
+    return { isValid: false, message: 'Användarnamn krävs' };
+  }
+
+  if (!usernameRegex.test(username)) {
+    return { isValid: false, message: 'Användarnamnet måste vara mellan 3 och 20 tecken långt och får endast innehålla bokstäver och siffror.' };
+  }
+
+  return { isValid: true };
+};
+
+  /**
+   * Validates the email format.
  * @param {string} email - Email address to validate.
  * @return {object} - An object containing isValid and perhaps error message.
  */
@@ -58,7 +77,12 @@ export const validatePasswordMatch = (password, confirmPassword) => {
  * @param {object} formData - Form data to validate.
  * @returns {object} - An object containing isValid and perhaps error message.
  */
-export const validateRegistrationForm = ({ email, password, confirmPassword }) => {
+export const validateRegistrationForm = ({ username, email, password, confirmPassword }) => {
+  const usernameValidation = validateUsername(username);
+  if (!usernameValidation.isValid) {
+    return usernameValidation;
+  }
+
   const emailValidation = validateEmail(email);
   if (!emailValidation.isValid) {
     return emailValidation;
