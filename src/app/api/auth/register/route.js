@@ -10,22 +10,25 @@ import { createUser } from '@/services/userService';
 import { createDefaultCategories } from '@/services/categoryService';
 import { generateToken } from '@/lib/auth';
 import { ValidationError } from '@/utils/errorClasses';
+import { validateRegistrationForm } from '@/utils/validators';
 import { successResponse, errorResponse } from '@/helpers/api';
 
 export async function POST(request) {
   try {
-    const { email, password } = await request.json();
+    const { username, email, password } = await request.json();
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      throw new ValidationError('Ogiltig e-postadress');
+    const validation = validateRegistrationForm({
+      username,
+      email,
+      password,
+      confirmPassword: password,
+    });
+
+    if (!validation.isValid) {
+      throw new ValidationError(validation.message);
     }
 
-    if (password.length < 8) {
-      throw new ValidationError('Lösenordet måste vara minst 8 tecken långt');
-    }
-
-    const newUser = await createUser(email, password);
+    const newUser = await createUser(username, email, password);
 
     await createDefaultCategories(newUser.id);
 

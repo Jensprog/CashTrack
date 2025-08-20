@@ -9,14 +9,14 @@
  * @returns {object} - An object containing isValid and perhaps error message.
  */
 export const validateUsername = (username) => {
-  const usernameRegex = /^[0-9a-zA-Z]{3,20}$/;
+  const usernameRegex = /^[0-9a-zA-Z]{4,20}$/;
 
   if (!username) {
     return { isValid: false, message: 'Användarnamn krävs' };
   }
 
   if (!usernameRegex.test(username)) {
-    return { isValid: false, message: 'Användarnamnet måste vara mellan 3 och 20 tecken långt och får endast innehålla bokstäver och siffror.' };
+    return { isValid: false, message: 'Användarnamnet måste vara mellan 4 och 20 tecken långt och får endast innehålla bokstäver och siffror.' };
   }
 
   return { isValid: true };

@@ -39,11 +39,11 @@ export const getUserById = async (id) => {
 };
 
 // Create new user
-export const createUser = async (email, password) => {
+export const createUser = async (username, email, password) => {
   try {
     // Validate the input
-    if (!email || !password) {
-      throw new ValidationError('E-post och lösenord krävs');
+    if (!username || !email || !password) {
+      throw new ValidationError('Användarnamn, e-post och lösenord krävs');
     }
 
     // Check if the email is already in use
@@ -55,11 +55,13 @@ export const createUser = async (email, password) => {
     const hashedPassword = await hashPassword(password);
     const user = await prisma.user.create({
       data: {
+        username,
         email,
         password: hashedPassword,
       },
       select: {
         id: true,
+        username: true,
         email: true,
         createdAt: true,
         updatedAt: true,

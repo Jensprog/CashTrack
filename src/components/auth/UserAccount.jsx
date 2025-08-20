@@ -2,7 +2,7 @@
  * @file This component is responsible for handling a logged on users account.
  * - Deleting user account and all related data.
  * - Exporting user data (future implementation).
- * - Change username, password (future implemenation).
+ * - Change username (future implemenation).
  * - Profile picture (future implementation).
  */
 'use client';
@@ -114,6 +114,16 @@ export default function UserAccount() {
             <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
               Profilinformation
             </h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Användarnamn
+                </label>
+                <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
+                  <p className="text-gray-900 dark:text-white">{user?.username}</p>
+                </div>
+              </div>
+              </div>
 
             <div className="space-y-4">
               <div>

@@ -50,10 +50,10 @@ export const AuthProvider = ({ children }) => {
   }, [pathname]);
 
   // Login function
-  const login = async (email, password) => {
+  const login = async (username, email, password) => {
     setLoading(true);
     try {
-      const response = await axios.post('/api/auth/login', { email, password });
+      const response = await axios.post('/api/auth/login', { username, email, password });
 
       // Save CSRF-token
       if (response.data.data.csrfToken) {
@@ -77,10 +77,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Registration function
-  const register = async (email, password) => {
+  const register = async (username, email, password) => {
     setLoading(true);
     try {
-      const response = await axios.post('/api/auth/register', { email, password });
+      const response = await axios.post('/api/auth/register', { username, email, password });
       return { success: true, message: response.data.message };
     } catch (error) {
       console.error('Registration error:', error);
