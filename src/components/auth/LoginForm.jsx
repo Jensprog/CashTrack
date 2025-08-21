@@ -122,7 +122,7 @@ export default function LoginForm() {
 
             <div className="text-sm">
               <a href="#" className="text-blue-500 hover:text-blue-700">
-                Glömt lösenord?
+                Glömt lösenord
               </a>
             </div>
           </div>

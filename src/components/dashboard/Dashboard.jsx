@@ -9,6 +9,7 @@
 
 import { useState, useEffect } from 'react';
 import { TransactionProvider, useTransactions } from '@/context/TransactionContext';
+import { useGreetingMessage } from '@/utils/greetingMessage';
 import FinancialOverview from '@/components/transactions/FinancialOverview';
 import LatestTransactions from '@/components/transactions/LatestTransactions';
 import DateRangeFilter from '@/components/ui/DateRangeFilter';
@@ -20,6 +21,12 @@ function DashboardContent() {
 
   const [categories, setCategories] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  // Trigger animation on mount
+  useEffect(() => {
+    setIsAnimating(true);
+  }, []);
 
   // Fetch categories
   useEffect(() => {
@@ -52,6 +59,15 @@ function DashboardContent() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Min Översikt</h1>
+           <div className="flex items-center space-x-4">
+            <div className="relative overflow-hidden">
+              <h1 className={`text-2xl font-bold bg-green-500 bg-clip-text text-transparent transition-all duration-1000 ${
+                isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-3'
+              }`}>
+                {useGreetingMessage()}
+              </h1>
+            </div>
+            </div>
           <button
             onClick={() => setShowFilters(!showFilters)}
             className="text-sm text-blue-600 dark:text-blue-400 hover:underline flex items-center"
