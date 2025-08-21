@@ -12,6 +12,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/axiosConfig';
 import ChangePassword from '@/components/auth/ChangePasswordForm';
+import ChangeUsername from '@/components/auth/ChangeUsernameForm';
 
 export default function UserAccount() {
   // Get user data and logout function from AuthContext.
@@ -119,11 +120,9 @@ export default function UserAccount() {
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Användarnamn
                 </label>
-                <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
-                  <p className="text-gray-900 dark:text-white">{user?.username}</p>
-                </div>
+                <ChangeUsername currentUsername={user?.username} />
               </div>
-              </div>
+            </div>
 
             <div className="space-y-4">
               <div>

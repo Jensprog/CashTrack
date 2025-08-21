@@ -6,7 +6,6 @@
 
 import { useState } from 'react';
 import api from '@/lib/axiosConfig';
-import { useRouter } from 'next/navigation';
 import { validatePassword, validatePasswordMatch } from '@/utils/validators';
 
 export default function ChangePassword() {
@@ -16,8 +15,6 @@ export default function ChangePassword() {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const router = useRouter();
 
   const handlePasswordChange = async (event) => {
     event.preventDefault();
@@ -55,9 +52,6 @@ export default function ChangePassword() {
       setNewPassword('');
       setConfirmNewPassword('');
 
-      setTimeout(() => {
-        router.push('/useraccount');
-      }, 2000);
     } catch (error) {
       console.error('Change of password error:', error);
       if (error.response?.data?.message) {

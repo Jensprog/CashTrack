@@ -16,14 +16,18 @@ export const validateUsername = (username) => {
   }
 
   if (!usernameRegex.test(username)) {
-    return { isValid: false, message: 'Användarnamnet måste vara mellan 4 och 20 tecken långt och får endast innehålla bokstäver och siffror.' };
+    return {
+      isValid: false,
+      message:
+        'Användarnamnet måste vara mellan 4 och 20 tecken långt och får endast innehålla bokstäver och siffror.',
+    };
   }
 
   return { isValid: true };
 };
 
-  /**
-   * Validates the email format.
+/**
+ * Validates the email format.
  * @param {string} email - Email address to validate.
  * @return {object} - An object containing isValid and perhaps error message.
  */

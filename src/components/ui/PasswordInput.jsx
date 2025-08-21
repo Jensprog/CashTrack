@@ -2,13 +2,13 @@
 
 import { useState } from 'react';
 
-export default function PasswordInput({ 
-  id, 
-  value, 
-  onChange, 
-  placeholder = "Ange ditt lösenord", 
-  className = "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-800 leading-tight focus:outline-none focus:shadow-outline pr-10",
-  required = false 
+export default function PasswordInput({
+  id,
+  value,
+  onChange,
+  placeholder = 'Ange ditt lösenord',
+  className = 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-800 leading-tight focus:outline-none focus:shadow-outline pr-10',
+  required = false,
 }) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -21,7 +21,7 @@ export default function PasswordInput({
       <input
         className={className}
         id={id}
-        type={showPassword ? "text" : "password"}
+        type={showPassword ? 'text' : 'password'}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
@@ -31,7 +31,7 @@ export default function PasswordInput({
         type="button"
         className="absolute inset-y-0 right-0 pr-3 flex items-center"
         onClick={toggleShowPassword}
-        aria-label={showPassword ? "Dölj lösenord" : "Visa lösenord"}
+        aria-label={showPassword ? 'Dölj lösenord' : 'Visa lösenord'}
       >
         {showPassword ? (
           <svg
