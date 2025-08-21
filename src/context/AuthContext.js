@@ -114,7 +114,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const updateUser = (updatedUserData) => {
-    setUser(prevUser => ({ ...prevUser, ...updatedUserData }));
+    setUser((prevUser) => ({ ...prevUser, ...updatedUserData }));
   };
 
   // Context value

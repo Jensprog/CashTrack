@@ -16,7 +16,7 @@ export default function CategoryList({ categories, loading, onUpdate, onDelete }
 
   const expenseCategories = categories.sort((a, b) => a.name.localeCompare(b.name, 'sv'));
 
-  const handleCategoryUpdated = (updatedCategory) => {
+  const handleCategoryUpdated = () => {
     setEditingCategory(null);
   };
 

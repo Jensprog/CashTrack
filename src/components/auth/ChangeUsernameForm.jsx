@@ -41,7 +41,6 @@ export default function ChangeUsername({ currentUsername }) {
       setNewUsername('');
       setIsEditing(false);
       updateUser({ username: newUsername });
-      
     } catch (error) {
       console.error('Change of username error:', error);
       if (error.response?.data?.message) {

@@ -55,19 +55,11 @@ export default function CategoryForm({
   };
 
   const handleChange = (event) => {
-    const { name, value, type, checked } = event.target;
-
-    if (type === 'checkbox') {
-      setFormData({
-        ...formData,
-        [name]: checked,
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    }
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
   const handleSubmit = async (event) => {
@@ -137,7 +129,7 @@ export default function CategoryForm({
           <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
             Kategorityp
           </label>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             <button
               type="button"
               onClick={() => handleCategoryTypeChange('income')}
@@ -179,13 +171,7 @@ export default function CategoryForm({
             id="name"
             name="name"
             type="text"
-            placeholder={`T.ex. ${
-              getCategoryType() === 'income'
-                ? 'Lön, Bidrag'
-                : getCategoryType() === 'saving'
-                  ? 'Sparkonto, Aktieinvesteringar'
-                  : 'Mat, Hyra'
-            }`}
+            placeholder={`T.ex. ${getCategoryType() === 'income' ? 'Lön, Bidrag' : 'Mat, Hyra'}`}
             value={formData.name}
             onChange={handleChange}
             required
