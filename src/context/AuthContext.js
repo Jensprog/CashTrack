@@ -49,6 +49,26 @@ export const AuthProvider = ({ children }) => {
     checkAuthStatus();
   }, [pathname]);
 
+  // Registration function
+  const register = async (username, email, password) => {
+    setLoading(true);
+    try {
+      const response = await axios.post('/api/auth/register', { username, email, password });
+      return { success: true, message: response.data.message };
+    } catch (error) {
+      console.error('Registration error:', error);
+      let errorMessage = 'Ett fel inträffade. Försök igen senare.';
+
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+
+      return { success: false, message: errorMessage };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Login function
   const login = async (username, email, password) => {
     setLoading(true);
@@ -64,26 +84,6 @@ export const AuthProvider = ({ children }) => {
       return { success: true, message: response.data.message };
     } catch (error) {
       console.error('Login error:', error);
-      let errorMessage = 'Ett fel inträffade. Försök igen senare.';
-
-      if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      }
-
-      return { success: false, message: errorMessage };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Registration function
-  const register = async (username, email, password) => {
-    setLoading(true);
-    try {
-      const response = await axios.post('/api/auth/register', { username, email, password });
-      return { success: true, message: response.data.message };
-    } catch (error) {
-      console.error('Registration error:', error);
       let errorMessage = 'Ett fel inträffade. Försök igen senare.';
 
       if (error.response?.data?.message) {
@@ -113,6 +113,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateUser = (updatedUserData) => {
+    setUser(prevUser => ({ ...prevUser, ...updatedUserData }));
+  };
+
   // Context value
   const value = {
     user,
@@ -120,6 +124,7 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
+    updateUser,
     isAuthenticated: !!user,
   };
 

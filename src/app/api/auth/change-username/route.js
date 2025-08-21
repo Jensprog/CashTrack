@@ -1,4 +1,4 @@
-/** 
+/**
  * Route that handles username change.
  */
 

@@ -51,7 +51,6 @@ export default function ChangePassword() {
       setCurrentPassword('');
       setNewPassword('');
       setConfirmNewPassword('');
-
     } catch (error) {
       console.error('Change of password error:', error);
       if (error.response?.data?.message) {
