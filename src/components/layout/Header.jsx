@@ -104,7 +104,7 @@ export default function Header() {
                             clipRule="evenodd"
                           />
                         </svg>
-                        {user?.email?.split('@')[0] || 'Profil'}
+                        {user?.username?.split('@')[0] || 'Profil'}
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className={`h-4 w-4 ml-1 transform transition-transform ${isProfileMenuOpen ? 'rotate-180' : ''}`}
