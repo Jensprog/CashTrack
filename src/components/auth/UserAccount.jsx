@@ -147,13 +147,6 @@ export default function UserAccount() {
                   </p>
                 </div>
               </div>
-
-              {/* Future possible functions */}
-              <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-                <p className="text-sm text-gray-500 dark:text-gray-400 italic">
-                  Framtida funktioner: Användarnamn, profilbild
-                </p>
-              </div>
             </div>
           </div>
         )}
@@ -166,7 +159,6 @@ export default function UserAccount() {
             <div className="space-y-6">
               {/* Logga ut */}
               <div className="border-b border-gray-200 dark:border-gray-700 pb-6">
-                <h3 className="text-md font-medium text-gray-800 dark:text-white mb-2">Logga ut</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                   Logga ut från CashTrack på denna enhet.
                 </p>
