@@ -1,6 +1,8 @@
 /**
  * @file This component is responsible for handling a logged on users account.
  * - Deleting user account and all related data.
+ * - Imports ChangePassword and ChangeUsername components.
+ * - Calls logout function. 
  * - Exporting user data (future implementation).
  * - Profile picture (future implementation).
  */
