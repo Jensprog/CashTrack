@@ -6,6 +6,7 @@
 
 import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { Gravatar } from '@/components/ui/Gravatar';
 import Link from 'next/link';
 
 export default function Header() {
@@ -92,18 +93,7 @@ export default function Header() {
                         onClick={toggleProfileMenu}
                         className="flex items-center text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium"
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5 mr-1"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
+                       <Gravatar email={user.email} size={20} className="h-5 w-5 mr-1" />
                         {user?.username?.split('@')[0] || 'Profil'}
                         <svg
                           xmlns="http://www.w3.org/2000/svg"

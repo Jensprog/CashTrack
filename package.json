@@ -21,9 +21,11 @@
   ],
   "dependencies": {
     "@prisma/client": "^6.6.0",
+    "@tailwindcss/postcss": "^4",
     "axios": "^1.8.4",
     "bcryptjs": "^3.0.2",
     "cookie": "^1.0.2",
+    "crypto-js": "^4.2.0",
     "csrf": "^3.1.0",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
@@ -33,7 +35,6 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "recharts": "^2.15.3",
-    "@tailwindcss/postcss": "^4",
     "tailwindcss": "^4"
   },
   "devDependencies": {
