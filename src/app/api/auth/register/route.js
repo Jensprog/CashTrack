@@ -1,7 +1,7 @@
 /**
  * @file Backend API route for user registration.
  *
- * This route handles user registration by accepting an email and password,
+ * This route handles user registration by accepting a username, email and password,
  * validating the input, creating a new user in the database,
  * and returning a JWT token for authentication.
  *

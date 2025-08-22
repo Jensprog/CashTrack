@@ -49,21 +49,22 @@ export const AuthProvider = ({ children }) => {
     checkAuthStatus();
   }, [pathname]);
 
+  // Helper function to extract error messages
+  const extractErrorMessage = (error, defaultMessage = "Ett fel inträffade. Försök igen senare.") => {
+    return error.response?.data?.message || defaultMessage;
+  };
+
   // Registration function
   const register = async (username, email, password) => {
     setLoading(true);
     try {
       const response = await axios.post('/api/auth/register', { username, email, password });
       return { success: true, message: response.data.message };
+
     } catch (error) {
       console.error('Registration error:', error);
-      let errorMessage = 'Ett fel inträffade. Försök igen senare.';
+      return { success: false, message: extractErrorMessage(error) };
 
-      if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      }
-
-      return { success: false, message: errorMessage };
     } finally {
       setLoading(false);
     }
@@ -82,15 +83,10 @@ export const AuthProvider = ({ children }) => {
 
       setUser(response.data.data.user);
       return { success: true, message: response.data.message };
+
     } catch (error) {
       console.error('Login error:', error);
-      let errorMessage = 'Ett fel inträffade. Försök igen senare.';
-
-      if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      }
-
-      return { success: false, message: errorMessage };
+      return { success: false, message: extractErrorMessage(error) };
     } finally {
       setLoading(false);
     }
@@ -105,9 +101,11 @@ export const AuthProvider = ({ children }) => {
       removeCookie('csrfToken');
       router.push('/');
       return { success: true };
+
     } catch (error) {
       console.error('Logout error:', error);
       return { success: false, message: 'Ett fel inträffade vid utloggning.' };
+      
     } finally {
       setLoading(false);
     }
