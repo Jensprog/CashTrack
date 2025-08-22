@@ -4,9 +4,9 @@
 
 import CryptoJS from 'crypto-js';
 
-export const Gravatar = ({ email, size = 20, className = "" }) => {
+export const Gravatar = ({ email, size = 40, className = "" }) => {
 
-    const getGravatarUrl = (email, size = 20) => {
+    const getGravatarUrl = (email, size = 40) => {
         const hash = CryptoJS.MD5(email.toLowerCase().trim()).toString();
         return `https://www.gravatar.com/avatar/${hash}?s=${size}&d=identicon`;
     };
