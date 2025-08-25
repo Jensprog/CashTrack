@@ -1,6 +1,6 @@
 /**
- * @file Logic for the greeting message when a user logs in. 
- * - Message will vary depending on the time of day. 
+ * @file Logic for the greeting message when a user logs in.
+ * - Message will vary depending on the time of day.
  */
 
 import { useEffect, useState } from 'react';

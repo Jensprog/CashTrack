@@ -25,7 +25,7 @@ export async function PUT(request) {
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: { avatar },
-      select: { id: true, email: true, username: true, avatar: true }
+      select: { id: true, email: true, username: true, avatar: true },
     });
 
     return successResponse(updatedUser, 'Avatar updated successfully', 200);

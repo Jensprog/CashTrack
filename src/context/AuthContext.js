@@ -53,7 +53,10 @@ export const AuthProvider = ({ children }) => {
   }, [pathname]);
 
   // Helper function to extract error messages
-  const extractErrorMessage = (error, defaultMessage = "Ett fel inträffade. Försök igen senare.") => {
+  const extractErrorMessage = (
+    error,
+    defaultMessage = 'Ett fel inträffade. Försök igen senare.',
+  ) => {
     return error.response?.data?.message || defaultMessage;
   };
 
@@ -63,11 +66,9 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axios.post('/api/auth/register', { username, email, password });
       return { success: true, message: response.data.message };
-
     } catch (error) {
       console.error('Registration error:', error);
       return { success: false, message: extractErrorMessage(error) };
-
     } finally {
       setLoading(false);
     }
@@ -88,7 +89,6 @@ export const AuthProvider = ({ children }) => {
       setUser(userData);
       setCustomAvatar(userData.avatar);
       return { success: true, message: response.data.message };
-
     } catch (error) {
       console.error('Login error:', error);
       return { success: false, message: extractErrorMessage(error) };
@@ -107,11 +107,9 @@ export const AuthProvider = ({ children }) => {
       removeCookie('csrfToken');
       router.push('/');
       return { success: true };
-
     } catch (error) {
       console.error('Logout error:', error);
       return { success: false, message: 'Ett fel inträffade vid utloggning.' };
-      
     } finally {
       setLoading(false);
     }

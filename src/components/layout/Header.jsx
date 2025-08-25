@@ -93,7 +93,7 @@ export default function Header() {
                         onClick={toggleProfileMenu}
                         className="flex items-center text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium"
                       >
-                       <UserAvatar email={user.email} size={40} className="h-10 w-10 mr-1" />
+                        <UserAvatar email={user.email} size={40} className="h-10 w-10 mr-1" />
                         {user?.username?.split('@')[0] || 'Profil'}
                         <svg
                           xmlns="http://www.w3.org/2000/svg"

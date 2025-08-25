@@ -30,7 +30,6 @@ export default function UserAccount() {
   const [deleteConfirmation, setDeleteConfirmation] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-
   // Calls the logout function from AuthContext.
   const handleLogout = async () => {
     try {
@@ -40,7 +39,6 @@ export default function UserAccount() {
       console.error('Logout error:', error);
     }
   };
-
 
   const handleDeleteAccount = async () => {
     if (deleteConfirmation !== 'RADERA') {
@@ -112,13 +110,13 @@ export default function UserAccount() {
             <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
               Profilinformation
             </h2>
-            
+
             {/* Avatar section */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                 Profilbild
               </label>
-              <UserAvatar 
+              <UserAvatar
                 email={user?.email}
                 size={80}
                 className="w-20 h-20"

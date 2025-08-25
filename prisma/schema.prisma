@@ -20,6 +20,7 @@ model User {
   categories    Category[]
   savingsAccounts SavingsAccount[]
   transfers     Transfer[]
+  passwordResets PasswordReset[]
 }
 
 model Transaction {
@@ -74,6 +75,15 @@ model Transfer {
   user        User        @relation(fields: [userId], references: [id])
   savingsAccountId String
   savingsAccount   SavingsAccount @relation(fields: [savingsAccountId], references: [id])
+}
+
+model PasswordReset {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime 
+  createdAt DateTime @default(now())
 }
 
 enum TransferType {
