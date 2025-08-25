@@ -26,6 +26,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [customAvatar, setCustomAvatar] = useState(null);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -34,7 +35,9 @@ export const AuthProvider = ({ children }) => {
     const checkAuthStatus = async () => {
       try {
         const response = await axios.get('/api/auth/status');
-        setUser(response.data.data.user);
+        const userData = response.data.data.user;
+        setUser(userData);
+        setCustomAvatar(userData.avatar);
       } catch (error) {
         if (error.response && error.response.status === 401) {
           setUser(null);
@@ -81,7 +84,9 @@ export const AuthProvider = ({ children }) => {
         setCookie('csrfToken', response.data.data.csrfToken);
       }
 
-      setUser(response.data.data.user);
+      const userData = response.data.data.user;
+      setUser(userData);
+      setCustomAvatar(userData.avatar);
       return { success: true, message: response.data.message };
 
     } catch (error) {
@@ -98,6 +103,7 @@ export const AuthProvider = ({ children }) => {
     try {
       await axios.post('/api/auth/logout');
       setUser(null);
+      setCustomAvatar(null);
       removeCookie('csrfToken');
       router.push('/');
       return { success: true };
@@ -115,14 +121,20 @@ export const AuthProvider = ({ children }) => {
     setUser((prevUser) => ({ ...prevUser, ...updatedUserData }));
   };
 
+  const updateAvatar = (avatarData) => {
+    setCustomAvatar(avatarData);
+  };
+
   // Context value
   const value = {
     user,
     loading,
+    customAvatar,
     login,
     register,
     logout,
     updateUser,
+    updateAvatar,
     isAuthenticated: !!user,
   };
 
