@@ -6,6 +6,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { verifyToken } from '@/lib/auth';
 import UserAccount from '@/components/auth/UserAccount';
+import Footer from '@/components/layout/Footer';
 
 export const metadata = {
   title: 'Mitt Konto - CashTrack',
@@ -28,7 +29,12 @@ export default async function AccountPage() {
       redirect('/login');
     }
 
-    return <UserAccount />;
+    return (
+      <>
+        <UserAccount />
+        <Footer />
+      </>
+    );
   } catch (error) {
     console.error('Authentication error:', error);
     redirect('/login');

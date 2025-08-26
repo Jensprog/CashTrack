@@ -9,6 +9,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { verifyToken } from '@/lib/auth';
 import SavingsAccountPage from '@/components/savingsaccount/SavingsAccountPage';
+import Footer from '@/components/layout/Footer';
 
 export const metadata = {
   title: 'Sparkonton - CashTrack',
@@ -31,7 +32,12 @@ export default async function SavingsAccountsPageRoute() {
       redirect('/login');
     }
 
-    return <SavingsAccountPage />;
+    return (
+      <>
+        <SavingsAccountPage />
+        <Footer />
+      </>
+    );
   } catch (error) {
     console.error('Authentication error:', error);
     redirect('/login');

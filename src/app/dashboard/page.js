@@ -9,6 +9,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { verifyToken } from '@/lib/auth';
 import Dashboard from '@/components/dashboard/Dashboard';
+import Footer from '@/components/layout/Footer';
 
 export const metadata = {
   title: 'Dashboard - CashTrack',
@@ -37,7 +38,12 @@ export default async function DashboardPage() {
     }
 
     // User is authenticated, render the dashboard content
-    return <Dashboard />;
+    return (
+      <>
+        <Dashboard />
+        <Footer />
+      </>
+    );
   } catch (error) {
     console.error('Authentication error:', error);
     redirect('/login');

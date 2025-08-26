@@ -9,6 +9,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { verifyToken } from '@/lib/auth';
 import CategoryPage from '@/components/categories/CategoryPage';
+import Footer from '@/components/layout/Footer';
 
 export const metadata = {
   title: 'Kategorier - CashTrack',
@@ -32,7 +33,12 @@ export default async function CategoriesPageRoute() {
       redirect('/login');
     }
 
-    return <CategoryPage />;
+    return (
+      <>
+        <CategoryPage />
+        <Footer />
+      </>
+    );
   } catch (error) {
     console.error('Authentication error:', error);
     redirect('/login');

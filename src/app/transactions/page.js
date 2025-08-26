@@ -9,6 +9,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { verifyToken } from '@/lib/auth';
 import TransactionPage from '@/components/transactions/TransactionPage';
+import Footer from '@/components/layout/Footer';
 
 export const metadata = {
   title: 'Transaktioner - CashTrack',
@@ -31,7 +32,12 @@ export default async function TransactionsPageRoute() {
       redirect('/login');
     }
 
-    return <TransactionPage />;
+    return (
+      <>
+        <TransactionPage />
+        <Footer />
+      </>
+    );
   } catch (error) {
     console.error('Authentication error:', error);
     redirect('/login');
