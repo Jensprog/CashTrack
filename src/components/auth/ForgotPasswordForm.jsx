@@ -21,7 +21,6 @@ export default function ForgotPasswordForm() {
     try {
       const response = await api.post('auth/forgot-password', { email });
       setSuccessMessage(response.data.message);
-      
     } catch (error) {
       setError(error.message || 'Ett fel inträffade. Försök igen senare');
     } finally {

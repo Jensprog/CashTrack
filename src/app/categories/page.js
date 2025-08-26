@@ -19,7 +19,7 @@ export const metadata = {
 // Page is marked as dynamic to ensure correct reading of cookies.
 export const dynamic = 'force-dynamic';
 
-export default async function CategoriesPageRoute() {
+export default async function CategoriesPage() {
   try {
     const cookieStore = await cookies();
     const tokenCookie = cookieStore.get('token');
