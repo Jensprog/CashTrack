@@ -133,6 +133,12 @@ jobs:
             
             echo '=== Building with Caching ==='
             # Rebuilds Dockerfile and package.json if changed
+            export JWT_SECRET='${{ secrets.JWT_SECRET }}'
+            export SMTP_HOST='${{ secrets.SMTP_HOST }}'
+            export SMTP_USER='${{ secrets.SMTP_USER }}'
+            export SMTP_PASSWORD='${{ secrets.SMTP_PASSWORD }}'
+            export APP_URL='${{ secrets.APP_URL }}'
+
             docker-compose -f docker-compose.production.yml build --pull
             
             echo 'Starting services...'
