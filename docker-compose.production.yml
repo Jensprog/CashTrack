@@ -12,6 +12,10 @@ services:
       - DATABASE_URL=mysql://root:${MYSQL_ROOT_PASSWORD:-password}@cashtrack-mysql:3306/${MYSQL_DATABASE:-cashtrack}
       - DIRECT_URL=${DIRECT_URL}
       - JWT_SECRET=${JWT_SECRET:-secure_production_secret}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_USER=${SMTP_USER}
+      - APP_URL=${APP_URL}
     depends_on:
       mysql:
         condition: service_healthy

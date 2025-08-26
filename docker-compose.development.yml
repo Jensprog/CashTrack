@@ -13,6 +13,10 @@ services:
       - NODE_ENV=development
       - DATABASE_URL=mysql://root:password@cashtrack-mysql:3306/cashtrack
       - JWT_SECRET=dev_secret
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_USER=${SMTP_USER}
+      - APP_URL=${APP_URL}
     restart: unless-stopped
 
   mysql:
