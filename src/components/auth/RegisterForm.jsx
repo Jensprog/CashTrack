@@ -42,13 +42,13 @@ export default function RegisterForm() {
     setIsLoading(true);
 
     try {
-      await axios.post('/api/auth/register', {
+      const response = await axios.post('/api/auth/register', {
         username,
         email,
         password,
       });
 
-      setSuccessMessage('Registreringen lyckades! Du kan nu logga in.');
+      setSuccessMessage(response.data.message);
 
       // Clear form
       setUsername('');

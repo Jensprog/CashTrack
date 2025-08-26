@@ -20,12 +20,8 @@ export default function ForgotPasswordForm() {
 
     try {
       const response = await api.post('auth/forgot-password', { email });
-
-      if (!response.ok) {
-        throw new Error('Failed to send reset link');
-      }
-
-      setSuccessMessage('Återställnings länk skickad!');
+      setSuccessMessage(response.data.message);
+      
     } catch (error) {
       setError(error.message || 'Ett fel inträffade. Försök igen senare');
     } finally {
@@ -55,7 +51,6 @@ export default function ForgotPasswordForm() {
             {error}
           </div>
         )}
-
         {successMessage && (
           <div
             className="mb-4 p-3 bg-green-100 dark:bg-green-900/20 

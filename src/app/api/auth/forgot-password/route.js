@@ -24,23 +24,19 @@ export async function POST(request) {
 
     const user = await prisma.user.findUnique({ where: { email } });
 
-    // Send a success response for security reasons
-    if (!user) {
-      return successResponse('Återställningslänk har skickats till din e-postadress');
+    if (user) {
+      await prisma.passwordReset.deleteMany({ where: { userId: user.id } });
+
+      await prisma.passwordReset.create({
+        data: {
+          token: resetToken,
+          expiresAt: tokenExpire,
+          userId: user.id,
+        },
+      });
+      await sendPasswordResetEmail(user.email, resetToken);
     }
-
-    await prisma.passwordReset.deleteMany({ where: { userId: user.id } });
-
-    await prisma.passwordReset.create({
-      data: {
-        token: resetToken,
-        expiresAt: tokenExpire,
-        userId: user.id,
-      },
-    });
-    await sendPasswordResetEmail(user.email, resetToken);
-
-    return successResponse('Återställningslänk har skickats till din e-postadress');
+    return successResponse({ email }, 'Återställningslänk har skickats till din e-postadress', 201);
   } catch (error) {
     console.error('Error processing password reset:', error);
     return errorResponse(error);
