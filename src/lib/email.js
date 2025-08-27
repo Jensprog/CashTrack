@@ -12,22 +12,40 @@ const transporter = nodemailer.createTransport({
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASSWORD,
   },
+  connectionTimeout: 10000,
+  greetingTimeout: 5000,
+  socketTimeout: 10000,
 });
 
 export async function sendPasswordResetEmail(email, token) {
   const resetLink = `${process.env.APP_URL}/resetpassword?token=${token}`;
 
-  await transporter.sendMail({
-    from: process.env.SMTP_USER,
-    to: email,
-    subject: 'Återställ ditt lösenord - CashTrack',
-    html: `
-          <h2>Återställ ditt lösenord</h2>
-          <p>Du har begärt att återställa ditt lösenord för CashTrack.</p>
-          <p><a href="${resetLink}" style="background: #3B82F6; color: white;
-    padding: 12px 24px; text-decoration: none; border-radius: 4px;">Återställ lösenord</a></p>
-          <p>Denna länk är giltig i 15 minuter.</p>
-          <p>Om du inte begärde denna återställning, ignorera detta e-postmeddelande.</p>
-`,
-  });
+  try {
+    console.log('Attempting to send password reset email to:', email);
+    console.log('SMTP Config:', {
+      host: process.env.SMTP_HOST,
+      user: process.env.SMTP_USER,
+      hasPassword: !!process.env.SMTP_PASSWORD
+    });
+
+    const result = await transporter.sendMail({
+      from: process.env.SMTP_USER,
+      to: email,
+      subject: 'Återställ ditt lösenord - CashTrack',
+      html: `
+            <h2>Återställ ditt lösenord</h2>
+            <p>Du har begärt att återställa ditt lösenord för CashTrack.</p>
+            <p><a href="${resetLink}" style="background: #3B82F6; color: white;
+      padding: 12px 24px; text-decoration: none; border-radius: 4px;">Återställ lösenord</a></p>
+            <p>Denna länk är giltig i 15 minuter.</p>
+            <p>Om du inte begärde denna återställning, ignorera detta e-postmeddelande.</p>
+  `,
+    });
+
+    console.log('Email sent successfully:', result.messageId);
+    return result;
+  } catch (error) {
+    console.error('Email sending failed:', error.message, error);
+    throw new Error(`Failed to send email: ${error.message}`);
+  }
 }
