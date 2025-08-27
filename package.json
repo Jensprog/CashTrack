@@ -21,6 +21,7 @@
   ],
   "dependencies": {
     "@prisma/client": "^6.6.0",
+    "@sendgrid/mail": "^8.1.5",
     "@tailwindcss/postcss": "^4",
     "axios": "^1.8.4",
     "bcryptjs": "^3.0.2",

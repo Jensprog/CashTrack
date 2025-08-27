@@ -33,9 +33,8 @@ jobs:
         run: npm test
         env:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-          SMTP_HOST: ${{ secrets.SMTP_HOST }}
-          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          SENDGRID_FROM_EMAIL: ${{ secrets.SENDGRID_FROM_EMAIL }}
           APP_URL: ${{ secrets.APP_URL }}
 
       - name: Test completed
@@ -134,9 +133,8 @@ jobs:
             echo '=== Building with Caching ==='
             # Rebuilds Dockerfile and package.json if changed
             export JWT_SECRET='${{ secrets.JWT_SECRET }}'
-            export SMTP_HOST='${{ secrets.SMTP_HOST }}'
-            export SMTP_USER='${{ secrets.SMTP_USER }}'
-            export SMTP_PASSWORD='${{ secrets.SMTP_PASSWORD }}'
+            export SENDGRID_API_KEY='${{ secrets.SENDGRID_API_KEY }}'
+            export SENDGRID_FROM_EMAIL='${{ secrets.SENDGRID_FROM_EMAIL }}'
             export APP_URL='${{ secrets.APP_URL }}'
 
             docker-compose -f docker-compose.production.yml build --pull
