@@ -13,9 +13,8 @@ services:
       - NODE_ENV=development
       - DATABASE_URL=mysql://root:password@cashtrack-mysql:3306/cashtrack
       - JWT_SECRET=dev_secret
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
-      - SMTP_HOST=${SMTP_HOST}
-      - SMTP_USER=${SMTP_USER}
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
+      - SENDGRID_FROM_EMAIL=${SENDGRID_FROM_EMAIL}
       - APP_URL=${APP_URL}
     restart: unless-stopped
 
