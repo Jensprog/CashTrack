@@ -49,11 +49,11 @@ export default function SavingsAccountList({
     if (onRefresh) onRefresh();
   };
 
-  const handleDeleteAccount = async () => {
+  const handleDeleteAccount = async (force = false) => {
     if (!deletingAccount) return;
 
     try {
-      await onDelete(deletingAccount.id);
+      await onDelete(deletingAccount.id, force);
       setDeletingAccount(null);
     } catch (error) {
       console.error('Error deleting savings account:', error);
@@ -268,19 +268,28 @@ export default function SavingsAccountList({
                   </span>
                 )}
               </p>
-              <div className="flex justify-end space-x-4">
+              <div className="flex justify-end space-x-2">
                 <button
                   onClick={() => setDeletingAccount(null)}
                   className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors"
                 >
                   Avbryt
                 </button>
-                <button
-                  onClick={handleDeleteAccount}
-                  className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors"
-                >
-                  Ta bort
-                </button>
+                {deletingAccount.currentAmount > 0 ? (
+                  <button
+                    onClick={() => handleDeleteAccount(true)}
+                    className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors"
+                  >
+                    Tvinga ta bort
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleDeleteAccount(false)}
+                    className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors"
+                  >
+                    Ta bort
+                  </button>
+                )}
               </div>
             </div>
           </div>

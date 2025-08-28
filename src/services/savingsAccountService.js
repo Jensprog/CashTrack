@@ -145,7 +145,7 @@ export const updateSavingsAccount = async (savingsAccountId, savingsData) => {
   }
 };
 
-export const deleteSavingsAccount = async (savingsAccountId) => {
+export const deleteSavingsAccount = async (savingsAccountId, force = false) => {
   try {
     if (!savingsAccountId) {
       throw new ValidationError('Sparkonto-ID krävs');
@@ -174,7 +174,8 @@ export const deleteSavingsAccount = async (savingsAccountId) => {
 
     const totalBalance = currentBalance + transferBalance;
 
-    if (totalBalance > 0) {
+    // Only prevent deletion if force is false and balance is positive
+    if (!force && totalBalance > 0) {
       throw new ValidationError(
         `Kan inte radera sparkontot eftersom det innehåller ${totalBalance.toFixed(2)} kr. Överför pengarna till ett aktivt konto först.`,
       );

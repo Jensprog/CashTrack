@@ -62,7 +62,6 @@ export default function ResetPasswordForm() {
       });
       setSuccessMessage(response.data.message);
       
-      // Redirect to login after successful reset
       setTimeout(() => {
         router.push('/login');
       }, 2000);

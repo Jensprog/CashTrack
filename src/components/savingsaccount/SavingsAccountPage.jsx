@@ -62,9 +62,10 @@ export default function SavingsAccountPage() {
     }
   };
 
-  const deleteSavingsAccount = async (id) => {
+  const deleteSavingsAccount = async (id, force = false) => {
     try {
-      await api.delete(`/savingsaccount/${id}`);
+      const url = force ? `/savingsaccount/${id}?force=true` : `/savingsaccount/${id}`;
+      await api.delete(url);
       setSavingsAccounts(savingsAccounts.filter((account) => account.id !== id));
     } catch (error) {
       console.error('Error deleting savings account:', error);

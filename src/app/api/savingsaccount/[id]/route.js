@@ -72,6 +72,10 @@ export async function DELETE(request, { params }) {
       throw new ValidationError('Sparkonto-ID krävs');
     }
 
+    // Check for force parameter in URL
+    const url = new URL(request.url);
+    const force = url.searchParams.get('force') === 'true';
+
     const existingSavingsAccount = await getSavingsAccountById(id);
     if (!existingSavingsAccount) {
       throw new NotFoundError('Sparkontot hittades inte');
@@ -81,7 +85,7 @@ export async function DELETE(request, { params }) {
       throw new ValidationError('Du har inte behörighet att ta bort detta sparkontot');
     }
 
-    await deleteSavingsAccount(id);
+    await deleteSavingsAccount(id, force);
 
     return successResponse(null, 'Sparkonto borttaget', 200);
   } catch (error) {
