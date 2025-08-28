@@ -8,6 +8,7 @@
 import { TransactionProvider } from '@/context/TransactionContext';
 import TransactionList from '@/components/transactions/TransactionList';
 import TransactionForm from '@/components/transactions/TransactionForm';
+import SetInitialBalance from '@/components/transactions/SetInitialBalance';
 import { useState } from 'react';
 
 export default function TransactionPage() {
@@ -40,6 +41,11 @@ export default function TransactionPage() {
                 <div className={`${showAddForm ? 'block' : 'hidden lg:block'}`}>
                   <TransactionForm />
                 </div>
+              </div>
+
+              {/* Initial Balance Section */}
+              <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-4">
+                <SetInitialBalance />
               </div>
             </div>
 
