@@ -41,6 +41,10 @@ export default function TransactionList({ initialFilters = {} }) {
     direction: 'descending',
   });
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
+
   // Fetch transactions and categories on component mount
   useEffect(() => {
     fetchCategories();
@@ -52,6 +56,16 @@ export default function TransactionList({ initialFilters = {} }) {
 
   // Sort transactions based on the current sort configuration
   const sortedTransactions = sortTransactions(transactions, sortConfig.key, sortConfig.direction);
+
+  // Calculate pagination
+  const totalPages = Math.ceil(sortedTransactions.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedTransactions = sortedTransactions.slice(startIndex, startIndex + itemsPerPage);
+
+  // Reset to first page when transactions change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [transactions]);
 
   // Fetch categories from API
   const fetchCategories = async () => {
@@ -80,7 +94,7 @@ export default function TransactionList({ initialFilters = {} }) {
   };
 
   // Handle transaction update
-  const handleTransactionUpdated = (updatedTransaction) => {
+  const handleTransactionUpdated = () => {
     setEditingTransaction(null);
   };
 
@@ -212,7 +226,7 @@ export default function TransactionList({ initialFilters = {} }) {
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                  {sortedTransactions.map((transaction) => (
+                  {paginatedTransactions.map((transaction) => (
                     <tr key={transaction.id}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
                         {formatDate(transaction.date)}
@@ -248,6 +262,51 @@ export default function TransactionList({ initialFilters = {} }) {
                   ))}
                 </tbody>
               </table>
+              
+              {/* Pagination controls */}
+              {totalPages > 1 && (
+                <div className="px-6 py-3 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm text-gray-700 dark:text-gray-300">
+                      Visar {startIndex + 1}-{Math.min(startIndex + itemsPerPage, sortedTransactions.length)} av {sortedTransactions.length} transaktioner
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      {/* Previous button */}
+                      <button
+                        onClick={() => setCurrentPage(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="px-3 py-1 text-sm font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        Föregående
+                      </button>
+                      
+                      {/* Page numbers */}
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                        <button
+                          key={pageNum}
+                          onClick={() => setCurrentPage(pageNum)}
+                          className={`px-3 py-1 text-sm font-medium rounded-md ${
+                            currentPage === pageNum
+                              ? 'bg-blue-600 text-white'
+                              : 'text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      ))}
+                      
+                      {/* Next button */}
+                      <button
+                        onClick={() => setCurrentPage(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="px-3 py-1 text-sm font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        Nästa
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </>
